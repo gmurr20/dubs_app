@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "502066858510",
+    "firebase_url": "https://dubs-7f215.firebaseio.com",
+    "project_id": "dubs-7f215",
+    "storage_bucket": "dubs-7f215.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502066858510:android:2a5c23c1a1e7ea666e4a5f",
+        "android_client_info": {
+          "package_name": "com.gm_development.dubs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502066858510-npr1j6hdus1i504mpd3t8cp37mm8bnfs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gm_development.dubs",
+            "certificate_hash": "1015f27f742334cc9c8ae70deaf5fbf2efbb59ee"
+          }
+        },
+        {
+          "client_id": "502066858510-9scpv12gvaikrjk6q6fkri481atpgt9u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe9XCTGqOIus_Z751tbTSqwO_-5yYw--I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502066858510-9scpv12gvaikrjk6q6fkri481atpgt9u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
