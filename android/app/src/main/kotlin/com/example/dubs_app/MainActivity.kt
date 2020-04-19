@@ -1,4 +1,4 @@
-package com.example.dubs_app
+package com.gm_development.dubs
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
