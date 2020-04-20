@@ -7,16 +7,32 @@ abstract class LoginEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AddUserEvent extends LoginEvent {
+class AppStartEvent extends LoginEvent {
+  @override
+  String toString() => 'AppStartEvent';
+}
+
+class LoginUserEvent extends LoginEvent {
   final String _email;
   final String _password;
 
-  AddUserEvent(this._email, this._password);
+  LoginUserEvent(this._email, this._password);
 
   String get email => _email;
 
   String get password => _password;
 
   @override
-  String toString() => 'AddUserEvent';
+  String toString() => 'LoginUserEvent';
+}
+
+class LoginErrorEvent extends LoginEvent {
+  final String _errorMessage;
+
+  LoginErrorEvent(this._errorMessage);
+
+  String get errorMessage => _errorMessage;
+
+  @override
+  String toString() => 'LoginErrorEvent';
 }

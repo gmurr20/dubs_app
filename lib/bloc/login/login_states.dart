@@ -8,11 +8,25 @@ abstract class LoginState extends Equatable {
   List<Object> get props => [];
 }
 
+// app just started
+class AppStartState extends LoginState {
+  @override
+  String toString() => 'AppStartState';
+}
+
+// user is not logged in
 class NotLoggedInState extends LoginState {
   @override
   String toString() => 'NotLoggedInState';
 }
 
+// user has sent request to login and is waiting for response
+class LoginLoadingState extends LoginState {
+  @override
+  String toString() => 'LoginLoadingState';
+}
+
+// user has logged in successfully
 class LoggedInState extends LoginState {
   final User user;
 
@@ -20,4 +34,14 @@ class LoggedInState extends LoginState {
 
   @override
   String toString() => 'LoggedInState';
+}
+
+// user has encountered an error while logging in
+class LoginErrorState extends LoginState {
+  final String errorMessage;
+
+  LoginErrorState(this.errorMessage);
+
+  @override
+  String toString() => 'LoginErrorState';
 }

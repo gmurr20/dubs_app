@@ -1,40 +1,41 @@
+import 'package:bloc/bloc.dart';
+import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/screen/loginPage.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  BlocSupervisor.delegate = SimpleBlocDelegate();
+  runApp(MyApp(userRepository: UserRepository()));
+}
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class SimpleBlocDelegate extends BlocDelegate {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+  void onTransition(Bloc bloc, Transition transition) {
+    print(transition.toString());
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class MyApp extends StatefulWidget {
+  final UserRepository userRepository;
 
-  final String title;
+  MyApp({Key key, @required this.userRepository}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyApp> createState() => _MyAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyAppState extends State<MyApp> {
+  UserRepository get userRepository => widget.userRepository;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Login Page Flutter Firebase"),
-      ),
-      body: Center(
-        child: Text('Login Page Flutter Firebase  Content'),
-      ),
-    );
+    return MaterialApp(
+        title: 'Login Page',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: LoginPage(userRepository: userRepository));
+    ;
   }
 }
