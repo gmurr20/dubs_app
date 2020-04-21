@@ -1,7 +1,7 @@
 import 'package:dubs_app/bloc/login/login_bloc.dart';
 import 'package:dubs_app/bloc/login/login_events.dart';
 import 'package:dubs_app/repository/user_repository.dart';
-import 'package:dubs_app/screen/loginForm.dart';
+import 'package:dubs_app/screen/login/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -35,11 +35,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: LoginForm(loginBloc: _loginBloc),
-    );
+    return Scaffold(body: LoginForm(loginBloc: _loginBloc));
   }
 }

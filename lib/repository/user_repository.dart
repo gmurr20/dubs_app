@@ -22,7 +22,7 @@ class UserRepository {
           email: email, password: password);
       return _userFromFirebase(result.user);
     } catch (e) {
-      return Future.error(e.toString());
+      throw ("Failed to login! Error: " + e.toString());
     }
   }
 

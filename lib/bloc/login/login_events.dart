@@ -25,14 +25,3 @@ class LoginUserEvent extends LoginEvent {
   @override
   String toString() => 'LoginUserEvent';
 }
-
-class LoginErrorEvent extends LoginEvent {
-  final String _errorMessage;
-
-  LoginErrorEvent(this._errorMessage);
-
-  String get errorMessage => _errorMessage;
-
-  @override
-  String toString() => 'LoginErrorEvent';
-}

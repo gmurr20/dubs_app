@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:dubs_app/repository/user_repository.dart';
-import 'package:dubs_app/screen/loginPage.dart';
+import 'package:dubs_app/router/router.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  runApp(MyApp(userRepository: UserRepository()));
+  runApp(MyApp());
 }
 
 class SimpleBlocDelegate extends BlocDelegate {
@@ -17,25 +17,18 @@ class SimpleBlocDelegate extends BlocDelegate {
 }
 
 class MyApp extends StatefulWidget {
-  final UserRepository userRepository;
-
-  MyApp({Key key, @required this.userRepository}) : super(key: key);
+  MyApp({Key key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  UserRepository get userRepository => widget.userRepository;
+  UserRepository get userRepository => Router.userRepo;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Login Page',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: LoginPage(userRepository: userRepository));
-    ;
+        onGenerateRoute: Router.generateRoute, initialRoute: loginRoute);
   }
 }
