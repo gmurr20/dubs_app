@@ -1,5 +1,3 @@
-import 'package:dubs_app/bloc/login/login_bloc.dart';
-import 'package:dubs_app/bloc/login/login_events.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/screen/login/login_form.dart';
 import 'package:flutter/material.dart';
@@ -17,24 +15,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  LoginBloc _loginBloc;
-
   UserRepository get _userRepository => widget.userRepository;
 
   @override
-  void initState() {
-    _loginBloc = LoginBloc(userRepo: _userRepository);
-    _loginBloc.add(AppStartEvent());
-  }
-
-  @override
-  void dispose() {
-    _loginBloc.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(body: LoginForm(loginBloc: _loginBloc));
+    return Scaffold(body: LoginForm(userRepository: _userRepository));
   }
 }

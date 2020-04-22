@@ -1,24 +1,38 @@
 import 'package:dubs_app/bloc/login/login_bloc.dart';
 import 'package:dubs_app/bloc/login/login_events.dart';
 import 'package:dubs_app/bloc/login/login_states.dart';
+import 'package:dubs_app/repository/user_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginForm extends StatefulWidget {
-  final LoginBloc loginBloc;
+  final UserRepository userRepository;
 
-  LoginForm({Key key, @required this.loginBloc}) : super(key: key);
+  LoginForm({Key key, @required this.userRepository}) : super(key: key);
 
   @override
   State<LoginForm> createState() => _LoginFormState();
 }
 
 class _LoginFormState extends State<LoginForm> {
+  LoginBloc _loginBloc;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  LoginBloc get _loginBloc => widget.loginBloc;
+  UserRepository get _userRepository => widget.userRepository;
+
+  @override
+  void initState() {
+    _loginBloc = LoginBloc(userRepo: _userRepository);
+    _loginBloc.add(AppStartEvent());
+  }
+
+  @override
+  void dispose() {
+    _loginBloc.close();
+    super.dispose();
+  }
 
   double _currentWidth() {
     return MediaQuery.of(context).size.width;
@@ -65,14 +79,14 @@ class _LoginFormState extends State<LoginForm> {
             height: 40,
             margin: EdgeInsets.only(top: 16),
             child: TextFormField(
-              decoration: InputDecoration(
-                labelText: "password",
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-              ),
-              controller: _passwordController,
-            ),
+                decoration: InputDecoration(
+                  labelText: "password",
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                ),
+                controller: _passwordController,
+                obscureText: true),
           ),
           Container(
             margin: EdgeInsets.all(16),
