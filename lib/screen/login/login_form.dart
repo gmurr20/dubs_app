@@ -1,7 +1,6 @@
 import 'package:dubs_app/bloc/login/login_bloc.dart';
 import 'package:dubs_app/bloc/login/login_events.dart';
 import 'package:dubs_app/bloc/login/login_states.dart';
-import 'package:dubs_app/component/login_components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,6 +19,78 @@ class _LoginFormState extends State<LoginForm> {
   final _passwordController = TextEditingController();
 
   LoginBloc get _loginBloc => widget.loginBloc;
+
+  double _currentWidth() {
+    return MediaQuery.of(context).size.width;
+  }
+
+  Widget _buildEmailForm(LoginState state) {
+    return Container(
+      width: _currentWidth(),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        border: Border.all(
+          color: Colors.black,
+          width: 2,
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 16),
+            width: _currentWidth() * .7,
+            child: Text(
+              "Email Login",
+              textAlign: TextAlign.left,
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Container(
+              width: _currentWidth() * 0.7,
+              height: 40,
+              margin: EdgeInsets.only(top: 16),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: "email",
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide(),
+                  ),
+                ),
+                controller: _emailController,
+              )),
+          Container(
+            width: _currentWidth() * 0.7,
+            height: 40,
+            margin: EdgeInsets.only(top: 16),
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: "password",
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+              ),
+              controller: _passwordController,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(16),
+            width: _currentWidth() * 0.3,
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              color: Colors.lightBlue[100],
+              onPressed:
+                  (state is! LoginLoadingState ? _onLoginButtonPressed : null),
+              child: Text('Login', style: TextStyle(color: Colors.black)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,39 +118,12 @@ class _LoginFormState extends State<LoginForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: 155.0,
-                        child: Image.asset(
-                          "assets/temp_logo.png",
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      SizedBox(height: 35.0),
-                      TextFormField(
-                        decoration: createTextBoxDecoration("email"),
-                        controller: _emailController,
-                      ),
-                      SizedBox(height: 25.0),
-                      TextFormField(
-                        decoration: createTextBoxDecoration("password"),
-                        controller: _passwordController,
-                        obscureText: true,
-                      ),
-                      SizedBox(
-                        height: 35.0,
-                      ),
-                      RaisedButton(
-                        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                        onPressed: state is! LoginLoadingState
-                            ? _onLoginButtonPressed
-                            : null,
-                        child: Text('Login'),
-                      ),
+                      _buildEmailForm(state),
                       Container(
                         child: state is LoginLoadingState
                             ? CircularProgressIndicator()
                             : null,
-                      ),
+                      )
                     ],
                   ),
                 )));
