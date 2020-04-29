@@ -3,6 +3,8 @@ import 'package:dubs_app/screen/login/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'new_user_form.dart';
+
 class LoginPage extends StatefulWidget {
   final UserRepository userRepository;
 

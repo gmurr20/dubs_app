@@ -36,12 +36,23 @@ class LoggedInState extends LoginState {
   String toString() => 'LoggedInState';
 }
 
-// user has encountered an error while logging in
-class LoginErrorState extends LoginState {
-  final String errorMessage;
+// user entered an invalid input
+class InvalidInputState extends LoginState {
+  final String emailError;
+  final String passwordError;
 
-  LoginErrorState(this.errorMessage);
+  InvalidInputState(this.emailError, this.passwordError);
 
   @override
-  String toString() => 'LoginErrorState';
+  String toString() => 'InvalidInputState';
+}
+
+// An error happened on authentication
+class AuthenticationErrorState extends LoginState {
+  final String errorMessage;
+
+  AuthenticationErrorState(this.errorMessage);
+
+  @override
+  String toString() => 'AuthenticationErrorState';
 }

@@ -1,36 +1,36 @@
-import 'package:dubs_app/bloc/login/login_bloc.dart';
-import 'package:dubs_app/bloc/login/login_events.dart';
-import 'package:dubs_app/bloc/login/login_states.dart';
+import 'package:dubs_app/bloc/new_user/new_user_bloc.dart';
+import 'package:dubs_app/bloc/new_user/new_user_events.dart';
+import 'package:dubs_app/bloc/new_user/new_user_states.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginForm extends StatefulWidget {
+class NewUserForm extends StatefulWidget {
   final UserRepository userRepository;
 
-  LoginForm({Key key, @required this.userRepository}) : super(key: key);
+  NewUserForm({Key key, @required this.userRepository}) : super(key: key);
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<NewUserForm> createState() => _NewUserFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
-  LoginBloc _loginBloc;
+class _NewUserFormState extends State<NewUserForm> {
+  NewUserBloc _newUserBloc;
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _password1Controller = TextEditingController();
+  final _password2Controller = TextEditingController();
 
   UserRepository get _userRepository => widget.userRepository;
 
   @override
   void initState() {
-    _loginBloc = LoginBloc(userRepo: _userRepository);
-    _loginBloc.add(AppStartEvent());
+    _newUserBloc = NewUserBloc(userRepo: _userRepository);
   }
 
   @override
   void dispose() {
-    _loginBloc.close();
+    _newUserBloc.close();
     super.dispose();
   }
 
@@ -38,29 +38,31 @@ class _LoginFormState extends State<LoginForm> {
     return MediaQuery.of(context).size.width;
   }
 
-  // Event when login button is pressed
-  _onLoginButtonPressed() {
-    _loginBloc
-        .add(LoginUserEvent(_emailController.text, _passwordController.text));
+  // Event when create user button is pressed
+  _onCreateUserButtonPressed() {
+    _newUserBloc.add(AddUserEvent(_emailController.text, "",
+        _password1Controller.text, _password2Controller.text));
   }
 
-  // returns an email error message based on the state
-  String _emailError(LoginState state) {
+  String _emailError(NewUserState state) {
     if (state is InvalidInputState) {
       return state.emailError;
     }
-    return null;
   }
 
-  // returns an email error message based on the state
-  String _passwordError(LoginState state) {
+  String _password1Error(NewUserState state) {
     if (state is InvalidInputState) {
-      return state.passwordError;
+      return state.password1Error;
     }
-    return null;
   }
 
-  Widget _buildEmailForm(LoginState state) {
+  String _password2Error(NewUserState state) {
+    if (state is InvalidInputState) {
+      return state.password2Error;
+    }
+  }
+
+  Widget _buildNewUserForm(NewUserState state) {
     return Container(
       width: _currentWidth(),
       decoration: BoxDecoration(
@@ -76,7 +78,7 @@ class _LoginFormState extends State<LoginForm> {
             margin: EdgeInsets.only(top: 16),
             width: _currentWidth() * .7,
             child: Text(
-              "Email Login",
+              "Create Account",
               textAlign: TextAlign.left,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
             ),
@@ -106,11 +108,27 @@ class _LoginFormState extends State<LoginForm> {
                   labelText: "password",
                   fillColor: Colors.white,
                   helperText: ' ',
-                  errorText: _passwordError(state),
+                  errorText: _password1Error(state),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                 ),
-                controller: _passwordController,
+                controller: _password1Controller,
+                obscureText: true),
+          ),
+          Container(
+            width: _currentWidth() * 0.7,
+            margin: EdgeInsets.only(top: 8),
+            height: 60,
+            child: TextFormField(
+                decoration: InputDecoration(
+                  labelText: "confirm password",
+                  fillColor: Colors.white,
+                  helperText: ' ',
+                  errorText: _password2Error(state),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                ),
+                controller: _password2Controller,
                 obscureText: true),
           ),
           Container(
@@ -122,8 +140,8 @@ class _LoginFormState extends State<LoginForm> {
               ),
               color: Colors.lightBlue[100],
               onPressed:
-                  (state is! LoginLoadingState ? _onLoginButtonPressed : null),
-              child: Text('Login', style: TextStyle(color: Colors.black)),
+                  (state is! LoadingState ? _onCreateUserButtonPressed : null),
+              child: Text('Sign up', style: TextStyle(color: Colors.black)),
             ),
           ),
         ],
@@ -134,16 +152,16 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-      bloc: _loginBloc,
+      bloc: _newUserBloc,
       builder: (
         BuildContext context,
-        LoginState state,
+        NewUserState state,
       ) {
-        if (state is AuthenticationErrorState) {
+        if (state is LoginErrorState) {
           _onWidgetDidBuild(() {
             Scaffold.of(context).showSnackBar(
               SnackBar(
-                content: Text('${state.errorMessage}'),
+                content: Text('${state.error}'),
                 backgroundColor: Colors.red,
               ),
             );
@@ -157,9 +175,9 @@ class _LoginFormState extends State<LoginForm> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      _buildEmailForm(state),
+                      _buildNewUserForm(state),
                       Container(
-                        child: state is LoginLoadingState
+                        child: state is LoadingState
                             ? CircularProgressIndicator()
                             : null,
                       )

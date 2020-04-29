@@ -1,5 +1,4 @@
 import 'package:dubs_app/repository/user_repository.dart';
-import 'package:dubs_app/screen/create_account/create_account_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +13,6 @@ class Router {
       case loginRoute:
         return MaterialPageRoute(
             builder: (_) => LoginPage(userRepository: userRepo));
-      case newUserRoute:
-        return MaterialPageRoute(
-            builder: (_) => CreateUserPage(userRepository: userRepo));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
