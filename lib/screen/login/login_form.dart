@@ -83,39 +83,31 @@ class _LoginFormState extends State<LoginForm> {
           ),
           Container(
               width: _currentWidth() * .7,
-              margin: EdgeInsets.only(top: 16),
-              height: 60,
               child: TextFormField(
+                  style: TextStyle(fontSize: 14),
                   decoration: InputDecoration(
                     labelText: "email",
                     fillColor: Colors.white,
                     helperText: ' ',
                     errorText: _emailError(state),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide(),
-                    ),
                   ),
                   controller: _emailController)),
           Container(
             width: _currentWidth() * 0.7,
-            margin: EdgeInsets.only(top: 8),
-            height: 60,
             child: TextFormField(
+                style: TextStyle(fontSize: 14),
                 decoration: InputDecoration(
                   labelText: "password",
                   fillColor: Colors.white,
                   helperText: ' ',
                   errorText: _passwordError(state),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
                 ),
                 controller: _passwordController,
                 obscureText: true),
           ),
           Container(
-            margin: EdgeInsets.only(top: 8, bottom: 16),
-            width: _currentWidth() * 0.3,
+            margin: EdgeInsets.only(top: 0, bottom: 16),
+            width: _currentWidth() * 0.4,
             child: RaisedButton(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),

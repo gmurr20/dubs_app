@@ -63,90 +63,53 @@ class _NewUserFormState extends State<NewUserForm> {
   }
 
   Widget _buildNewUserForm(NewUserState state) {
-    return Container(
-      width: _currentWidth(),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
-        border: Border.all(
-          color: Colors.black,
-          width: 2,
-        ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: 16),
-            width: _currentWidth() * .7,
-            child: Text(
-              "Create Account",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
-            ),
-          ),
-          Container(
-              width: _currentWidth() * .7,
-              margin: EdgeInsets.only(top: 16),
-              height: 60,
-              child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: "email",
-                    fillColor: Colors.white,
-                    helperText: ' ',
-                    errorText: _emailError(state),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide(),
-                    ),
-                  ),
-                  controller: _emailController)),
-          Container(
-            width: _currentWidth() * 0.7,
-            margin: EdgeInsets.only(top: 8),
-            height: 60,
-            child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: "password",
+    return Column(children: [
+      Container(
+          margin: EdgeInsets.only(top: 16),
+          child: TextFormField(
+              style: TextStyle(fontSize: 14),
+              decoration: InputDecoration(
+                  labelText: "email",
                   fillColor: Colors.white,
                   helperText: ' ',
-                  errorText: _password1Error(state),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                ),
-                controller: _password1Controller,
-                obscureText: true),
-          ),
-          Container(
-            width: _currentWidth() * 0.7,
-            margin: EdgeInsets.only(top: 8),
-            height: 60,
-            child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: "confirm password",
-                  fillColor: Colors.white,
-                  helperText: ' ',
-                  errorText: _password2Error(state),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
-                ),
-                controller: _password2Controller,
-                obscureText: true),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 8, bottom: 16),
-            width: _currentWidth() * 0.3,
-            child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              color: Colors.lightBlue[100],
-              onPressed:
-                  (state is! LoadingState ? _onCreateUserButtonPressed : null),
-              child: Text('Sign up', style: TextStyle(color: Colors.black)),
-            ),
-          ),
-        ],
+                  errorText: _emailError(state)),
+              controller: _emailController)),
+      Container(
+        child: TextFormField(
+            style: TextStyle(fontSize: 14),
+            decoration: InputDecoration(
+                labelText: "password",
+                fillColor: Colors.white,
+                helperText: ' ',
+                errorText: _password1Error(state)),
+            controller: _password1Controller,
+            obscureText: true),
       ),
-    );
+      Container(
+        child: TextFormField(
+            style: TextStyle(fontSize: 14),
+            decoration: InputDecoration(
+              labelText: "confirm password",
+              fillColor: Colors.white,
+              helperText: ' ',
+              errorText: _password2Error(state),
+            ),
+            controller: _password2Controller,
+            obscureText: true),
+      ),
+      Container(
+          margin: EdgeInsets.only(top: 8, bottom: 16),
+          width: _currentWidth() * 0.3,
+          child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            color: Colors.lightBlue[100],
+            onPressed:
+                (state is! LoadingState ? _onCreateUserButtonPressed : null),
+            child: Text('Sign up', style: TextStyle(color: Colors.black)),
+          )),
+    ]);
   }
 
   @override
