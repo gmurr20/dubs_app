@@ -65,21 +65,54 @@ class _NewUserFormState extends State<NewUserForm> {
   Widget _buildNewUserForm(NewUserState state) {
     return Column(children: [
       Container(
-          margin: EdgeInsets.only(top: 16),
+        alignment: Alignment.topLeft,
+        padding: EdgeInsets.only(top: 5),
+        margin: EdgeInsets.only(left: 2, right: 0),
+        child: Text(
+          'Create Account',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w500,
+          ),
+          textAlign: TextAlign.left,
+        ),
+      ),
+      Container(
+          margin: EdgeInsets.only(top: 25),
           child: TextFormField(
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+              cursorColor: Colors.white,
               decoration: InputDecoration(
                   labelText: "email",
+                  labelStyle: TextStyle(color: Colors.white),
                   fillColor: Colors.white,
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
                   helperText: ' ',
                   errorText: _emailError(state)),
               controller: _emailController)),
       Container(
         child: TextFormField(
-            style: TextStyle(fontSize: 14),
+            style: TextStyle(fontSize: 14, color: Colors.white),
+            cursorColor: Colors.white,
             decoration: InputDecoration(
                 labelText: "password",
+                labelStyle: TextStyle(color: Colors.white),
                 fillColor: Colors.white,
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
                 helperText: ' ',
                 errorText: _password1Error(state)),
             controller: _password1Controller,
@@ -87,10 +120,18 @@ class _NewUserFormState extends State<NewUserForm> {
       ),
       Container(
         child: TextFormField(
-            style: TextStyle(fontSize: 14),
+            style: TextStyle(fontSize: 14, color: Colors.white),
+            cursorColor: Colors.white,
             decoration: InputDecoration(
               labelText: "confirm password",
+              labelStyle: TextStyle(color: Colors.white),
               fillColor: Colors.white,
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+              ),
               helperText: ' ',
               errorText: _password2Error(state),
             ),
@@ -104,7 +145,7 @@ class _NewUserFormState extends State<NewUserForm> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            color: Colors.lightBlue[100],
+            color: Colors.white,
             onPressed:
                 (state is! LoadingState ? _onCreateUserButtonPressed : null),
             child: Text('Sign up', style: TextStyle(color: Colors.black)),
