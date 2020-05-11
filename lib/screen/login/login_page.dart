@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SlidingUpPanel(
+      color: Color(0xFF162A49),
       panel: Container(
         child: NewUserForm(userRepository: _userRepository),
       ),
