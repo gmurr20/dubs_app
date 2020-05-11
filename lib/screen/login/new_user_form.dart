@@ -5,6 +5,8 @@ import 'package:dubs_app/repository/user_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dubs_app/DesignSystem/texts.dart';
+import 'package:dubs_app/DesignSystem/dimensions.dart';
 
 class NewUserForm extends StatefulWidget {
   final UserRepository userRepository;
@@ -66,15 +68,11 @@ class _NewUserFormState extends State<NewUserForm> {
     return Column(children: [
       Container(
         alignment: Alignment.topLeft,
-        padding: EdgeInsets.only(top: 5),
-        margin: EdgeInsets.only(left: 2, right: 0),
+        padding: spacer.top.xxs,
+        margin: spacer.left.none,
         child: Text(
           'Create Account',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.w500,
-          ),
+          style: primaryH1Bold,
           textAlign: TextAlign.left,
         ),
       ),
@@ -88,7 +86,7 @@ class _NewUserFormState extends State<NewUserForm> {
               cursorColor: Colors.white,
               decoration: InputDecoration(
                   labelText: "email",
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: primaryPRegular,
                   fillColor: Colors.white,
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.white),
@@ -105,7 +103,7 @@ class _NewUserFormState extends State<NewUserForm> {
             cursorColor: Colors.white,
             decoration: InputDecoration(
                 labelText: "password",
-                labelStyle: TextStyle(color: Colors.white),
+                labelStyle: primaryPRegular,
                 fillColor: Colors.white,
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
@@ -124,7 +122,7 @@ class _NewUserFormState extends State<NewUserForm> {
             cursorColor: Colors.white,
             decoration: InputDecoration(
               labelText: "confirm password",
-              labelStyle: TextStyle(color: Colors.white),
+              labelStyle: primaryPRegular,
               fillColor: Colors.white,
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.white),

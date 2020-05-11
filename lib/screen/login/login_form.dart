@@ -5,6 +5,8 @@ import 'package:dubs_app/repository/user_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dubs_app/DesignSystem/texts.dart';
+import 'package:dubs_app/DesignSystem/dimensions.dart';
 
 class LoginForm extends StatefulWidget {
   final UserRepository userRepository;
@@ -78,13 +80,13 @@ class _LoginFormState extends State<LoginForm> {
             child: Text(
               "Email Login",
               textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+              style: darkprimaryH1Bold,
             ),
           ),
           Container(
               width: _currentWidth() * .7,
               child: TextFormField(
-                  style: TextStyle(fontSize: 14),
+                  style: darkprimaryPRegular,
                   decoration: InputDecoration(
                     labelText: "email",
                     fillColor: Colors.white,
@@ -95,7 +97,7 @@ class _LoginFormState extends State<LoginForm> {
           Container(
             width: _currentWidth() * 0.7,
             child: TextFormField(
-                style: TextStyle(fontSize: 14),
+                style: darkprimaryPRegular,
                 decoration: InputDecoration(
                   labelText: "password",
                   fillColor: Colors.white,
@@ -115,7 +117,7 @@ class _LoginFormState extends State<LoginForm> {
               color: Colors.lightBlue[100],
               onPressed:
                   (state is! LoginLoadingState ? _onLoginButtonPressed : null),
-              child: Text('Login', style: TextStyle(color: Colors.black)),
+              child: Text('Login', style: darkprimaryPRegular),
             ),
           ),
         ],
