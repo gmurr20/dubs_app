@@ -6,6 +6,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'new_user_form.dart';
 
+// comment to test shit
 class LoginPage extends StatefulWidget {
   final UserRepository userRepository;
 
