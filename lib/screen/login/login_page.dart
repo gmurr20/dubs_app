@@ -24,35 +24,30 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SlidingUpPanel(
-      panel: Center(
+      panel: Container(
         child: NewUserForm(userRepository: _userRepository),
       ),
       body: LoginForm(userRepository: _userRepository),
       header: Container(
+        margin: EdgeInsets.only(top: 16),
         width: MediaQuery.of(context).size.width,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        child: Column(children: [
           DecoratedBox(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(width: 5.0, color: Colors.white),
-            ),
+            decoration: BoxDecoration(),
             child: Padding(
-              padding: EdgeInsets.all(2.0),
+              padding: EdgeInsets.all(4.0),
               child: Container(
-                width: 40.0,
+                width: 60.0,
                 height: 5.0,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: Colors.white,
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.all(Radius.circular(8.0))),
                 ),
               ),
             ),
           ),
-          Text("Create Account",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600)),
         ]),
       ),
     ));
