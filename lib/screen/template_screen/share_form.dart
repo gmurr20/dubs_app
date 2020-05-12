@@ -20,7 +20,7 @@ class _ShareFormState extends State<ShareForm> {
     return Scaffold(
       body: SlidingUpPanel(
           backdropEnabled: true,
-          backdropColor: DarwinBlack,
+          backdropColor: DarwinWhite,
           backdropOpacity: .8,
           backdropTapClosesPanel: true,
           color: Colors.black87,
@@ -36,25 +36,73 @@ class _ShareFormState extends State<ShareForm> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(Icons.email,
-                  semanticLabel: 'email', size: 40.0, color: DarwinWhite),
-              Icon(
-                Icons.message,
-                semanticLabel: 'messages',
-                size: 40.0,
-                color: DarwinWhite,
+              ClipOval(
+                child: Material(
+                  color: Colors.blue, // button color
+                  child: InkWell(
+                    splashColor: Colors.grey[200], // inkwell color
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Icon(Icons.email,
+                          semanticLabel: 'email',
+                          size: 30.0,
+                          color: DarwinWhite),
+                    ),
+                    onTap: () {},
+                  ),
+                ),
               ),
-              Icon(
-                Icons.content_copy,
-                semanticLabel: 'copy link',
-                size: 40.0,
-                color: DarwinWhite,
+              ClipOval(
+                child: Material(
+                  color: Colors.green[500], // button color
+                  child: InkWell(
+                    splashColor: Colors.grey[200], // inkwell color
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Icon(Icons.message,
+                          semanticLabel: 'messages',
+                          size: 30.0,
+                          color: DarwinWhite),
+                    ),
+                    onTap: () {},
+                  ),
+                ),
               ),
-              Icon(
-                Icons.more_horiz,
-                semanticLabel: 'more options',
-                size: 40.0,
-                color: DarwinWhite,
+              ClipOval(
+                child: Material(
+                  color: Colors.red[500], // button color
+                  child: InkWell(
+                    splashColor: Colors.grey[200], // inkwell color
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Icon(Icons.content_copy,
+                          semanticLabel: 'copy link',
+                          size: 30.0,
+                          color: DarwinWhite),
+                    ),
+                    onTap: () {},
+                  ),
+                ),
+              ),
+              ClipOval(
+                child: Material(
+                  color: Colors.grey, // button color
+                  child: InkWell(
+                    splashColor: Colors.grey[200], // inkwell color
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Icon(Icons.more_horiz,
+                          semanticLabel: 'more options',
+                          size: 30.0,
+                          color: DarwinWhite),
+                    ),
+                    onTap: () {},
+                  ),
+                ),
               ),
             ],
           )),

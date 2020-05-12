@@ -2,6 +2,7 @@ import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/template_screen/template_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:dubs_app/screen/template_screen/share_form.dart';
 
 import '../screen/template_screen/template_screen.dart';
 
