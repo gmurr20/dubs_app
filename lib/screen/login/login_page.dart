@@ -3,7 +3,7 @@ import 'package:dubs_app/screen/login/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
+import '../../DesignSystem/colors.dart';
 import 'new_user_form.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,6 +25,12 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
         body: SlidingUpPanel(
       color: Color(0xFF162A49),
+      backdropEnabled: true,
+      backdropColor: DarwinWhite,
+      backdropOpacity: .9,
+      backdropTapClosesPanel: true,
+      minHeight: 250,
+      maxHeight: 250,
       panel: Container(
         child: NewUserForm(userRepository: _userRepository),
       ),

@@ -5,11 +5,6 @@ import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../../DesignSystem/colors.dart';
-import '../../DesignSystem/colors.dart';
-import '../../DesignSystem/texts.dart';
-import '../../DesignSystem/texts.dart';
-
 class ShareForm extends StatefulWidget {
   // add any state here
 
@@ -29,7 +24,8 @@ class _ShareFormState extends State<ShareForm> {
           backdropOpacity: .8,
           backdropTapClosesPanel: true,
           color: Colors.black87,
-          minHeight: 150,
+          minHeight:
+              150, // Need to chnge this to 0 when we integrate with a button/action.
           maxHeight: 150,
           padding: (spacer.left.md + spacer.top.xs),
           header: Text(
