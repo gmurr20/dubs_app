@@ -42,7 +42,8 @@ class NewUserBloc extends Bloc<NewUserEvent, NewUserState> {
           .createUser(event.email, event.password1)
           .timeout(const Duration(seconds: 5));
     } catch (e) {
-      yield LoginErrorState("Failed to create user");
+      yield LoginErrorState(e.toString());
+      return;
     }
     yield LoggedInState(newUser);
 

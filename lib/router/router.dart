@@ -1,11 +1,14 @@
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/template_screen/template_screen.dart';
+import 'package:dubs_app/screen/verify_user/verify_user_page.dart';
 import 'package:flutter/material.dart';
 
 const String loginRoute = '/';
 const String testRoute = '/adfadsfasdfasdfsadfsad';
 const String homeRoute = '/home';
+const String verifyUserRoute = "/verifyUser";
 
 class Router {
   static UserRepository userRepo = UserRepository();
@@ -14,6 +17,11 @@ class Router {
       case loginRoute:
         return MaterialPageRoute(
             builder: (_) => LoginPage(userRepository: userRepo));
+      case verifyUserRoute:
+        return MaterialPageRoute(
+            builder: (_) => VerifyUserPage(userRepository: userRepo));
+      case homeRoute:
+        return MaterialPageRoute(builder: (_) => HomePage());
       case testRoute:
         return MaterialPageRoute(builder: (_) => MyNewWidget());
       default:

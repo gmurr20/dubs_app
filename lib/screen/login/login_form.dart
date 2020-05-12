@@ -2,6 +2,7 @@ import 'package:dubs_app/bloc/login/login_bloc.dart';
 import 'package:dubs_app/bloc/login/login_events.dart';
 import 'package:dubs_app/bloc/login/login_states.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -127,40 +128,61 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
+    return BlocListener(
       bloc: _loginBloc,
-      builder: (
+      listener: (
         BuildContext context,
         LoginState state,
       ) {
-        if (state is AuthenticationErrorState) {
-          _onWidgetDidBuild(() {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${state.errorMessage}'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          });
+        if (state is LoggedInState) {
+          Navigator.of(context).pushNamed(homeRoute);
+        } else if (state is UnverifiedUserState) {
+          Navigator.of(context).pushNamed(verifyUserRoute);
         }
-
-        return Form(
-            child: Padding(
-                padding: const EdgeInsets.all(36.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      _buildEmailForm(state),
-                      Container(
-                        child: state is LoginLoadingState
-                            ? CircularProgressIndicator()
-                            : null,
-                      )
-                    ],
-                  ),
-                )));
       },
+      child: BlocBuilder(
+          bloc: _loginBloc,
+          builder: (
+            BuildContext context,
+            LoginState state,
+          ) {
+            if (state is AuthenticationErrorState) {
+              _onWidgetDidBuild(() {
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${state.errorMessage}'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              });
+            }
+            if (state is AuthenticationErrorState) {
+              _onWidgetDidBuild(() {
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${state.errorMessage}'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              });
+            }
+            return Form(
+                child: Padding(
+                    padding: const EdgeInsets.all(36.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _buildEmailForm(state),
+                          Container(
+                            child: state is LoginLoadingState
+                                ? CircularProgressIndicator()
+                                : null,
+                          )
+                        ],
+                      ),
+                    )));
+          }),
     );
   }
 
