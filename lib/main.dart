@@ -29,6 +29,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        onGenerateRoute: Router.generateRoute, initialRoute: testRoute);
+        onGenerateRoute: Router.generateRoute, initialRoute: loginRoute);
   }
 }
