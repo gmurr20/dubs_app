@@ -4,6 +4,8 @@ import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/template_screen/template_screen.dart';
 import 'package:dubs_app/screen/verify_user/verify_user_page.dart';
 import 'package:flutter/material.dart';
+import 'package:dubs_app/screen/template_screen/share_form.dart';
+
 
 const String loginRoute = '/';
 const String testRoute = '/adfadsfasdfasdfsadfsad';
@@ -23,7 +25,7 @@ class Router {
       case homeRoute:
         return MaterialPageRoute(builder: (_) => HomePage());
       case testRoute:
-        return MaterialPageRoute(builder: (_) => MyNewWidget());
+        return MaterialPageRoute(builder: (_) => ShareForm());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
