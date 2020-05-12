@@ -56,3 +56,13 @@ class AuthenticationErrorState extends LoginState {
   @override
   String toString() => 'AuthenticationErrorState';
 }
+
+// User login is valid but user is not verified
+class UnverifiedUserState extends LoginState {
+  final User user;
+
+  UnverifiedUserState(this.user);
+
+  @override
+  String toString() => 'UnverifiedUserState';
+}

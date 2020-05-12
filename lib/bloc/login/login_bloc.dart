@@ -2,6 +2,7 @@ import 'package:dubs_app/bloc/login/login_events.dart';
 import 'package:dubs_app/bloc/login/login_states.dart';
 import 'package:dubs_app/common/common_errors.dart';
 import 'package:dubs_app/common/text_validator.dart';
+import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
@@ -37,12 +38,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
 
     // contact the repo
+    User user;
     try {
-      yield LoggedInState(await _userRepo
+      user = await _userRepo
           .loginUser(event.email, event.password)
-          .timeout(const Duration(seconds: 5)));
+          .timeout(const Duration(seconds: 5));
     } catch (e) {
       yield AuthenticationErrorState("Failed to login to backend");
+      return;
+    }
+    if (user.isVerified) {
+      yield LoggedInState(user);
+    } else {
+      yield UnverifiedUserState(user);
     }
   }
 
@@ -68,7 +76,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapAppStartToState() async* {
     final isLoggedIn = await _userRepo.isLoggedIn();
     if (isLoggedIn) {
-      yield LoggedInState(await _userRepo.getUser());
+      User user = await _userRepo.getUser();
+      if (user.isVerified) {
+        yield LoggedInState(user);
+      } else {
+        yield UnverifiedUserState(user);
+      }
     } else {
       yield NotLoggedInState();
     }

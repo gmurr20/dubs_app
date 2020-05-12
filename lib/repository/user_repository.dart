@@ -9,6 +9,7 @@ class UserRepository {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      await result.user.sendEmailVerification();
       return _userFromFirebase(result.user);
     } catch (e) {
       return Future.error(e.toString());
@@ -17,13 +18,14 @@ class UserRepository {
 
   // Logging in a user with an email and password
   Future<User> loginUser(String email, String password) async {
+    AuthResult result;
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(
+      result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      return _userFromFirebase(result.user);
     } catch (e) {
       throw ("Failed to login! Error: " + e.toString());
     }
+    return _userFromFirebase(result.user);
   }
 
   Future<bool> isLoggedIn() async {
@@ -46,7 +48,31 @@ class UserRepository {
     }
   }
 
+  void sendEmailVerification() async {
+    try {
+      // grab the current user
+      final user = await _auth.currentUser();
+      if (user == null) {
+        return Future.error("User is not signed in");
+      }
+      // send email verification
+      await user.sendEmailVerification();
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  Future<User> reloadUser() async {
+    final user = await _auth.currentUser();
+    if (user == null) {
+      throw ("User is not logged in");
+    }
+    await user
+      ..reload();
+    return await getUser();
+  }
+
   User _userFromFirebase(FirebaseUser fbUser) {
-    return User(fbUser.displayName, fbUser.photoUrl);
+    return User(fbUser.displayName, fbUser.photoUrl, fbUser.isEmailVerified);
   }
 }

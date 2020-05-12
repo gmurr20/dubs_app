@@ -2,6 +2,7 @@ import 'package:dubs_app/bloc/new_user/new_user_bloc.dart';
 import 'package:dubs_app/bloc/new_user/new_user_events.dart';
 import 'package:dubs_app/bloc/new_user/new_user_states.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -153,40 +154,50 @@ class _NewUserFormState extends State<NewUserForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
+    return BlocListener(
       bloc: _newUserBloc,
-      builder: (
+      listener: (
         BuildContext context,
         NewUserState state,
       ) {
-        if (state is LoginErrorState) {
-          _onWidgetDidBuild(() {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${state.error}'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          });
+        if (state is LoggedInState) {
+          Navigator.of(context).pushNamed(verifyUserRoute);
         }
-
-        return Form(
-            child: Padding(
-                padding: const EdgeInsets.all(36.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      _buildNewUserForm(state),
-                      Container(
-                        child: state is LoadingState
-                            ? CircularProgressIndicator()
-                            : null,
-                      )
-                    ],
-                  ),
-                )));
       },
+      child: BlocBuilder(
+          bloc: _newUserBloc,
+          builder: (
+            BuildContext context,
+            NewUserState state,
+          ) {
+            if (state is LoginErrorState) {
+              _onWidgetDidBuild(() {
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${state.error}'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              });
+            }
+
+            return Form(
+                child: Padding(
+                    padding: const EdgeInsets.all(36.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _buildNewUserForm(state),
+                          Container(
+                            child: state is LoadingState
+                                ? CircularProgressIndicator()
+                                : null,
+                          )
+                        ],
+                      ),
+                    )));
+          }),
     );
   }
 
