@@ -26,12 +26,13 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
         body: SlidingUpPanel(
       color: Color(0xFF162A49),
-      backdropEnabled: true,
-      backdropColor: DarwinWhite,
-      backdropOpacity: .9,
-      backdropTapClosesPanel: true,
-      minHeight: 250,
-      maxHeight: 250,
+      // TODO Brian: This broke the sliding feature
+      // backdropEnabled: true,
+      // backdropColor: DarwinWhite,
+      // backdropOpacity: .9,
+      // backdropTapClosesPanel: true,
+      // minHeight: 250,
+      // maxHeight: 250,
       panel: Container(
         child: NewUserForm(userRepository: _userRepository),
       ),
