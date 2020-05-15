@@ -13,45 +13,53 @@ class XD_HomeScreenNewUser extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    double _currentWidth() {
+      return MediaQuery.of(context).size.width;
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xfff2f2f2),
-      body: Stack(
-        children: <Widget>[
-          Transform.translate(
-            offset: Offset(36.0, 53.0),
-            child:
-                // Adobe XD layer: 'Header - Home' (component)
-                XD_HeaderHome(),
-          ),
-          Transform.translate(
-            offset: Offset(13.0, 133.0),
-            child:
-                // Adobe XD layer: 'Modal - Welcome' (component)
-                XD_ModalWelcome(),
-          ),
-          Transform.translate(
-            offset: Offset(13.0, 308.0),
-            child:
-                // Adobe XD layer: 'Modal - Invite' (component)
-                XD_ModalInvite(),
-          ),
-          Transform.translate(
-            offset: Offset(280.0, 679.0),
-            child: PageLink(
-              links: [
-                PageLinkInfo(
-                  transition: LinkTransition.Fade,
-                  duration: 0.4,
-                  ease: Curves.easeInOutExpo,
-                  pageBuilder: () => XD_InboxScreenMenuExpanded(),
-                ),
-              ],
+      body: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width / 20),
+        child: Stack(
+          children: <Widget>[
+            Transform.translate(
+              offset: Offset(36.0, 53.0),
               child:
-                  // Adobe XD layer: 'Menu Button' (component)
-                  XD_MenuButton(),
+                  // Adobe XD layer: 'Header - Home' (component)
+                  XD_HeaderHome(),
             ),
-          ),
-        ],
+            Transform.translate(
+              offset: Offset(13.0, 133.0),
+              child:
+                  // Adobe XD layer: 'Modal - Welcome' (component)
+                  XD_ModalWelcome(),
+            ),
+            Transform.translate(
+              offset: Offset(13.0, 308.0),
+              child:
+                  // Adobe XD layer: 'Modal - Invite' (component)
+                  XD_ModalInvite(),
+            ),
+            Transform.translate(
+              offset: Offset(280.0, 679.0),
+              child: PageLink(
+                links: [
+                  PageLinkInfo(
+                    transition: LinkTransition.Fade,
+                    duration: 0.4,
+                    ease: Curves.easeInOutExpo,
+                    pageBuilder: () => XD_InboxScreenMenuExpanded(),
+                  ),
+                ],
+                child:
+                    // Adobe XD layer: 'Menu Button' (component)
+                    XD_MenuButton(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

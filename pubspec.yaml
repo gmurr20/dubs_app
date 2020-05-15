@@ -19,6 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+    
   
   # bloc dependencies
   bloc: ^2.0.0
@@ -93,4 +94,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-fonts:
