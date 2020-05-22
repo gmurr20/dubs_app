@@ -71,7 +71,7 @@ class _NewUserFormState extends State<NewUserForm> {
       Column(children: [
         Container(
           alignment: Alignment.topLeft,
-          padding: spacer.top.xxl + spacer.bottom.xs,
+          padding: spacer.top.xl + spacer.bottom.xxs,
           margin: spacer.left.none,
           child: Text(
             'Create Account',
