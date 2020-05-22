@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class NewUserForm extends StatefulWidget {
   final UserRepository userRepository;
@@ -67,26 +68,18 @@ class _NewUserFormState extends State<NewUserForm> {
 
   Widget _buildNewUserForm(NewUserState state) {
     return Stack(children: [
-      Container(
-        alignment: Alignment.topLeft,
-        padding: spacer.top.xxs,
-        margin: spacer.left.none,
-        child: Text(
-          'Create Account',
-          style: primaryH1Bold,
-          textAlign: TextAlign.left,
-        ),
-      ),
-      Container(
-        alignment: Alignment.topRight,
-        padding: spacer.top.xxs,
-        margin: spacer.right.none,
-        child: MenuButton(),
-      ),
       Column(children: [
         Container(
-            padding: spacer.top.md,
-            margin: EdgeInsets.only(top: 25),
+          alignment: Alignment.topLeft,
+          padding: spacer.top.xxl + spacer.bottom.xs,
+          margin: spacer.left.none,
+          child: Text(
+            'Create Account',
+            style: primaryH1Bold,
+            textAlign: TextAlign.left,
+          ),
+        ),
+        Container(
             child: TextFormField(
                 style: TextStyle(
                   color: Colors.white,
@@ -226,7 +219,7 @@ class MenuButton extends StatelessWidget {
         icon: Icon(Icons.menu),
         color: Colors.white,
         iconSize: 28,
-        onPressed: () {/* Need to enter code here to open panel fully */},
+        onPressed: () {},
       ),
     );
   }

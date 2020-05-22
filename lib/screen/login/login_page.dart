@@ -8,6 +8,8 @@ import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'new_user_form.dart';
 
+PanelController _pc = PanelController();
+
 // comment to test shit
 class LoginPage extends StatefulWidget {
   final UserRepository userRepository;
@@ -29,12 +31,14 @@ class _LoginPageState extends State<LoginPage> {
       Scaffold(
         backgroundColor: const Color(0xfff2f2f2),
         body: SlidingUpPanel(
-            color: Color(0xFF162A49),
+            color: Color(0xFFF27D7D),
+            header: CloseButton(),
+            controller: _pc,
             backdropEnabled: true,
             backdropColor: DarwinWhite,
             backdropOpacity: .9,
             backdropTapClosesPanel: true,
-            minHeight: 100,
+            minHeight: 0,
             maxHeight: MediaQuery.of(context).size.height,
             panel: Container(
               child: NewUserForm(userRepository: _userRepository),
@@ -57,29 +61,44 @@ class _LoginPageState extends State<LoginPage> {
                               blurRadius: 15)
                         ],
                       ),
-                      child: Container(
-                        padding:
-                            spacer.left.md + spacer.top.xs + spacer.bottom.xs,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.0),
-                          color: const Color(0xffffffff),
-                          boxShadow: [
-                            BoxShadow(
-                                color: const Color(0x1a000000),
-                                offset: Offset(5, 5),
-                                blurRadius: 15)
-                          ],
-                        ),
-                        child: Container(
-                          alignment: Alignment.topLeft,
-                          padding: spacer.top.xxs,
-                          margin: spacer.left.none,
-                          child: Text(
-                            "Home",
-                            style: darkprimaryH1Bold,
+                      child: Stack(children: [
+                        Container(
+                          padding:
+                              spacer.left.md + spacer.top.xs + spacer.bottom.xs,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: const Color(0xffffffff),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: const Color(0x1a000000),
+                                  offset: Offset(5, 5),
+                                  blurRadius: 15)
+                            ],
+                          ),
+                          child: Container(
+                            alignment: Alignment.topLeft,
+                            padding: spacer.top.xxs,
+                            margin: spacer.left.none,
+                            child: Text(
+                              "Home",
+                              style: darkprimaryH1Bold,
+                            ),
                           ),
                         ),
-                      ),
+                        Container(
+                          alignment: Alignment.topRight,
+                          padding: spacer.top.xs + spacer.bottom.xs,
+                          margin: spacer.right.md,
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text('Create Account', style: primaryPBold),
+                            color: DarwinRed,
+                            onPressed: () => _pc.open(),
+                          ),
+                        ),
+                      ]),
                     ),
                     // Modal containing login form
                     Container(
@@ -115,5 +134,21 @@ class _LoginPageState extends State<LoginPage> {
             )),
       ),
     ]);
+  }
+}
+
+class CloseButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      child: IconButton(
+        alignment: Alignment.topLeft,
+        padding: spacer.top.lg + spacer.left.md,
+        icon: Icon(Icons.close),
+        color: Colors.white,
+        iconSize: 28,
+        onPressed: () => _pc.close(),
+      ),
+    );
   }
 }
