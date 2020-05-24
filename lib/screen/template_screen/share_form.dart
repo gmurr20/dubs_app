@@ -5,8 +5,6 @@ import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-PanelController _spc = PanelController();
-
 class ShareForm extends StatefulWidget {
   // add any state here
 
@@ -21,7 +19,6 @@ class _ShareFormState extends State<ShareForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SlidingUpPanel(
-          controller: _spc,
           backdropEnabled: true,
           backdropColor: DarwinWhite,
           backdropOpacity: .8,
