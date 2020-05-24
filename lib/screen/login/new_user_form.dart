@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class NewUserForm extends StatefulWidget {
   final UserRepository userRepository;
