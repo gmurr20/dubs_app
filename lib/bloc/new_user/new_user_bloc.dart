@@ -118,13 +118,13 @@ class NewUserBloc extends Bloc<NewUserEvent, NewUserState> {
         password1Error != null ||
         password2Error != null) {
       _logger.v("_validateAddUserEvent- email error '" +
-          emailError +
+          checkAndPrint(emailError) +
           "', username error '" +
-          usernameError +
+          checkAndPrint(usernameError) +
           "', p1 error '" +
-          password1Error +
+          checkAndPrint(password1Error) +
           "', p2 error '" +
-          password2Error +
+          checkAndPrint(password2Error) +
           "'");
       return InvalidInputState(
           emailError, usernameError, password1Error, password2Error);

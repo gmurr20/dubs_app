@@ -164,36 +164,20 @@ class _LoginFormState extends State<LoginForm> {
                 );
               });
             }
-            if (state is AuthenticationErrorState) {
-              _onWidgetDidBuild(() {
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${state.errorMessage}'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              });
-            }
-            return WillPopScope(
-              onWillPop: () {
-                _loginBloc.add(AppStartEvent());
-                return Future.value(false);
-              },
-              child: Form(
-                child: Padding(
-                  padding: const EdgeInsets.all(36.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _buildEmailForm(state),
-                        Container(
-                          child: state is LoginLoadingState
-                              ? CircularProgressIndicator()
-                              : null,
-                        )
-                      ],
-                    ),
+            return Form(
+              child: Padding(
+                padding: const EdgeInsets.all(36.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _buildEmailForm(state),
+                      Container(
+                        child: state is LoginLoadingState
+                            ? CircularProgressIndicator()
+                            : null,
+                      )
+                    ],
                   ),
                 ),
               ),

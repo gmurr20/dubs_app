@@ -125,6 +125,15 @@ class UserRepository {
     return;
   }
 
+  Future<void> logout() async {
+    _logger.v("logout- logging out");
+    if (!await isLoggedIn()) {
+      _logger.d("logout- user is not logged in");
+      return;
+    }
+    return await _auth.signOut();
+  }
+
   // Check that username is unique
   Future<bool> usernameCheck(String username) async {
     _logger.v("usernameCheck- Checking for username '" + username + "'");
