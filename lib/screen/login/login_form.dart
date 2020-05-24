@@ -137,18 +137,18 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return BlocListener(
-      bloc: _loginBloc,
-      listener: (
-        BuildContext context,
-        LoginState state,
-      ) {
-        if (state is LoggedInState) {
-          Navigator.of(context).pushNamed(homeRoute);
-        } else if (state is UnverifiedUserState) {
-          Navigator.of(context).pushNamed(verifyUserRoute);
-        }
-      },
-      child: BlocBuilder(
+        bloc: _loginBloc,
+        listener: (
+          BuildContext context,
+          LoginState state,
+        ) {
+          if (state is LoggedInState) {
+            Navigator.of(context).pushNamed(homeRoute);
+          } else if (state is UnverifiedUserState) {
+            Navigator.of(context).pushNamed(verifyUserRoute);
+          }
+        },
+        child: BlocBuilder(
           bloc: _loginBloc,
           builder: (
             BuildContext context,
@@ -174,24 +174,32 @@ class _LoginFormState extends State<LoginForm> {
                 );
               });
             }
-            return Form(
+            return WillPopScope(
+              onWillPop: () {
+                _loginBloc.add(AppStartEvent());
+                return Future.value(false);
+              },
+              child: Form(
                 child: Padding(
-                    padding: const EdgeInsets.all(36.0),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          _buildEmailForm(state),
-                          Container(
-                            child: state is LoginLoadingState
-                                ? CircularProgressIndicator()
-                                : null,
-                          )
-                        ],
-                      ),
-                    )));
-          }),
-    );
+                  padding: const EdgeInsets.all(36.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _buildEmailForm(state),
+                        Container(
+                          child: state is LoginLoadingState
+                              ? CircularProgressIndicator()
+                              : null,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ));
   }
 
   void _onWidgetDidBuild(Function callback) {

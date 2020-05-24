@@ -12,3 +12,10 @@ class User {
 
   bool get isVerified => _isVerified;
 }
+
+// Data for a user that can be changed
+class MutableUserData {
+  String username;
+
+  MutableUserData(this.username);
+}

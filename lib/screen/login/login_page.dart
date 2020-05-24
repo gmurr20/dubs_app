@@ -8,9 +8,6 @@ import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'new_user_form.dart';
 
-PanelController _pc = PanelController();
-
-// comment to test shit
 class LoginPage extends StatefulWidget {
   final UserRepository userRepository;
 
@@ -24,6 +21,19 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   UserRepository get _userRepository => widget.userRepository;
+  PanelController _pc = PanelController();
+
+  // Builds a cloes button
+  Widget buildCloseButton(BuildContext context) {
+    return IconButton(
+      alignment: Alignment.topLeft,
+      padding: spacer.top.lg + spacer.left.md,
+      icon: Icon(Icons.close),
+      color: Colors.white,
+      iconSize: 28,
+      onPressed: () => _pc.close(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: const Color(0xfff2f2f2),
         body: SlidingUpPanel(
             color: Color(0xFFF27D7D),
-            header: CloseButton(),
+            header: buildCloseButton(context),
             controller: _pc,
             backdropEnabled: true,
             backdropColor: DarwinWhite,
@@ -57,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                         boxShadow: [
                           BoxShadow(
                               color: const Color(0xcbf4f4f4),
-                              offset: Offset(-5, -5),
+                              // offset: Offset(-5, -5),
                               blurRadius: 15)
                         ],
                       ),
@@ -110,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                         boxShadow: [
                           BoxShadow(
                               color: const Color(0xcbf4f4f4),
-                              offset: Offset(-5, -5),
+                              // offset: Offset(-5, -5),
                               blurRadius: 15)
                         ],
                       ),
@@ -134,21 +144,5 @@ class _LoginPageState extends State<LoginPage> {
             )),
       ),
     ]);
-  }
-}
-
-class CloseButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      child: IconButton(
-        alignment: Alignment.topLeft,
-        padding: spacer.top.lg + spacer.left.md,
-        icon: Icon(Icons.close),
-        color: Colors.white,
-        iconSize: 28,
-        onPressed: () => _pc.close(),
-      ),
-    );
   }
 }
