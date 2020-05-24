@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class NewUserForm extends StatefulWidget {
   final UserRepository userRepository;
@@ -66,27 +67,44 @@ class _NewUserFormState extends State<NewUserForm> {
   }
 
   Widget _buildNewUserForm(NewUserState state) {
-    return Column(children: [
-      Container(
-        alignment: Alignment.topLeft,
-        padding: spacer.top.xxs,
-        margin: spacer.left.none,
-        child: Text(
-          'Create Account',
-          style: primaryH1Bold,
-          textAlign: TextAlign.left,
+    return Stack(children: [
+      Column(children: [
+        Container(
+          alignment: Alignment.topLeft,
+          padding: spacer.top.xl + spacer.bottom.xxs,
+          margin: spacer.left.none,
+          child: Text(
+            'Create Account',
+            style: primaryH1Bold,
+            textAlign: TextAlign.left,
+          ),
         ),
-      ),
-      Container(
-          margin: EdgeInsets.only(top: 25),
+        Container(
+            child: TextFormField(
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+                cursorColor: Colors.white,
+                decoration: InputDecoration(
+                    labelText: "email",
+                    labelStyle: primaryPRegular,
+                    fillColor: Colors.white,
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    helperText: ' ',
+                    errorText: _emailError(state)),
+                controller: _emailController)),
+        Container(
           child: TextFormField(
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.white),
               cursorColor: Colors.white,
               decoration: InputDecoration(
-                  labelText: "email",
+                  labelText: "password",
                   labelStyle: primaryPRegular,
                   fillColor: Colors.white,
                   enabledBorder: UnderlineInputBorder(
@@ -96,14 +114,16 @@ class _NewUserFormState extends State<NewUserForm> {
                     borderSide: BorderSide(color: Colors.white),
                   ),
                   helperText: ' ',
-                  errorText: _emailError(state)),
-              controller: _emailController)),
-      Container(
-        child: TextFormField(
-            style: TextStyle(fontSize: 14, color: Colors.white),
-            cursorColor: Colors.white,
-            decoration: InputDecoration(
-                labelText: "password",
+                  errorText: _password1Error(state)),
+              controller: _password1Controller,
+              obscureText: true),
+        ),
+        Container(
+          child: TextFormField(
+              style: TextStyle(fontSize: 14, color: Colors.white),
+              cursorColor: Colors.white,
+              decoration: InputDecoration(
+                labelText: "confirm password",
                 labelStyle: primaryPRegular,
                 fillColor: Colors.white,
                 enabledBorder: UnderlineInputBorder(
@@ -113,42 +133,24 @@ class _NewUserFormState extends State<NewUserForm> {
                   borderSide: BorderSide(color: Colors.white),
                 ),
                 helperText: ' ',
-                errorText: _password1Error(state)),
-            controller: _password1Controller,
-            obscureText: true),
-      ),
-      Container(
-        child: TextFormField(
-            style: TextStyle(fontSize: 14, color: Colors.white),
-            cursorColor: Colors.white,
-            decoration: InputDecoration(
-              labelText: "confirm password",
-              labelStyle: primaryPRegular,
-              fillColor: Colors.white,
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.white),
+                errorText: _password2Error(state),
               ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.white),
+              controller: _password2Controller,
+              obscureText: true),
+        ),
+        Container(
+            margin: EdgeInsets.only(top: 8, bottom: 16),
+            width: _currentWidth() * 0.3,
+            child: RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              helperText: ' ',
-              errorText: _password2Error(state),
-            ),
-            controller: _password2Controller,
-            obscureText: true),
-      ),
-      Container(
-          margin: EdgeInsets.only(top: 8, bottom: 16),
-          width: _currentWidth() * 0.3,
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            color: Colors.white,
-            onPressed:
-                (state is! LoadingState ? _onCreateUserButtonPressed : null),
-            child: Text('Sign up', style: TextStyle(color: Colors.black)),
-          )),
+              color: Colors.white,
+              onPressed:
+                  (state is! LoadingState ? _onCreateUserButtonPressed : null),
+              child: Text('Sign up', style: TextStyle(color: Colors.black)),
+            )),
+      ])
     ]);
   }
 
@@ -205,5 +207,20 @@ class _NewUserFormState extends State<NewUserForm> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callback();
     });
+  }
+}
+
+class MenuButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      child: IconButton(
+        padding: spacer.top.none,
+        icon: Icon(Icons.menu),
+        color: Colors.white,
+        iconSize: 28,
+        onPressed: () {},
+      ),
+    );
   }
 }
