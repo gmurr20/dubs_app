@@ -2,7 +2,6 @@ import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
-import 'package:dubs_app/screen/template_screen/template_screen.dart';
 import 'package:dubs_app/screen/verify_user/verify_user_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dubs_app/screen/template_screen/share_form.dart';
@@ -15,6 +14,7 @@ const String verifyUserRoute = "/verifyUser";
 class Router {
   static UserRepository userRepo = UserRepository();
   static final _logger = getLogger("Router");
+  static BuildContext context;
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case loginRoute:
@@ -34,14 +34,36 @@ class Router {
     }
   }
 
+  static Future<bool> _onWillPop() async {
+    _logger.v("_onWillPop- activated");
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('Do you want to logout'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('No'),
+              ),
+              FlatButton(
+                onPressed: () async {
+                  _logger.v("_onWillPop- pressed Yes. Logging out");
+                  await userRepo.logout();
+                  Navigator.of(context).pushNamed(loginRoute);
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   static Route<dynamic> _createNewPage(Widget newPage) {
-    return MaterialPageRoute(
-      builder: (_) => WillPopScope(
-          onWillPop: () async {
-            _logger.v("onWillPop- caught the back button action");
-            return true;
-          },
-          child: newPage),
-    );
+    return MaterialPageRoute(builder: (ctx) {
+      context = ctx;
+      return WillPopScope(onWillPop: _onWillPop, child: newPage);
+    });
   }
 }

@@ -45,9 +45,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     // contact the repo
     User user;
     try {
-      user = await _userRepo
-          .loginUser(event.email, event.password)
-          .timeout(const Duration(seconds: 5));
+      user = await _userRepo.loginUser(event.email, event.password);
     } catch (e) {
       _logger.w("mapLoginUserState- Failed to login to backend. Error: '" +
           e.toString() +
@@ -65,7 +63,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   InvalidInputState _validateUserEvent(LoginUserEvent event) {
-    _logger.v("_validateUserEvent- entering with email '" + event.email + "'");
+    _logger.v("_validateUserEvent- entering with email '" +
+        checkAndPrint(event.email) +
+        "'");
     String emailError;
     String passwordError;
     if (event.email == null || event.email.length == 0) {
@@ -80,9 +80,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     if (emailError != null || passwordError != null) {
       _logger.v("_validateUserEvent- email error '" +
-          emailError +
+          checkAndPrint(emailError) +
           "' and password error '" +
-          passwordError +
+          checkAndPrint(passwordError) +
           "'");
       return InvalidInputState(emailError, passwordError);
     }
