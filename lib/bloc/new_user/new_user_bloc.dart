@@ -40,12 +40,31 @@ class NewUserBloc extends Bloc<NewUserEvent, NewUserState> {
       return;
     }
 
+    // make sure username is unique
+    try {
+      if (!await _userRepo.usernameCheck(event.username)) {
+        _logger.d("mapAddUserEvent- Username is not unique");
+        yield InvalidInputState(null, "Username is already taken", null, null);
+        return;
+      }
+    } catch (e) {
+      yield LoginErrorState(e.toString());
+      return;
+    }
+
+    // sanity check that user is not already logged in
+    if (await _userRepo.isLoggedIn()) {
+      _logger
+          .e("mapAddUserEvent- User is logged in. Can't create another user");
+      // TODO- maybe sign them out and continue
+      yield LoggedInState(await _userRepo.getUser());
+      return;
+    }
+
     // contact the repo
     User newUser;
     try {
-      newUser = await _userRepo
-          .createUser(event.email, event.password1)
-          .timeout(const Duration(seconds: 5));
+      newUser = await _userRepo.createUser(event.email, event.password1);
     } catch (e) {
       _logger.e("mapAddUserEvent- Failed to create a user with error '" +
           e.toString() +
@@ -54,20 +73,34 @@ class NewUserBloc extends Bloc<NewUserEvent, NewUserState> {
       return;
     }
     _logger.d("mapAddUserEvent- user has been created");
-    yield LoggedInState(newUser);
 
-    // TODO: update the user information
+    // Add username
+    try {
+      await _userRepo.setUserData(MutableUserData(event.username));
+    } catch (e) {
+      _logger.e(
+          "mapAddUserEvent- Failed to update username '" + e.toString() + "'");
+      // TODO- delete user
+      yield LoginErrorState(e.toString());
+      return;
+    }
+    yield LoggedInState(newUser);
   }
 
   InvalidInputState _validateAddUserEvent(AddUserEvent event) {
     _logger.v("_validateAddUserEvent- entering");
     String emailError;
+    String usernameError;
     String password1Error;
     String password2Error;
     if (event.email == null || event.email.length == 0) {
       emailError = EMPTY_EMAIL;
     } else if (!TextValidator.isValidEmail(event.email)) {
       emailError = INVALID_EMAIL_FORMAT;
+    }
+
+    if (event.username == null || event.username.length == 0) {
+      usernameError = EMPTY_USERNAME;
     }
 
     if (event.password1 == null || event.password1.length == 0) {
@@ -81,16 +114,20 @@ class NewUserBloc extends Bloc<NewUserEvent, NewUserState> {
     }
 
     if (emailError != null ||
+        usernameError != null ||
         password1Error != null ||
         password2Error != null) {
       _logger.v("_validateAddUserEvent- email error '" +
           emailError +
+          "', username error '" +
+          usernameError +
           "', p1 error '" +
           password1Error +
           "', p2 error '" +
           password2Error +
           "'");
-      return InvalidInputState(emailError, password1Error, password2Error);
+      return InvalidInputState(
+          emailError, usernameError, password1Error, password2Error);
     }
     return null;
   }

@@ -22,6 +22,7 @@ class NewUserForm extends StatefulWidget {
 class _NewUserFormState extends State<NewUserForm> {
   NewUserBloc _newUserBloc;
   final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _password1Controller = TextEditingController();
   final _password2Controller = TextEditingController();
 
@@ -44,13 +45,22 @@ class _NewUserFormState extends State<NewUserForm> {
 
   // Event when create user button is pressed
   _onCreateUserButtonPressed() {
-    _newUserBloc.add(AddUserEvent(_emailController.text, "",
-        _password1Controller.text, _password2Controller.text));
+    _newUserBloc.add(AddUserEvent(
+        _emailController.text,
+        _usernameController.text,
+        _password1Controller.text,
+        _password2Controller.text));
   }
 
   String _emailError(NewUserState state) {
     if (state is InvalidInputState) {
       return state.emailError;
+    }
+  }
+
+  String _usernameError(NewUserState state) {
+    if (state is InvalidInputState) {
+      return state.usernameError;
     }
   }
 
@@ -80,25 +90,47 @@ class _NewUserFormState extends State<NewUserForm> {
           ),
         ),
         Container(
-            child: TextFormField(
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
-                cursorColor: Colors.white,
-                decoration: InputDecoration(
-                    labelText: "email",
-                    labelStyle: primaryPRegular,
-                    fillColor: Colors.white,
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    helperText: ' ',
-                    errorText: _emailError(state)),
-                controller: _emailController)),
+          child: TextFormField(
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+              cursorColor: Colors.white,
+              decoration: InputDecoration(
+                  labelText: "email",
+                  labelStyle: primaryPRegular,
+                  fillColor: Colors.white,
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  helperText: ' ',
+                  errorText: _emailError(state)),
+              controller: _emailController),
+        ),
+        Container(
+          child: TextFormField(
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+              cursorColor: Colors.white,
+              decoration: InputDecoration(
+                  labelText: "username",
+                  labelStyle: primaryPRegular,
+                  fillColor: Colors.white,
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  helperText: ' ',
+                  errorText: _usernameError(state)),
+              controller: _usernameController),
+        ),
         Container(
           child: TextFormField(
               style: TextStyle(fontSize: 14, color: Colors.white),

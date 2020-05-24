@@ -6,7 +6,6 @@ import 'package:dubs_app/screen/verify_user/verify_user_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dubs_app/screen/template_screen/share_form.dart';
 
-
 const String loginRoute = '/';
 const String testRoute = '/adfadsfasdfasdfsadfsad';
 const String homeRoute = '/home';
