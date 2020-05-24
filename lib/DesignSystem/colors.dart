@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 /// consists of solid colors, without transparency
 ///
 /// used for main solid colors
-const DarwinPrimaryDark = const Color(0xff161849);
+const DarwinPrimaryDark = const Color(0xff000000);
 const DarwinPrimary = const Color(0xff2026d2);
 const DarwinAccent = const Color(0xff62e1fc);
 const DarwinSecondary = const Color(0xfff34d77);
@@ -20,6 +20,7 @@ const DarwinDangerLight = const Color(0xfffce8e6);
 const DarwinWhite = const Color(0xffffffff);
 const DarwinGray = const Color(0xffc2c7cf);
 const DarwinBlack = const Color(0xff000000);
+const DarwinRed = const Color(0xffF27D7D);
 
 ///
 /// Alpha color system
