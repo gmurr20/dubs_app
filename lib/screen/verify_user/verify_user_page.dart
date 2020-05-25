@@ -5,6 +5,7 @@ import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/bloc/verify_user/verify_user_bloc.dart';
 import 'package:dubs_app/bloc/verify_user/verify_user_events.dart';
 import 'package:dubs_app/bloc/verify_user/verify_user_states.dart';
+import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,7 @@ class VerifyUserPage extends StatefulWidget {
 class _VerifyUserPageState extends State<VerifyUserPage> {
   VerifyUserBloc _verifyUserBloc;
   Timer _timer;
+  final _logger = getLogger("VerifyUserPage");
 
   UserRepository get _userRepository => widget.userRepository;
 
@@ -41,7 +43,15 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
   @override
   void dispose() {
     _verifyUserBloc.close();
+    if (_timer != null) {
+      _timer.cancel();
+    }
     super.dispose();
+  }
+
+  @override
+  void deactivate() {
+    _logger.v("deactivate- Entered");
     if (_timer != null) {
       _timer.cancel();
     }
@@ -60,7 +70,7 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
         VerifyUserState state,
       ) {
         if (state is VerifiedState) {
-          Navigator.of(context).pushNamed(homeRoute);
+          Navigator.of(context).pushNamed(addUsernameRoute);
         }
       },
       child: BlocBuilder(

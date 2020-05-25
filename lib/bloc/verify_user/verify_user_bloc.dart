@@ -46,13 +46,18 @@ class VerifyUserBloc extends Bloc<VerifyUserEvent, VerifyUserState> {
         yield CheckingVerifcationErrorState();
         return;
       }
-      if (user.isVerified) {
-        _logger.d("mapEventToState - user is verified");
-        yield VerifiedState();
-        return;
+      switch (user.authState) {
+        case UserAuthState.NOT_VERIFIED:
+          {
+            yield NotVerifiedState();
+            return;
+          }
+        case UserAuthState.FULLY_LOGGED_IN:
+        case UserAuthState.NO_USERNAME:
+          {
+            yield VerifiedState();
+          }
       }
-      _logger.d("mapEventToState - user is not verified");
-      yield NotVerifiedState();
     }
   }
 }
