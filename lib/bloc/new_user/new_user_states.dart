@@ -22,12 +22,10 @@ class LoadingState extends NewUserState {
 
 class InvalidInputState extends NewUserState {
   final String emailError;
-  final String usernameError;
   final String password1Error;
   final String password2Error;
 
-  InvalidInputState(this.emailError, this.usernameError, this.password1Error,
-      this.password2Error);
+  InvalidInputState(this.emailError, this.password1Error, this.password2Error);
 
   @override
   String toString() => 'InvalidInputState';

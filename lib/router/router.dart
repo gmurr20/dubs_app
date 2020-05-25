@@ -2,6 +2,7 @@ import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
+import 'package:dubs_app/screen/set_user_data/set_user_data_page.dart';
 import 'package:dubs_app/screen/verify_user/verify_user_page.dart';
 import 'package:flutter/material.dart';
 import 'package:dubs_app/screen/template_screen/share_form.dart';
@@ -10,6 +11,7 @@ const String loginRoute = '/';
 const String testRoute = '/adfadsfasdfasdfsadfsad';
 const String homeRoute = '/home';
 const String verifyUserRoute = "/verifyUser";
+const String addUsernameRoute = "/addUsername";
 
 class Router {
   static UserRepository userRepo = UserRepository();
@@ -23,6 +25,8 @@ class Router {
         return _createNewPage(VerifyUserPage(userRepository: userRepo));
       case homeRoute:
         return _createNewPage(HomePage());
+      case addUsernameRoute:
+        return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case testRoute:
         return _createNewPage(ShareForm());
       default:

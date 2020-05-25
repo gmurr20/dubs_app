@@ -1,6 +1,7 @@
 import 'package:dubs_app/bloc/login/login_bloc.dart';
 import 'package:dubs_app/bloc/login/login_events.dart';
 import 'package:dubs_app/bloc/login/login_states.dart';
+import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
@@ -143,9 +144,23 @@ class _LoginFormState extends State<LoginForm> {
           LoginState state,
         ) {
           if (state is LoggedInState) {
-            Navigator.of(context).pushNamed(homeRoute);
-          } else if (state is UnverifiedUserState) {
-            Navigator.of(context).pushNamed(verifyUserRoute);
+            switch (state.user.authState) {
+              case UserAuthState.FULLY_LOGGED_IN:
+                {
+                  Navigator.of(context).pushNamed(homeRoute);
+                  return;
+                }
+              case UserAuthState.NOT_VERIFIED:
+                {
+                  Navigator.of(context).pushNamed(verifyUserRoute);
+                  return;
+                }
+              case UserAuthState.NO_USERNAME:
+                {
+                  Navigator.of(context).pushNamed(addUsernameRoute);
+                  return;
+                }
+            }
           }
         },
         child: BlocBuilder(

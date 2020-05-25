@@ -53,13 +53,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield AuthenticationErrorState("Failed to login to backend");
       return;
     }
-    if (user.isVerified) {
-      _logger.d("mapLoginUserState- User is verified");
-      yield LoggedInState(user);
-    } else {
-      _logger.d("mapLoginUserState- User is unverified");
-      yield UnverifiedUserState(user);
-    }
+    yield LoggedInState(user);
   }
 
   InvalidInputState _validateUserEvent(LoginUserEvent event) {
@@ -104,14 +98,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         yield NotLoggedInState();
         return;
       }
-
-      if (user.isVerified) {
-        _logger.d("mapAppStartToState- logged in");
-        yield LoggedInState(user);
-      } else {
-        _logger.d("mapAppStartToState- unverified");
-        yield UnverifiedUserState(user);
-      }
+      yield LoggedInState(user);
     } else {
       _logger.d("mapAppStartToState- not logged in");
       yield NotLoggedInState();
