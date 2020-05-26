@@ -63,6 +63,10 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
     _verifyUserBloc.add(ResendVerificationEmailEvent());
   }
 
+  void _leavePage() {
+    _verifyUserBloc.add(LeavePageEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener(
@@ -73,6 +77,9 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
       ) {
         if (state is VerifiedState) {
           Navigator.of(context).pushNamed(addUsernameRoute);
+        }
+        if (state is LoggedOutState) {
+          Navigator.of(context).pushNamed(loginRoute);
         }
       },
       child: BlocBuilder(
@@ -87,7 +94,6 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
                     child: Column(children: [
                   // this close button will give the user an escape hatch
                   // incase they lost the original email address and need to create a different account
-                  // TODO: routing needs to be fixed to allow the user to see the login page as if they did not just create an account.
                   Container(
                     alignment: Alignment.topLeft,
                     child: IconButton(
@@ -96,14 +102,7 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
                       icon: Icon(Icons.close),
                       color: Colors.white,
                       iconSize: 28,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  LoginPage(userRepository: UserRepository())),
-                        );
-                      },
+                      onPressed: _leavePage,
                     ),
                   ),
                   Container(

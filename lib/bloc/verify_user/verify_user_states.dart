@@ -35,3 +35,8 @@ class ResendingErrorState extends VerifyUserState {
   @override
   String toString() => 'ResendingErrorState';
 }
+
+class LoggedOutState extends VerifyUserState {
+  @override
+  String toString() => 'LoggedOutState';
+}

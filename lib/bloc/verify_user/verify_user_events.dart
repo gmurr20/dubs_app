@@ -18,3 +18,9 @@ class ResendVerificationEmailEvent extends VerifyUserEvent {
   @override
   String toString() => 'ResendVerificationEmail';
 }
+
+// User wants to logout and leave the page
+class LeavePageEvent extends VerifyUserEvent {
+  @override
+  String toString() => 'LeavePageEvent';
+}
