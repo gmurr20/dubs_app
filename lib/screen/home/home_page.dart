@@ -6,8 +6,6 @@ import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:dubs_app/screen/template_screen/share_form.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-PanelController _spc = PanelController();
-
 class HomePage extends StatefulWidget {
   // add any state here
 
@@ -16,6 +14,8 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
+
+PanelController _spc = PanelController();
 
 Widget buildCloseButton(BuildContext context) {
   return IconButton(
