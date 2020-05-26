@@ -1,3 +1,4 @@
+import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/bloc/set_user_data/set_user_data_bloc.dart';
@@ -68,44 +69,58 @@ class _SetUserDataPageState extends State<SetUserDataPage> {
             SetUserDataState state,
           ) {
             return Scaffold(
+                backgroundColor: DarwinRed,
                 body: Container(
                     child: Column(children: [
-              Container(
-                alignment: Alignment.topLeft,
-                padding: spacer.top.xxs,
-                margin: spacer.left.none,
-                child: Text(
-                  'Set Username',
-                  style: TextStyle(fontSize: 20, color: Colors.black),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              Container(
-                child: TextFormField(
-                    style: TextStyle(fontSize: 14, color: Colors.black),
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                        labelText: "username",
-                        labelStyle: primaryPRegular,
-                        fillColor: Colors.black,
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        helperText: ' ',
-                        errorText: _usernameError(state)),
-                    controller: _usernameController),
-              ),
-              RaisedButton(
-                child: Text("Submit"),
-                onPressed: _setUserDataAction,
-                color: Colors.blue,
-                textColor: Colors.white,
-                splashColor: Colors.grey,
-              )
-            ])));
+                  Container(
+                    alignment: Alignment.topLeft,
+                    padding: spacer.top.lg,
+                    margin: spacer.left.md + spacer.bottom.xs,
+                    child: Text(
+                      'Create your username',
+                      style: primaryH1Bold,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    margin: spacer.left.md + spacer.bottom.sm + spacer.right.md,
+                    child: Text(
+                      'Make it simple! This username is how your friends will find and connect with you.',
+                      style: primaryPBold,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  Container(
+                    margin: spacer.left.md + spacer.right.md,
+                    child: TextFormField(
+                        style: TextStyle(fontSize: 14, color: Colors.white),
+                        cursorColor: Colors.white,
+                        decoration: InputDecoration(
+                            labelText: "Username",
+                            labelStyle: primaryPRegular,
+                            fillColor: Colors.white,
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            helperText: ' ',
+                            errorText: _usernameError(state)),
+                        controller: _usernameController),
+                  ),
+                  RaisedButton(
+                    child: Text("Submit"),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    onPressed: _setUserDataAction,
+                    color: Colors.white,
+                    textColor: Colors.black,
+                    splashColor: Colors.grey,
+                  )
+                ])));
           }),
     );
   }
