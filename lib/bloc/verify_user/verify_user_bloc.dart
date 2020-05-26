@@ -58,6 +58,13 @@ class VerifyUserBloc extends Bloc<VerifyUserEvent, VerifyUserState> {
             yield VerifiedState();
           }
       }
+    } else if (event is LeavePageEvent) {
+      try {
+        await _userRepo.logout();
+      } catch (e) {
+        _logger.e("Caught error when signing out '" + e.toString() + "'");
+      }
+      yield LoggedOutState();
     }
   }
 }

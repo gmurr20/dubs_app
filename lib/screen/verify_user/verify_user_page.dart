@@ -7,6 +7,7 @@ import 'package:dubs_app/bloc/verify_user/verify_user_bloc.dart';
 import 'package:dubs_app/bloc/verify_user/verify_user_events.dart';
 import 'package:dubs_app/bloc/verify_user/verify_user_states.dart';
 import 'package:dubs_app/logger/log_printer.dart';
+import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/router/router.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
@@ -16,8 +17,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VerifyUserPage extends StatefulWidget {
   final UserRepository userRepository;
+  final User user;
 
-  VerifyUserPage({Key key, @required this.userRepository}) : super(key: key);
+  VerifyUserPage({Key key, @required this.userRepository, @required this.user})
+      : super(key: key);
 
   @override
   State<VerifyUserPage> createState() => _VerifyUserPageState();
@@ -29,6 +32,8 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
   final _logger = getLogger("VerifyUserPage");
 
   UserRepository get _userRepository => widget.userRepository;
+
+  User get _user => widget.user;
 
   @override
   void initState() {
@@ -54,6 +59,12 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
   @override
   void deactivate() {
     _logger.v("deactivate- Entered");
+    _stopTimer();
+    super.deactivate();
+  }
+
+  void _stopTimer() {
+    _logger.v("stopTimer- Entered");
     if (_timer != null) {
       _timer.cancel();
     }
@@ -61,6 +72,10 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
 
   void _sendVerificationEmail() {
     _verifyUserBloc.add(ResendVerificationEmailEvent());
+  }
+
+  void _leavePage() {
+    _verifyUserBloc.add(LeavePageEvent());
   }
 
   @override
@@ -72,7 +87,12 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
         VerifyUserState state,
       ) {
         if (state is VerifiedState) {
+          _stopTimer();
           Navigator.of(context).pushNamed(addUsernameRoute);
+        }
+        if (state is LoggedOutState) {
+          _stopTimer();
+          Navigator.of(context).pushNamed(loginRoute);
         }
       },
       child: BlocBuilder(
@@ -87,7 +107,6 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
                     child: Column(children: [
                   // this close button will give the user an escape hatch
                   // incase they lost the original email address and need to create a different account
-                  // TODO: routing needs to be fixed to allow the user to see the login page as if they did not just create an account.
                   Container(
                     alignment: Alignment.topLeft,
                     child: IconButton(
@@ -96,14 +115,7 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
                       icon: Icon(Icons.close),
                       color: Colors.white,
                       iconSize: 28,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  LoginPage(userRepository: UserRepository())),
-                        );
-                      },
+                      onPressed: _leavePage,
                     ),
                   ),
                   Container(
@@ -120,7 +132,9 @@ class _VerifyUserPageState extends State<VerifyUserPage> {
                     alignment: Alignment.topLeft,
                     margin: spacer.left.md + spacer.bottom.sm + spacer.right.md,
                     child: Text(
-                      'We sent a verification email to <Email Address>. Please check your inbox and verify your account to continue. \n\nIf you do not recieve the verification email in a few minutes, please click the button below to re-send a verification email.',
+                      'We sent a verification email to ' +
+                          _user.email +
+                          '. Please check your inbox and verify your account to continue. \n\nIf you do not recieve the verification email in a few minutes, please click the button below to re-send a verification email.',
                       style: primaryPBold,
                       textAlign: TextAlign.left,
                     ),
