@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   UserRepository get _userRepository => widget.userRepository;
   PanelController _pc = PanelController();
 
-  // Builds a cloes button
+  // Builds a close button
   Widget buildCloseButton(BuildContext context) {
     return IconButton(
       alignment: Alignment.topLeft,
