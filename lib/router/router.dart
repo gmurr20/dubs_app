@@ -1,4 +1,5 @@
 import 'package:dubs_app/logger/log_printer.dart';
+import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
@@ -15,6 +16,7 @@ const String addUsernameRoute = "/addUsername";
 
 class Router {
   static UserRepository userRepo = UserRepository();
+  static User currentUser;
   static final _logger = getLogger("Router");
   static BuildContext context;
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -22,7 +24,8 @@ class Router {
       case loginRoute:
         return _createNewPage(LoginPage(userRepository: userRepo));
       case verifyUserRoute:
-        return _createNewPage(VerifyUserPage(userRepository: userRepo));
+        return _createNewPage(
+            VerifyUserPage(userRepository: userRepo, user: currentUser));
       case homeRoute:
         return _createNewPage(HomePage());
       case addUsernameRoute:
@@ -36,6 +39,11 @@ class Router {
                       child: Text('No route defined for ${settings.name}')),
                 ));
     }
+  }
+
+  // sets the user
+  static setUser(User user_) {
+    currentUser = user_;
   }
 
   static Future<bool> _onWillPop() async {

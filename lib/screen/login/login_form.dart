@@ -144,6 +144,7 @@ class _LoginFormState extends State<LoginForm> {
           LoginState state,
         ) {
           if (state is LoggedInState) {
+            Router.setUser(state.user);
             switch (state.user.authState) {
               case UserAuthState.FULLY_LOGGED_IN:
                 {

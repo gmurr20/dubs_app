@@ -43,7 +43,8 @@ class UserRepository {
           e.toString() +
           "'");
     }
-    return User(result.user.uid, null, null, UserAuthState.NOT_VERIFIED);
+    return User(result.user.uid, result.user.email, null, null,
+        UserAuthState.NOT_VERIFIED);
   }
 
   // Logging in a user with an email and password
@@ -173,7 +174,8 @@ class UserRepository {
     _logger.v("_userFromFirebase- entering with uid '" + fbUser.uid + "'");
     if (!fbUser.isEmailVerified) {
       _logger.v("_userFromFirebase- email is not verified");
-      return User(fbUser.uid, null, null, UserAuthState.NOT_VERIFIED);
+      return User(
+          fbUser.uid, fbUser.email, null, null, UserAuthState.NOT_VERIFIED);
     }
     List<DocumentSnapshot> documentQuery;
     try {
@@ -191,10 +193,12 @@ class UserRepository {
 
     if (documentQuery.isEmpty) {
       _logger.v("_userFromFirebase- no username");
-      return User(fbUser.uid, null, null, UserAuthState.NO_USERNAME);
+      return User(
+          fbUser.uid, fbUser.email, null, null, UserAuthState.NO_USERNAME);
     }
     _logger.v("_userFromFirebase- found username");
     String username = documentQuery[0].data["username"];
-    return User(fbUser.uid, username, null, UserAuthState.FULLY_LOGGED_IN);
+    return User(fbUser.uid, fbUser.email, username, null,
+        UserAuthState.FULLY_LOGGED_IN);
   }
 }
