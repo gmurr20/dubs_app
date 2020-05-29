@@ -163,8 +163,8 @@ class _NewUserFormState extends State<NewUserForm> {
         NewUserState state,
       ) {
         if (state is LoggedInState) {
-          Router.setUser(state.user);
-          Navigator.of(context).pushNamed(verifyUserRoute);
+          Navigator.of(context)
+              .pushNamed(verifyUserRoute, arguments: state.user);
         }
       },
       child: BlocBuilder(

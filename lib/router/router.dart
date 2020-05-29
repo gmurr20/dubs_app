@@ -25,7 +25,7 @@ class Router {
         return _createNewPage(LoginPage(userRepository: userRepo));
       case verifyUserRoute:
         return _createNewPage(
-            VerifyUserPage(userRepository: userRepo, user: currentUser));
+            VerifyUserPage(userRepository: userRepo, user: settings.arguments));
       case homeRoute:
         return _createNewPage(HomePage());
       case addUsernameRoute:
@@ -39,11 +39,6 @@ class Router {
                       child: Text('No route defined for ${settings.name}')),
                 ));
     }
-  }
-
-  // sets the user
-  static setUser(User user_) {
-    currentUser = user_;
   }
 
   static Future<bool> _onWillPop() async {
