@@ -1,5 +1,6 @@
 import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/model/user.dart';
+import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
@@ -264,7 +265,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Text('Add Friends', style: primaryPBold),
                             color: DarwinRed,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(addFriendsRoute);
+                            },
                           ),
                         ),
                       ]),

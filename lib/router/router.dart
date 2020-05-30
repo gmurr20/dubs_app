@@ -1,6 +1,7 @@
 import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/screen/add_friend/add_friend_page.dart';
 import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/set_user_data/set_user_data_page.dart';
@@ -13,6 +14,7 @@ const String testRoute = '/adfadsfasdfasdfsadfsad';
 const String homeRoute = '/home';
 const String verifyUserRoute = "/verifyUser";
 const String addUsernameRoute = "/addUsername";
+const String addFriendsRoute = "/addFriends";
 
 class Router {
   static UserRepository userRepo = UserRepository();
@@ -30,6 +32,8 @@ class Router {
       case homeRoute:
         final User endUser = settings.arguments;
         return _createNewPage(HomePage(user: endUser));
+      case addFriendsRoute:
+        return _createNewPage(AddFriendPage(userRepository: userRepo));
       case addUsernameRoute:
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case testRoute:
