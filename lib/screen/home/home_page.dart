@@ -1,15 +1,16 @@
 import 'package:dubs_app/DesignSystem/colors.dart';
+import 'package:dubs_app/model/user.dart';
+import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
-import 'package:dubs_app/screen/template_screen/share_form.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HomePage extends StatefulWidget {
-  // add any state here
+  final User user;
 
-  HomePage({Key key}) : super(key: key);
+  HomePage({Key key, @required this.user}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -28,6 +29,8 @@ Widget buildCloseButton(BuildContext context) {
 }
 
 class _HomePageState extends State<HomePage> {
+  User get _currentUser => widget.user;
+
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -238,7 +241,7 @@ class _HomePageState extends State<HomePage> {
                               padding: spacer.top.xxs,
                               margin: spacer.left.none,
                               child: Text(
-                                "Welcome, <Brian>",
+                                "Welcome, ${_currentUser.username}",
                                 style: darkprimaryH1Bold,
                               ),
                             ),
@@ -262,7 +265,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Text('Add Friends', style: primaryPBold),
                             color: DarwinRed,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(addFriendsRoute);
+                            },
                           ),
                         ),
                       ]),

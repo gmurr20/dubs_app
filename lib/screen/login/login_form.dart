@@ -144,21 +144,23 @@ class _LoginFormState extends State<LoginForm> {
           LoginState state,
         ) {
           if (state is LoggedInState) {
-            Router.setUser(state.user);
             switch (state.user.authState) {
               case UserAuthState.FULLY_LOGGED_IN:
                 {
-                  Navigator.of(context).pushNamed(homeRoute);
+                  Navigator.of(context)
+                      .pushNamed(homeRoute, arguments: state.user);
                   return;
                 }
               case UserAuthState.NOT_VERIFIED:
                 {
-                  Navigator.of(context).pushNamed(verifyUserRoute);
+                  Navigator.of(context)
+                      .pushNamed(verifyUserRoute, arguments: state.user);
                   return;
                 }
               case UserAuthState.NO_USERNAME:
                 {
-                  Navigator.of(context).pushNamed(addUsernameRoute);
+                  Navigator.of(context)
+                      .pushNamed(addUsernameRoute, arguments: state.user);
                   return;
                 }
             }

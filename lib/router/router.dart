@@ -1,6 +1,7 @@
 import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/screen/add_friend/add_friend_page.dart';
 import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/set_user_data/set_user_data_page.dart';
@@ -13,6 +14,7 @@ const String testRoute = '/adfadsfasdfasdfsadfsad';
 const String homeRoute = '/home';
 const String verifyUserRoute = "/verifyUser";
 const String addUsernameRoute = "/addUsername";
+const String addFriendsRoute = "/addFriends";
 
 class Router {
   static UserRepository userRepo = UserRepository();
@@ -24,10 +26,14 @@ class Router {
       case loginRoute:
         return _createNewPage(LoginPage(userRepository: userRepo));
       case verifyUserRoute:
+        final User endUser = settings.arguments;
         return _createNewPage(
-            VerifyUserPage(userRepository: userRepo, user: currentUser));
+            VerifyUserPage(userRepository: userRepo, user: endUser));
       case homeRoute:
-        return _createNewPage(HomePage());
+        final User endUser = settings.arguments;
+        return _createNewPage(HomePage(user: endUser));
+      case addFriendsRoute:
+        return _createNewPage(AddFriendPage(userRepository: userRepo));
       case addUsernameRoute:
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case testRoute:
@@ -39,11 +45,6 @@ class Router {
                       child: Text('No route defined for ${settings.name}')),
                 ));
     }
-  }
-
-  // sets the user
-  static setUser(User user_) {
-    currentUser = user_;
   }
 
   static Future<bool> _onWillPop() async {
