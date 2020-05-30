@@ -107,7 +107,7 @@ class UserRepository {
   }
 
   // sets the user specific information
-  Future<void> setUserData(MutableUserData userInfo) async {
+  Future<User> setUserData(MutableUserData userInfo) async {
     _logger.v("setUserData- Entered");
     if (userInfo.username == null) {
       _logger.e("setUserData- No username");
@@ -146,6 +146,8 @@ class UserRepository {
           "'");
       return Future.error(errorMessage);
     }
+
+    return await getUser();
   }
 
   Future<void> logout() async {
@@ -196,8 +198,8 @@ class UserRepository {
       return User(
           fbUser.uid, fbUser.email, null, null, UserAuthState.NO_USERNAME);
     }
-    _logger.v("_userFromFirebase- found username");
-    String username = documentQuery[0].data["username"];
+    String username = documentQuery[0].data["displayName"];
+    _logger.v("_userFromFirebase- found username ${username}");
     return User(fbUser.uid, fbUser.email, username, null,
         UserAuthState.FULLY_LOGGED_IN);
   }

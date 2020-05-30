@@ -1,6 +1,7 @@
 import 'package:dubs_app/bloc/set_user_data/set_user_data_events.dart';
 import 'package:dubs_app/bloc/set_user_data/set_user_data_states.dart';
 import 'package:dubs_app/logger/log_printer.dart';
+import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
@@ -29,14 +30,15 @@ class SetUserDataBloc extends Bloc<SetUserDataEvent, SetUserDataState> {
       }
 
       _logger.v("mapEventToState- Attempting to set user data");
+      User currentUser;
       try {
-        await _userRepo.setUserData(event.userData);
+        currentUser = await _userRepo.setUserData(event.userData);
       } catch (e) {
         _logger.w("mapEventToState- Failed to set user data");
         yield ErrorState(e.toString());
         return;
       }
-      yield DataSetState();
+      yield DataSetState(currentUser);
     }
   }
 }

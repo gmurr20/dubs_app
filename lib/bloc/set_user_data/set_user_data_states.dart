@@ -1,3 +1,4 @@
+import 'package:dubs_app/model/user.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -32,6 +33,10 @@ class NotLoggedInState extends SetUserDataState {
 }
 
 class DataSetState extends SetUserDataState {
+  User user;
+
+  DataSetState(this.user);
+
   @override
   String toString() => 'DataSetState';
 }

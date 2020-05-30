@@ -56,7 +56,7 @@ class _SetUserDataPageState extends State<SetUserDataPage> {
         SetUserDataState state,
       ) {
         if (state is DataSetState) {
-          Navigator.of(context).pushNamed(homeRoute);
+          Navigator.of(context).pushNamed(homeRoute, arguments: state.user);
         }
         if (state is NotLoggedInState) {
           Navigator.of(context).pushNamed(loginRoute);

@@ -24,10 +24,12 @@ class Router {
       case loginRoute:
         return _createNewPage(LoginPage(userRepository: userRepo));
       case verifyUserRoute:
+        final User endUser = settings.arguments;
         return _createNewPage(
-            VerifyUserPage(userRepository: userRepo, user: settings.arguments));
+            VerifyUserPage(userRepository: userRepo, user: endUser));
       case homeRoute:
-        return _createNewPage(HomePage());
+        final User endUser = settings.arguments;
+        return _createNewPage(HomePage(user: endUser));
       case addUsernameRoute:
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case testRoute:
