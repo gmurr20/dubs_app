@@ -20,6 +20,9 @@ class ResultsState extends AddFriendState {
 
 // searching for username
 class SearchingState extends AddFriendState {
+  List<UserSearchResult> searchResults;
+
+  SearchingState(this.searchResults);
   @override
   String toString() => 'SearchingState';
 }
