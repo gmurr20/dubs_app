@@ -5,9 +5,9 @@ import 'package:dubs_app/screen/add_friend/add_friend_page.dart';
 import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/set_user_data/set_user_data_page.dart';
+import 'package:dubs_app/screen/template_screen/template_screen.dart';
 import 'package:dubs_app/screen/verify_user/verify_user_page.dart';
 import 'package:flutter/material.dart';
-import 'package:dubs_app/screen/template_screen/share_form.dart';
 
 const String loginRoute = '/';
 const String testRoute = '/adfadsfasdfasdfsadfsad';
@@ -37,7 +37,7 @@ class Router {
       case addUsernameRoute:
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case testRoute:
-        return _createNewPage(ShareForm());
+        return _createNewPage(MyNewWidget());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
