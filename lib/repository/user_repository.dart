@@ -121,11 +121,19 @@ class UserRepository {
     }
 
     _logger.v("setUserData- Setting user data");
+    String usernameId = userInfo.username.toLowerCase();
 
+    // TODO- hack for full text search and pagination
+    _logger.v("setUserData- Generating username tokens");
+    List<String> usernameSearchTokens = List<String>();
+    String currentSearchToken = "";
+    for (int i = 0; i < usernameId.length; i++) {
+      currentSearchToken += usernameId[i];
+      usernameSearchTokens.add(currentSearchToken);
+    }
     bool usernameTaken = false;
     try {
       await _store.runTransaction((transaction) async {
-        String usernameId = userInfo.username.toLowerCase();
         DocumentSnapshot username = await transaction
             .get(_store.collection("usernames").document(usernameId));
         if (username.exists) {
@@ -133,9 +141,12 @@ class UserRepository {
           usernameTaken = true;
           return Future.error("Username is taken");
         }
-        await transaction.set(
-            _store.collection("usernames").document(usernameId),
-            {"userid": user.uid, "displayName": userInfo.username});
+        await transaction
+            .set(_store.collection("usernames").document(usernameId), {
+          "userid": user.uid,
+          "displayName": userInfo.username,
+          "searchTokens": usernameSearchTokens
+        });
         return transaction.set(_store.collection("users").document(user.uid),
             {"username": usernameId});
       });
@@ -153,7 +164,8 @@ class UserRepository {
     return await getUser();
   }
 
-  Future<List<UserSearchResult>> searchForFriends(String searchString) async {
+  Future<List<UserSearchResult>> searchForFriends(
+      String searchString, int limit, String startAfter) async {
     _logger.v("searchForFriends- Entered");
     final user = await _auth.currentUser();
     if (user == null) {
@@ -161,21 +173,26 @@ class UserRepository {
       return Future.error("User is not signed in");
     }
 
-    // TODO: Use Algolia for real searching capabilities
-    // this is just a hack
     // 1) search for the username in the database
-    List<String> searchStart = List<String>();
-    searchStart.add(searchString);
-    List<String> searchEnd = List<String>();
-    searchEnd.add(searchString + "\uf8ff");
-    QuerySnapshot usernameSearchQ;
-    try {
-      usernameSearchQ = await _store
+    String normalizedSearch = searchString.toLowerCase();
+    Query currQ;
+    if (startAfter != null) {
+      currQ = _store
           .collection("usernames")
           .orderBy(FieldPath.documentId)
-          .startAt(searchStart)
-          .endAt(searchEnd)
-          .getDocuments();
+          .startAfter([startAfter.toLowerCase()])
+          .where("searchTokens", arrayContains: normalizedSearch)
+          .limit(limit);
+    } else {
+      currQ = _store
+          .collection("usernames")
+          .orderBy(FieldPath.documentId)
+          .where("searchTokens", arrayContains: normalizedSearch)
+          .limit(limit);
+    }
+    QuerySnapshot usernameSearchQ;
+    try {
+      usernameSearchQ = await currQ.getDocuments();
     } catch (e) {
       _logger.e(
           "searchForFriends- caught error when searching usernames ${e.toString()}");
@@ -186,7 +203,7 @@ class UserRepository {
     List<UserSearchResult> searchResults = List<UserSearchResult>();
     if (usernameSearchQ.documents.isEmpty) {
       _logger.v(
-          "searchForFriends- username search returned no results with search ${searchString}");
+          "searchForFriends- username search returned no results with search ${normalizedSearch}");
       return searchResults;
     }
 
