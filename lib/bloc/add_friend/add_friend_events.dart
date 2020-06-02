@@ -25,6 +25,15 @@ class PaginateSearchEvent extends AddFriendEvent {
   String toString() => 'PaginateSearchEvent';
 }
 
+class SendFriendRequestEvent extends AddFriendEvent {
+  String friendId;
+
+  SendFriendRequestEvent(this.friendId);
+
+  @override
+  String toString() => 'SendFriendRequestEvent';
+}
+
 class AcceptFriendRequestEvent extends AddFriendEvent {
   String userid;
 

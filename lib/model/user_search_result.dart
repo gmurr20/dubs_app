@@ -23,6 +23,28 @@ class UserSearchResult {
     return UserRelationshipState.NOT_FRIENDS;
   }
 
+  static String friendRequestEnumToString(UserRelationshipState userEnum) {
+    switch (userEnum) {
+      case UserRelationshipState.INCOMING_INVITE:
+        {
+          return "INCOMING_INVITE";
+        }
+      case UserRelationshipState.OUTSTANDING_INVITE:
+        {
+          return "OUTSTANDING_INVITE";
+        }
+      case UserRelationshipState.NOT_FRIENDS:
+        {
+          return "NOT_FRIENDS";
+        }
+      case UserRelationshipState.FRIENDS:
+        {
+          return "FRIENDS";
+        }
+    }
+    return "";
+  }
+
   String userId;
 
   String username;
