@@ -164,6 +164,7 @@ class UserRepository {
     return await getUser();
   }
 
+  // Search for friends given a limit to the response back and a startAfter username for pagination
   Future<List<UserSearchResult>> searchForFriends(
       String searchString, int limit, String startAfter) async {
     _logger.v("searchForFriends- Entered");
@@ -175,6 +176,8 @@ class UserRepository {
 
     // 1) search for the username in the database
     String normalizedSearch = searchString.toLowerCase();
+    int searchLimit =
+        limit + 1; // just in case the username search grabs the current user
     Query currQ;
     if (startAfter != null) {
       currQ = _store
@@ -182,13 +185,13 @@ class UserRepository {
           .orderBy(FieldPath.documentId)
           .startAfter([startAfter.toLowerCase()])
           .where("searchTokens", arrayContains: normalizedSearch)
-          .limit(limit);
+          .limit(searchLimit);
     } else {
       currQ = _store
           .collection("usernames")
           .orderBy(FieldPath.documentId)
           .where("searchTokens", arrayContains: normalizedSearch)
-          .limit(limit);
+          .limit(searchLimit);
     }
     QuerySnapshot usernameSearchQ;
     try {
@@ -249,11 +252,16 @@ class UserRepository {
       userIdToRelationship[friendsQ.documents[i].documentID] =
           UserRelationshipState.FRIENDS;
     }
-    for (int i = 0; i < usernameSearchQ.documents.length; i++) {
-      String currSearchId = usernameSearchQ.documents[i].documentID;
+    for (int i = 0;
+        i < usernameSearchQ.documents.length && searchResults.length < limit;
+        i++) {
+      String currSearchId = usernameSearchQ.documents[i].data["userid"];
       UserRelationshipState relationship;
       if (userIdToRelationship.containsKey(currSearchId)) {
         relationship = userIdToRelationship[currSearchId];
+      } else if (currSearchId == user.uid) {
+        _logger.v("searchForFriends- current user so skip");
+        continue;
       } else {
         relationship = UserRelationshipState.NOT_FRIENDS;
       }
@@ -262,6 +270,64 @@ class UserRepository {
     }
     // return a list of users
     return searchResults;
+  }
+
+  Future<void> sendFriendRequest(String friendsId) async {
+    _logger.v("sendFriendRequest- Entered");
+    final user = await _auth.currentUser();
+    if (user == null) {
+      _logger.e("sendFriendRequest- User is not signed in");
+      return Future.error("User is not signed in");
+    }
+
+    if (user.uid == friendsId) {
+      _logger.e("sendFriendRequest- Cannot send a friend request to yourself");
+      return Future.error("Cannot send a friend request to yourself");
+    }
+
+    try {
+      await _store.runTransaction((transaction) async {
+        // grab user document
+        DocumentSnapshot userSnapshot = await transaction
+            .get(_store.collection("users").document(user.uid));
+        // sanity check
+        if (!userSnapshot.exists) {
+          _logger.e("sendFriendRequest- user does not exist! WTF happened");
+          return Future.error("User does not exist. Contact support");
+        }
+        // Google SDK requires every read to have write so just put it back
+        await transaction.set(
+            _store.collection("users").document(user.uid), userSnapshot.data);
+        // update our mapping
+        await transaction.set(
+            _store
+                .collection("users")
+                .document(user.uid)
+                .collection("friend_requests")
+                .document(friendsId),
+            {
+              "status": UserSearchResult.friendRequestEnumToString(
+                  UserRelationshipState.OUTSTANDING_INVITE)
+            });
+        // update the other user's mapping
+        return await transaction.set(
+            _store
+                .collection("users")
+                .document(friendsId)
+                .collection("friend_requests")
+                .document(user.uid),
+            {
+              "status": UserSearchResult.friendRequestEnumToString(
+                  UserRelationshipState.INCOMING_INVITE)
+            });
+      });
+    } catch (e) {
+      _logger.e("sendFriendRequest- Caught error when running transaction '" +
+          e.toString() +
+          "'");
+      return Future.error(e.toString());
+    }
+    return;
   }
 
   Future<void> logout() async {

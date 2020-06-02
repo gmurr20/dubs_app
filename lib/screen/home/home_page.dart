@@ -266,7 +266,8 @@ class _HomePageState extends State<HomePage> {
                             child: Text('Add Friends', style: primaryPBold),
                             color: DarwinRed,
                             onPressed: () {
-                              Navigator.of(context).pushNamed(addFriendsRoute);
+                              Navigator.of(context).pushNamed(addFriendsRoute,
+                                  arguments: _currentUser);
                             },
                           ),
                         ),

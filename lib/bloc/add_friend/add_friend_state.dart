@@ -33,9 +33,10 @@ class StartingState extends AddFriendState {
 }
 
 class ErrorState extends AddFriendState {
+  List<UserSearchResult> searchResults;
   String message;
 
-  ErrorState(this.message);
+  ErrorState(this.searchResults, this.message);
 
   @override
   String toString() => 'ErrorState';
