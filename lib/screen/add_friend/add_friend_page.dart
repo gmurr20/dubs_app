@@ -1,21 +1,26 @@
 import 'dart:async';
 
 import 'package:dubs_app/DesignSystem/colors.dart';
+import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/bloc/add_friend/add_friend_bloc.dart';
 import 'package:dubs_app/bloc/add_friend/add_friend_events.dart';
 import 'package:dubs_app/bloc/add_friend/add_friend_state.dart';
 import 'package:dubs_app/logger/log_printer.dart';
+import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/model/user_search_result.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddFriendPage extends StatefulWidget {
   final UserRepository userRepository;
+  final User user;
 
-  AddFriendPage({Key key, @required this.userRepository}) : super(key: key);
+  AddFriendPage({Key key, @required this.userRepository, @required this.user})
+      : super(key: key);
 
   @override
   State<AddFriendPage> createState() => _AddFriendPageState();
@@ -29,6 +34,8 @@ class _AddFriendPageState extends State<AddFriendPage> {
   final _searchController = TextEditingController();
 
   UserRepository get _userRepository => widget.userRepository;
+
+  User get _currentuser => widget.user;
 
   @override
   void initState() {
@@ -46,6 +53,11 @@ class _AddFriendPageState extends State<AddFriendPage> {
     _bloc.add(SearchEvent(searchRes));
   }
 
+  void _leavePage() {
+    _logger.v("_leavePage- entering");
+    Navigator.of(context).pushNamed(homeRoute, arguments: _currentuser);
+  }
+
   bool _onScroll(ScrollNotification scrollInfo) {
     _logger.v("onScroll- entered with ${_searchController.text}");
     if (_pageState is ResultsState &&
@@ -55,6 +67,11 @@ class _AddFriendPageState extends State<AddFriendPage> {
       return true;
     }
     return false;
+  }
+
+  void _sendFriendRequest(String friendId) {
+    _logger.v("_sendFriendRequest- entered with friend id ${friendId}");
+    _bloc.add(SendFriendRequestEvent(friendId));
   }
 
   Widget _buildSearchResults(AddFriendState state) {
@@ -100,13 +117,18 @@ class _AddFriendPageState extends State<AddFriendPage> {
                     RaisedButton(onPressed: null, child: Text("Accept"));
                 break;
               case UserRelationshipState.OUTSTANDING_INVITE:
-                trailingWidget = Row(children: <Widget>[
-                  Text("Request sent"),
-                  Icon(Icons.check)
-                ]);
+                trailingWidget = Container(
+                    width: 110,
+                    child: Row(children: <Widget>[
+                      Text("Request sent"),
+                      Icon(Icons.check, color: Colors.green)
+                    ]));
                 break;
               case UserRelationshipState.NOT_FRIENDS:
-                trailingWidget = Icon(Icons.person_add);
+                trailingWidget = IconButton(
+                    icon: Icon(Icons.person_add),
+                    onPressed: () =>
+                        _sendFriendRequest(searchResults[index].userId));
                 break;
             }
             return ListTile(
@@ -137,6 +159,18 @@ class _AddFriendPageState extends State<AddFriendPage> {
           ) {
             return Scaffold(
                 body: Column(children: [
+              // this close button will give the user an escape hatch
+              Container(
+                alignment: Alignment.topLeft,
+                child: IconButton(
+                  alignment: Alignment.topLeft,
+                  padding: spacer.top.lg + spacer.left.md,
+                  icon: Icon(Icons.close),
+                  color: Colors.black,
+                  iconSize: 28,
+                  onPressed: _leavePage,
+                ),
+              ),
               TextFormField(
                   style: TextStyle(fontSize: 14, color: Colors.black),
                   cursorColor: Colors.white,

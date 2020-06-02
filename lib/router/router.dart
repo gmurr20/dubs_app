@@ -33,7 +33,9 @@ class Router {
         final User endUser = settings.arguments;
         return _createNewPage(HomePage(user: endUser));
       case addFriendsRoute:
-        return _createNewPage(AddFriendPage(userRepository: userRepo));
+        final User endUser = settings.arguments;
+        return _createNewPage(
+            AddFriendPage(userRepository: userRepo, user: endUser));
       case addUsernameRoute:
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case testRoute:

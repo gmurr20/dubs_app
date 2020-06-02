@@ -33,6 +33,8 @@ class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
       return;
     } else if (event is PaginateSearchEvent) {
       yield* _handlePaginateEvent(event);
+    } else if (event is SendFriendRequestEvent) {
+      yield* _handleSendFriendRequestEvent(event);
     }
   }
 
@@ -47,7 +49,7 @@ class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
     } catch (e) {
       _logger.i(
           "_handleSearchEvent- error while searching for username: ${e.toString()}");
-      yield ErrorState(e.toString());
+      yield ErrorState(searchResults, e.toString());
       return;
     }
 
@@ -69,13 +71,39 @@ class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
     } catch (e) {
       _logger.i(
           "_handleSearchEvent- error while searching for username: ${e.toString()}");
-      yield ErrorState(e.toString());
+      yield ErrorState(searchResults, e.toString());
       return;
     }
 
     _updateLastSearchName();
 
     _logger.v("_handleSearchEvent- found ${searchResults.length} results");
+    yield ResultsState(searchResults);
+  }
+
+  Stream<AddFriendState> _handleSendFriendRequestEvent(
+      SendFriendRequestEvent event) async* {
+    _logger
+        .v("_handleSendFriendRequestEvent- friending user ${event.friendId}");
+    yield SearchingState(searchResults);
+    try {
+      await _userRepo.sendFriendRequest(event.friendId);
+    } catch (e) {
+      _logger.w(
+          "_handleSendFriendRequestEvent- error while sending friend request ${e.toString()}");
+      yield ErrorState(searchResults, e.toString());
+      return;
+    }
+
+    for (int i = 0; i < searchResults.length; i++) {
+      if (searchResults[i].userId == event.friendId) {
+        _logger.v(
+            "_handleSendFriendRequestEvent- found friend and changing status");
+        searchResults[i].state = UserRelationshipState.OUTSTANDING_INVITE;
+        break;
+      }
+    }
+    _logger.v("_handleSendFriendRequestEvent- done");
     yield ResultsState(searchResults);
   }
 
