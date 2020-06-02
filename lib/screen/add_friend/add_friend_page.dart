@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
-import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:dubs_app/bloc/add_friend/add_friend_bloc.dart';
 import 'package:dubs_app/bloc/add_friend/add_friend_events.dart';
 import 'package:dubs_app/bloc/add_friend/add_friend_state.dart';
@@ -56,35 +55,16 @@ class _AddFriendPageState extends State<AddFriendPage> {
           height: 50, child: Text("No users found", style: darkprimaryPBold));
     }
 
-    return Column(children: [
-      Container(
-        alignment: Alignment.topLeft,
-        padding: spacer.top.sm + spacer.bottom.xs,
-        margin: spacer.left.xs + spacer.right.xs,
-        child: Text(
-          'Search results',
-          style: primaryH1Bold,
-          textAlign: TextAlign.left,
-        ),
-      ),
-      Container(
-        margin: spacer.left.xs + spacer.right.xs,
-        child: ListView.builder(
-          itemCount: searchRes.searchResults.length,
-          padding: spacer.all.none,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(
-                searchRes.searchResults[index].username,
-                style: primaryPBold,
-              ),
-            );
-          },
-        ),
-      ),
-    ]);
+    return ListView.builder(
+      itemCount: searchRes.searchResults.length,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(searchRes.searchResults[index].username),
+        );
+      },
+    );
   }
 
   @override
@@ -104,46 +84,22 @@ class _AddFriendPageState extends State<AddFriendPage> {
             return Scaffold(
                 backgroundColor: DarwinRed,
                 body: Column(children: [
-                  Container(
-                    alignment: Alignment.topLeft,
-                    margin: spacer.top.xxl + spacer.left.xxs,
-                    child: IconButton(
-                      alignment: Alignment.topLeft,
-                      icon: Icon(Icons.arrow_back_ios),
-                      color: Colors.white,
-                      iconSize: 20,
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: spacer.top.xs + spacer.bottom.xs,
-                    margin: spacer.left.xs + spacer.right.xs,
-                    child: Text(
-                      'Add friends',
-                      style: primaryH1Bold,
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  Container(
-                    margin: spacer.left.xs + spacer.right.xs,
-                    child: TextFormField(
-                        style: TextStyle(fontSize: 14, color: Colors.white),
-                        cursorColor: Colors.white,
-                        decoration: InputDecoration(
-                          labelText: "Search",
-                          labelStyle: primaryPRegular,
-                          fillColor: Colors.white,
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
+                  TextFormField(
+                      style: TextStyle(fontSize: 14, color: Colors.white),
+                      cursorColor: Colors.white,
+                      decoration: InputDecoration(
+                        labelText: "Search",
+                        labelStyle: primaryPRegular,
+                        fillColor: Colors.white,
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
                         ),
-                        onFieldSubmitted: _search,
-                        controller: _searchController),
-                  ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                      ),
+                      onFieldSubmitted: _search,
+                      controller: _searchController),
                   _buildSearchResults(state)
                 ]));
           }),
