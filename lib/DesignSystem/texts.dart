@@ -90,6 +90,13 @@ const darkprimaryPBold = const TextStyle(
     fontStyle: FontStyle.normal,
     fontSize: 16.0);
 
+const redprimaryPBold = const TextStyle(
+    color: DarwinDarkRed,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Open Sans',
+    fontStyle: FontStyle.normal,
+    fontSize: 16.0);
+
 ///
 /// Secondary Font Styles (Roboto)
 ///
