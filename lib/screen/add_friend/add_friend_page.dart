@@ -88,56 +88,80 @@ class _AddFriendPageState extends State<AddFriendPage> {
     _logger.v("_buildSearchResults- got ${searchResults.length} results");
     if (searchResults.isEmpty && state is ResultsState) {
       return Container(
-        margin: EdgeInsetsDirectional.only(top: 50),
+        margin: spacer.top.xxs + spacer.left.xs + spacer.right.xs,
         child: Text(
-          "No users found",
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          "No users found, please try a different username.",
+          style: primaryPRegular,
         ),
       );
     }
 
     return Expanded(
-      child: NotificationListener<ScrollNotification>(
-        onNotification: _onScroll,
-        child: ListView.separated(
-          itemCount: searchResults.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          separatorBuilder: (context, index) => Divider(
-            color: Colors.black,
+      child: Column(children: [
+        Container(
+          alignment: Alignment.topLeft,
+          padding: spacer.top.xs + spacer.bottom.none,
+          margin: spacer.left.xs + spacer.right.xs,
+          child: Text(
+            'Search Results',
+            style: primaryH1Bold,
+            textAlign: TextAlign.left,
           ),
-          itemBuilder: (context, index) {
-            Widget trailingWidget;
-            switch (searchResults[index].state) {
-              case UserRelationshipState.FRIENDS:
-                trailingWidget = Icon(Icons.people);
-                break;
-              case UserRelationshipState.INCOMING_INVITE:
-                trailingWidget =
-                    RaisedButton(onPressed: null, child: Text("Accept"));
-                break;
-              case UserRelationshipState.OUTSTANDING_INVITE:
-                trailingWidget = Container(
-                    width: 110,
-                    child: Row(children: <Widget>[
-                      Text("Request sent"),
-                      Icon(Icons.check, color: Colors.green)
-                    ]));
-                break;
-              case UserRelationshipState.NOT_FRIENDS:
-                trailingWidget = IconButton(
-                    icon: Icon(Icons.person_add),
-                    onPressed: () =>
-                        _sendFriendRequest(searchResults[index].userId));
-                break;
-            }
-            return ListTile(
-                title: Text(searchResults[index].username,
-                    style: TextStyle(color: Colors.black)),
-                trailing: trailingWidget);
-          },
         ),
-      ),
+        NotificationListener<ScrollNotification>(
+          onNotification: _onScroll,
+          child: ListView.separated(
+            padding: spacer.top.xs + spacer.left.xxs + spacer.right.xxs,
+            itemCount: searchResults.length,
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            separatorBuilder: (context, index) => Divider(
+              color: Colors.white,
+            ),
+            itemBuilder: (context, index) {
+              Widget trailingWidget;
+              switch (searchResults[index].state) {
+                case UserRelationshipState.FRIENDS:
+                  trailingWidget = Icon(
+                    Icons.people,
+                    color: Colors.white,
+                  );
+                  break;
+                case UserRelationshipState.INCOMING_INVITE:
+                  trailingWidget =
+                      RaisedButton(onPressed: null, child: Text("Accept"));
+                  break;
+                case UserRelationshipState.OUTSTANDING_INVITE:
+                  trailingWidget = Container(
+                      alignment: Alignment.centerRight,
+                      //  TODO: Need to fix this should not be a fixed width.
+                      width: 150,
+                      child: Row(children: <Widget>[
+                        Text(
+                          "Request sent",
+                          style: primaryPRegular,
+                        ),
+                        Icon(Icons.check, color: Colors.green[900])
+                      ]));
+                  break;
+                case UserRelationshipState.NOT_FRIENDS:
+                  trailingWidget = IconButton(
+                      icon: Icon(
+                        Icons.person_add,
+                        color: Colors.white,
+                      ),
+                      onPressed: () =>
+                          _sendFriendRequest(searchResults[index].userId));
+                  break;
+              }
+              return ListTile(
+                  title:
+                      Text(searchResults[index].username, style: primaryPBold),
+                  trailing: trailingWidget);
+            },
+          ),
+        ),
+      ]),
     );
   }
 
@@ -158,35 +182,52 @@ class _AddFriendPageState extends State<AddFriendPage> {
             AddFriendState state,
           ) {
             return Scaffold(
+                backgroundColor: DarwinRed,
                 body: Column(children: [
-              // this close button will give the user an escape hatch
-              Container(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                  alignment: Alignment.topLeft,
-                  padding: spacer.top.lg + spacer.left.md,
-                  icon: Icon(Icons.close),
-                  color: Colors.black,
-                  iconSize: 28,
-                  onPressed: _leavePage,
-                ),
-              ),
-              TextFormField(
-                  style: TextStyle(fontSize: 14, color: Colors.black),
-                  cursorColor: Colors.white,
-                  decoration: InputDecoration(
-                    labelText: "Search",
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
+                  // this close button will give the user an escape hatch
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      alignment: Alignment.topLeft,
+                      padding: spacer.top.xl + spacer.left.sm,
+                      icon: Icon(Icons.arrow_back_ios),
+                      color: Colors.white,
+                      iconSize: 22,
+                      onPressed: _leavePage,
                     ),
                   ),
-                  onFieldSubmitted: _search,
-                  controller: _searchController),
-              _buildSearchResults(state)
-            ]));
+                  Container(
+                    alignment: Alignment.topLeft,
+                    padding: spacer.top.xs + spacer.bottom.xs,
+                    margin: spacer.left.xs + spacer.right.xs,
+                    child: Text(
+                      'Add friends',
+                      style: primaryH1Bold,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    padding: spacer.top.none + spacer.bottom.xs,
+                    margin: spacer.left.xs + spacer.right.xs,
+                    child: TextFormField(
+                        style: primaryPRegular,
+                        cursorColor: Colors.white,
+                        decoration: InputDecoration(
+                          labelText: "Search",
+                          labelStyle: primaryPRegular,
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                        ),
+                        onFieldSubmitted: _search,
+                        controller: _searchController),
+                  ),
+                  _buildSearchResults(state)
+                ]));
           }),
     );
   }

@@ -46,13 +46,13 @@ class _HomePageState extends State<HomePage> {
             minHeight: 0,
             maxHeight: 225,
             defaultPanelState: PanelState.CLOSED,
-            padding: (spacer.left.sm + spacer.top.xs),
+            padding: (spacer.left.none + spacer.top.xs),
             panel: Stack(
               children: [
                 Container(
                   alignment: Alignment.topLeft,
                   padding: spacer.top.xs,
-                  margin: spacer.left.xs + spacer.bottom.xs,
+                  margin: spacer.left.sm + spacer.bottom.xs,
                   child: Text(
                     'Invite friends',
                     style: darkprimaryPBold,
@@ -138,13 +138,13 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   alignment: Alignment.bottomCenter,
-                  padding: spacer.top.xs + spacer.bottom.md,
+                  padding: spacer.top.xs + spacer.bottom.lg,
                   child: RaisedButton(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text('Cancel', style: primaryPBold),
-                    color: DarwinRed,
+                    child: Text('Cancel', style: redprimaryPBold),
+                    color: Colors.white,
                     onPressed: () => _spc.close(),
                   ),
                 )
