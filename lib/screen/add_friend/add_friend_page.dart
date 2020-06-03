@@ -98,16 +98,6 @@ class _AddFriendPageState extends State<AddFriendPage> {
 
     return Expanded(
       child: Column(children: [
-        Container(
-          alignment: Alignment.topLeft,
-          padding: spacer.top.xs + spacer.bottom.none,
-          margin: spacer.left.xs + spacer.right.xs,
-          child: Text(
-            'Search Results',
-            style: primaryH1Bold,
-            textAlign: TextAlign.left,
-          ),
-        ),
         NotificationListener<ScrollNotification>(
           onNotification: _onScroll,
           child: ListView.separated(
@@ -128,8 +118,15 @@ class _AddFriendPageState extends State<AddFriendPage> {
                   );
                   break;
                 case UserRelationshipState.INCOMING_INVITE:
-                  trailingWidget =
-                      RaisedButton(onPressed: null, child: Text("Accept"));
+                  trailingWidget = Container(
+                    alignment: Alignment.centerRight,
+                    width: 200,
+                    child: Row(children: <Widget>[
+                      RaisedButton(onPressed: null, child: Text("Accept")),
+                      RaisedButton(onPressed: null, child: Text("Decline"))
+                    ]),
+                  );
+                  ;
                   break;
                 case UserRelationshipState.OUTSTANDING_INVITE:
                   trailingWidget = Container(

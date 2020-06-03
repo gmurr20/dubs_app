@@ -42,3 +42,12 @@ class AcceptFriendRequestEvent extends AddFriendEvent {
   @override
   String toString() => 'AcceptFriendRequestEvent';
 }
+
+class DeclineFriendRequestEvent extends AddFriendEvent {
+  String userid;
+
+  DeclineFriendRequestEvent(this.userid);
+
+  @override
+  String toString() => 'DeclineFriendRequestEvent';
+}

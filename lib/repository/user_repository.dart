@@ -330,6 +330,132 @@ class UserRepository {
     return;
   }
 
+  Future<void> acceptFriendRequest(String friendsId) async {
+    _logger.v("acceptFriendRequest- Entered");
+    final user = await _auth.currentUser();
+    if (user == null) {
+      _logger.e("acceptFriendRequest- User is not signed in");
+      return Future.error("User is not signed in");
+    }
+
+    if (user.uid == friendsId) {
+      _logger
+          .e("acceptFriendRequest- Cannot accept a friend request to yourself");
+      return Future.error("Cannot accept a friend request to yourself");
+    }
+
+    try {
+      await _store.runTransaction((transaction) async {
+        // grab user document
+        DocumentSnapshot friendRequestSnapshot = await transaction.get(_store
+            .collection("users")
+            .document(user.uid)
+            .collection("friend_requests")
+            .document(friendsId));
+        // sanity check
+        if (!friendRequestSnapshot.exists) {
+          _logger.e("acceptFriendRequest- friend request no longer exists");
+          return Future.error("Friend request no longer exists");
+        }
+        if (UserSearchResult.friendRequestStringToEnum(
+                friendRequestSnapshot.data["status"]) !=
+            UserRelationshipState.INCOMING_INVITE) {
+          _logger.e(
+              "acceptFriendRequest- friend request is not an incoming invite ${friendRequestSnapshot.data["status"]}");
+          return Future.error("Friend request no longer is available");
+        }
+
+        // delete the friend request
+        await transaction.delete(_store
+            .collection("users")
+            .document(user.uid)
+            .collection("friend_requests")
+            .document(friendsId));
+
+        // update our mapping
+        await transaction.set(
+            _store
+                .collection("users")
+                .document(user.uid)
+                .collection("friends")
+                .document(friendsId),
+            {});
+        // update the other user's mapping
+        return await transaction.set(
+            _store
+                .collection("users")
+                .document(friendsId)
+                .collection("friends")
+                .document(user.uid),
+            {});
+      });
+    } catch (e) {
+      _logger.e("acceptFriendRequest- Caught error when running transaction '" +
+          e.toString() +
+          "'");
+      return Future.error(e.toString());
+    }
+    return;
+  }
+
+  Future<void> declineFriendRequest(String friendsId) async {
+    _logger.v("declineFriendRequest- Entered");
+    final user = await _auth.currentUser();
+    if (user == null) {
+      _logger.e("declineFriendRequest- User is not signed in");
+      return Future.error("User is not signed in");
+    }
+
+    if (user.uid == friendsId) {
+      _logger.e(
+          "declineFriendRequest- Cannot decline a friend request to yourself");
+      return Future.error("Cannot declien a friend request to yourself");
+    }
+
+    try {
+      await _store.runTransaction((transaction) async {
+        // grab user document
+        DocumentSnapshot friendRequestSnapshot = await transaction.get(_store
+            .collection("users")
+            .document(user.uid)
+            .collection("friend_requests")
+            .document(friendsId));
+        // sanity check
+        if (!friendRequestSnapshot.exists) {
+          _logger.e("declineFriendRequest- friend request no longer exists");
+          return Future.error("Friend request no longer exists");
+        }
+        if (UserSearchResult.friendRequestStringToEnum(
+                friendRequestSnapshot.data["status"]) !=
+            UserRelationshipState.INCOMING_INVITE) {
+          _logger.e(
+              "declineFriendRequest- friend request is not an incoming invite ${friendRequestSnapshot.data["status"]}");
+          return Future.error("Friend request no longer is available");
+        }
+
+        // delete the friend request
+        await transaction.delete(_store
+            .collection("users")
+            .document(user.uid)
+            .collection("friend_requests")
+            .document(friendsId));
+        // delete the other user's mapping
+        return await transaction.delete(_store
+            .collection("users")
+            .document(friendsId)
+            .collection("friend_requests")
+            .document(user.uid));
+      });
+    } catch (e) {
+      _logger.e(
+          "declineFriendRequest- Caught error when running transaction '" +
+              e.toString() +
+              "'");
+      return Future.error(e.toString());
+    }
+    return;
+  }
+
   Future<void> logout() async {
     _logger.v("logout- logging out");
     if (!await isLoggedIn()) {

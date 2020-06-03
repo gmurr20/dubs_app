@@ -33,8 +33,16 @@ class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
       return;
     } else if (event is PaginateSearchEvent) {
       yield* _handlePaginateEvent(event);
+      return;
     } else if (event is SendFriendRequestEvent) {
       yield* _handleSendFriendRequestEvent(event);
+      return;
+    } else if (event is AcceptFriendRequestEvent) {
+      yield* _handleAcceptFriendRequestEvent(event);
+      return;
+    } else if (event is DeclineFriendRequestEvent) {
+      yield* _handleDeclineFriendRequestEvent(event);
+      return;
     }
   }
 
@@ -42,7 +50,8 @@ class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
     searchResults.clear();
     yield SearchingState(searchResults);
     // Call to search
-    _logger.v("_handleSearchEvent- searching for username {$event}");
+    _logger
+        .v("_handleSearchEvent- searching for username ${event.searchString}");
     try {
       searchResults = await _userRepo.searchForFriends(
           event.searchString, PAGINATE_SEARCH_LENGTH, null);
@@ -104,6 +113,58 @@ class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
       }
     }
     _logger.v("_handleSendFriendRequestEvent- done");
+    yield ResultsState(searchResults);
+  }
+
+  Stream<AddFriendState> _handleAcceptFriendRequestEvent(
+      AcceptFriendRequestEvent event) async* {
+    _logger.v(
+        "_handleAcceptFriendRequestEvent- accepting friend request for user ${event.userid}");
+    yield SearchingState(searchResults);
+    try {
+      await _userRepo.acceptFriendRequest(event.userid);
+    } catch (e) {
+      _logger.w(
+          "_handleAcceptFriendRequestEvent- error while accepting friend request ${e.toString()}");
+      yield ErrorState(searchResults, e.toString());
+      return;
+    }
+
+    for (int i = 0; i < searchResults.length; i++) {
+      if (searchResults[i].userId == event.userid) {
+        _logger.v(
+            "_handleAcceptFriendRequestEvent- found friend and changing status");
+        searchResults[i].state = UserRelationshipState.FRIENDS;
+        break;
+      }
+    }
+    _logger.v("_handleAcceptFriendRequestEvent- done");
+    yield ResultsState(searchResults);
+  }
+
+  Stream<AddFriendState> _handleDeclineFriendRequestEvent(
+      DeclineFriendRequestEvent event) async* {
+    _logger.v(
+        "_handleDeclineFriendRequestEvent- declining friend request for user ${event.userid}");
+    yield SearchingState(searchResults);
+    try {
+      await _userRepo.declineFriendRequest(event.userid);
+    } catch (e) {
+      _logger.w(
+          "_handleDeclineFriendRequestEvent- error while declining friend request ${e.toString()}");
+      yield ErrorState(searchResults, e.toString());
+      return;
+    }
+
+    for (int i = 0; i < searchResults.length; i++) {
+      if (searchResults[i].userId == event.userid) {
+        _logger.v(
+            "_handleDeclineFriendRequestEvent- found friend and changing status");
+        searchResults[i].state = UserRelationshipState.NOT_FRIENDS;
+        break;
+      }
+    }
+    _logger.v("_handleDeclineFriendRequestEvent- done");
     yield ResultsState(searchResults);
   }
 
