@@ -22,9 +22,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     _logger.v("mapEventToState- Entering");
-    if (event is AppStartEvent) {
-      yield* mapAppStartToState();
-    } else if (event is LoginUserEvent) {
+    if (event is LoginUserEvent) {
       yield* mapLoginUserState(event);
     }
   }
@@ -81,27 +79,5 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       return InvalidInputState(emailError, passwordError);
     }
     return null;
-  }
-
-  Stream<LoginState> mapAppStartToState() async* {
-    _logger.v("mapAppStartToState- Entering");
-    final isLoggedIn = await _userRepo.isLoggedIn();
-    if (isLoggedIn) {
-      _logger.d("mapAppStartToState- User is already logged in");
-      User user;
-      try {
-        user = await _userRepo.getUser();
-      } catch (e) {
-        _logger.e("mapAppStartToState- Failed to get user with error '" +
-            e.toString() +
-            "'");
-        yield NotLoggedInState();
-        return;
-      }
-      yield LoggedInState(user);
-    } else {
-      _logger.d("mapAppStartToState- not logged in");
-      yield NotLoggedInState();
-    }
   }
 }
