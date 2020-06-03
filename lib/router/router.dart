@@ -5,11 +5,13 @@ import 'package:dubs_app/screen/add_friend/add_friend_page.dart';
 import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/set_user_data/set_user_data_page.dart';
+import 'package:dubs_app/screen/splash/splash_page.dart';
 import 'package:dubs_app/screen/template_screen/template_screen.dart';
 import 'package:dubs_app/screen/verify_user/verify_user_page.dart';
 import 'package:flutter/material.dart';
 
-const String loginRoute = '/';
+const String splashRoute = '/';
+const String loginRoute = '/login';
 const String testRoute = '/adfadsfasdfasdfsadfsad';
 const String homeRoute = '/home';
 const String verifyUserRoute = "/verifyUser";
@@ -23,6 +25,10 @@ class Router {
   static BuildContext context;
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case splashRoute:
+        return MaterialPageRoute(builder: (ctx) {
+          return SplashPage(userRepository: userRepo);
+        });
       case loginRoute:
         return _createNewPage(LoginPage(userRepository: userRepo));
       case verifyUserRoute:

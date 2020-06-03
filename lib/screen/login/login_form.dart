@@ -30,7 +30,6 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     _loginBloc = LoginBloc(userRepo: _userRepository);
-    _loginBloc.add(AppStartEvent());
   }
 
   @override
