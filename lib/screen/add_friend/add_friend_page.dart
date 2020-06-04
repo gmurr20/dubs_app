@@ -58,6 +58,16 @@ class _AddFriendPageState extends State<AddFriendPage> {
     Navigator.of(context).pushNamed(homeRoute, arguments: _currentuser);
   }
 
+  void _acceptFriendRequest(String friendId) {
+    _logger.v("_acceptFriendRequest- entering");
+    _bloc.add(AcceptFriendRequestEvent(friendId));
+  }
+
+  void _declineFriendRequest(String friendId) {
+    _logger.v("_declineFriendRequest- entering");
+    _bloc.add(DeclineFriendRequestEvent(friendId));
+  }
+
   bool _onScroll(ScrollNotification scrollInfo) {
     _logger.v("onScroll- entered with ${_searchController.text}");
     if (_pageState is ResultsState &&
@@ -118,12 +128,21 @@ class _AddFriendPageState extends State<AddFriendPage> {
                   );
                   break;
                 case UserRelationshipState.INCOMING_INVITE:
+                  // TODO: this looks like shit
                   trailingWidget = Container(
                     alignment: Alignment.centerRight,
                     width: 200,
                     child: Row(children: <Widget>[
-                      RaisedButton(onPressed: null, child: Text("Accept")),
-                      RaisedButton(onPressed: null, child: Text("Decline"))
+                      RaisedButton(
+                          color: Colors.green[50],
+                          onPressed: () =>
+                              _acceptFriendRequest(searchResults[index].userId),
+                          child: Text("Accept")),
+                      RaisedButton(
+                          color: Colors.red[50],
+                          onPressed: () => _declineFriendRequest(
+                              searchResults[index].userId),
+                          child: Text("Decline"))
                     ]),
                   );
                   ;
@@ -132,7 +151,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                   trailingWidget = Container(
                       alignment: Alignment.centerRight,
                       //  TODO: Need to fix this should not be a fixed width.
-                      width: 150,
+                      width: 120,
                       child: Row(children: <Widget>[
                         Text(
                           "Request sent",
