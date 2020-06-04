@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/bloc/splash/splash_bloc.dart';
 import 'package:dubs_app/bloc/splash/splash_events.dart';
 import 'package:dubs_app/bloc/splash/splash_states.dart';
@@ -22,12 +25,29 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   SplashBloc _bloc;
 
+  // animation stuff
+  Timer _timerLogo;
+  Timer _timerLoading;
+  bool _startLogoAnimation = false;
+  bool _showLoading = false;
+  final int ANIMATION_TIME = 2;
+
   UserRepository get _userRepository => widget.userRepository;
 
   @override
   void initState() {
     _bloc = SplashBloc(userRepo: _userRepository);
     _bloc.add(AppStartEvent());
+    _timerLogo = Timer(const Duration(seconds: 1), () {
+      setState(() {
+        _startLogoAnimation = true;
+      });
+    });
+    _timerLoading = Timer(const Duration(seconds: 4), () {
+      setState(() {
+        _showLoading = true;
+      });
+    });
   }
 
   @override
@@ -77,20 +97,52 @@ class _SplashPageState extends State<SplashPage> {
           SplashState state,
         ) {
           return Scaffold(
-              body: Container(
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Image.asset(
-                  'assets/DubsLogo.png',
-                  width: 200.0,
-                  height: 200.0,
-                ),
-              ],
+            backgroundColor: DarwinRed,
+            body: Center(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedOpacity(
+                      opacity: _startLogoAnimation ? 1 : 0,
+                      duration: Duration(seconds: ANIMATION_TIME),
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        constraints: BoxConstraints(maxWidth: 120),
+                        decoration: BoxDecoration(
+                          color: _startLogoAnimation ? Colors.white : DarwinRed,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+                            Image.asset('assets/DubsLogo.png',
+                                height: 50, width: 50),
+                            Container(
+                              height: 50,
+                              width: 50,
+                              child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Text(
+                                  "ubs",
+                                  style:
+                                      TextStyle(color: DarwinRed, fontSize: 30),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Opacity(
+                      opacity: _showLoading ? 1 : 0,
+                      child: Container(
+                        margin: EdgeInsets.all(15),
+                        child: CircularProgressIndicator(strokeWidth: 3),
+                      ),
+                    ),
+                  ]),
             ),
-          ));
+          );
         },
       ),
     );
