@@ -58,6 +58,11 @@ class _AddFriendPageState extends State<AddFriendPage> {
     Navigator.of(context).pushNamed(homeRoute, arguments: _currentuser);
   }
 
+  void _acceptFriendRequest(String friendId) {
+    _logger.v("_acceptFriendRequest- entering");
+    _bloc.add(AcceptFriendRequestEvent(friendId));
+  }
+
   bool _onScroll(ScrollNotification scrollInfo) {
     _logger.v("onScroll- entered with ${_searchController.text}");
     if (_pageState is ResultsState &&
@@ -122,7 +127,10 @@ class _AddFriendPageState extends State<AddFriendPage> {
                     alignment: Alignment.centerRight,
                     width: 200,
                     child: Row(children: <Widget>[
-                      RaisedButton(onPressed: null, child: Text("Accept")),
+                      RaisedButton(
+                          onPressed: () =>
+                              _acceptFriendRequest(searchResults[index].userId),
+                          child: Text("Accept")),
                       RaisedButton(onPressed: null, child: Text("Decline"))
                     ]),
                   );
