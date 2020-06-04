@@ -3,3 +3,5 @@ Test EVERY page when the network connection isn't working. What happens?
 What happens if the user is suddenly logged out on each page? Is the behavior what we expected?
 
 Add tests for all the blocs and the user repo
+
+Better animations between pages
