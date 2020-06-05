@@ -120,16 +120,17 @@ class _AddFriendPageState extends State<AddFriendPage> {
               Widget trailingWidget;
               switch (searchResults[index].state) {
                 case UserRelationshipState.FRIENDS:
-                  trailingWidget = Icon(
-                    Icons.people,
-                    color: Colors.white,
+                  trailingWidget = Container(
+                    alignment: Alignment.centerRight,
+                    width: 25,
+                    child: Icon(Icons.people, color: Colors.white),
                   );
                   break;
                 case UserRelationshipState.INCOMING_INVITE:
                   // TODO: this looks like shit
                   trailingWidget = Container(
                     alignment: Alignment.centerRight,
-                    width: 200,
+                    width: 180,
                     child: Row(children: <Widget>[
                       RaisedButton(
                           color: Colors.green[50],
@@ -159,13 +160,15 @@ class _AddFriendPageState extends State<AddFriendPage> {
                       ]));
                   break;
                 case UserRelationshipState.NOT_FRIENDS:
-                  trailingWidget = IconButton(
-                      icon: Icon(
-                        Icons.person_add,
-                        color: Colors.white,
-                      ),
+                  trailingWidget = Container(
+                    alignment: Alignment.centerRight,
+                    width: 25,
+                    child: IconButton(
+                      icon: Icon(Icons.person_add, color: Colors.white),
                       onPressed: () =>
-                          _sendFriendRequest(searchResults[index].userId));
+                          _sendFriendRequest(searchResults[index].userId),
+                    ),
+                  );
                   break;
               }
               return ListTile(
