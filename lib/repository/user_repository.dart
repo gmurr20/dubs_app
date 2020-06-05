@@ -241,15 +241,16 @@ class UserRepository {
         i++) {
       String currSearchId = usernameSearchQ.documents[i].data["userid"];
       UserRelationshipState relationship;
-      if (friendsQ.data != null && friendsQ.data.containsKey(currSearchId)) {
+      if (currSearchId == user.uid) {
+        _logger.v("searchForFriends- current user so skip");
+        continue;
+      } else if (friendsQ.data != null &&
+          friendsQ.data.containsKey(currSearchId)) {
         relationship = UserRelationshipState.FRIENDS;
       } else if (friendRequestQ.data != null &&
           friendRequestQ.data.containsKey(currSearchId)) {
         relationship = UserSearchResult.friendRequestStringToEnum(
             friendRequestQ.data[currSearchId]);
-      } else if (currSearchId == user.uid) {
-        _logger.v("searchForFriends- current user so skip");
-        continue;
       } else {
         relationship = UserRelationshipState.NOT_FRIENDS;
       }
