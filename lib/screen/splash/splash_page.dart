@@ -44,11 +44,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     _bloc = SplashBloc(userRepo: _userRepository);
-<<<<<<< HEAD
-    //  _bloc.add(AppStartEvent());
-=======
     _bloc.add(AppStartEvent());
->>>>>>> gregs_shit/master
     _timerLogo = Timer(const Duration(seconds: 2), () {
       setState(() {
         _startLogoAnimation = true;
@@ -120,44 +116,52 @@ class _SplashPageState extends State<SplashPage> {
           SplashState state,
         ) {
           return Scaffold(
-            backgroundColor: DarwinRed,
-            body: Center(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 56,
-                      child: Center(
-                        child: Text(
-                          'w',
-                          style: GoogleFonts.sedgwickAveDisplay(
-                            fontSize: 86,
-                            color: DarwinRed,
+              backgroundColor: DarwinRed,
+              body: Stack(alignment: Alignment.center, children: [
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Stack(alignment: Alignment.center, children: [
+                    Container(
+                      alignment: Alignment.center,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 56,
+                        child: Center(
+                          child: Text(
+                            'w',
+                            style: GoogleFonts.sedgwickAveDisplay(
+                              fontSize: 86,
+                              color: DarwinRed,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-                    AnimatedOpacity(
-                      opacity: _startLogoAnimation ? 1 : 0,
-                      duration: Duration(milliseconds: ANIMATION_TIME_MSEC),
-                      child: Container(
-                        margin: spacer.top.sm,
-                        child: Text(
-                          'Let’s get dubs.',
-                          style: GoogleFonts.sedgwickAve(
-                            fontSize: 32,
-                            color: Colors.white,
+                  ]),
+                ]),
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    verticalDirection: VerticalDirection.up,
+                    children: [
+                      Container(
+                        child: AnimatedOpacity(
+                          opacity: _startLogoAnimation ? 1 : 0,
+                          duration: Duration(milliseconds: ANIMATION_TIME_MSEC),
+                          child: Container(
+                            margin: spacer.bottom.xxl,
+                            child: Text(
+                              'Let’s get dubs.',
+                              style: GoogleFonts.sedgwickAve(
+                                fontSize: 32,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
-                    )
-                  ]),
-            ),
-          );
+                    ]),
+              ]));
         },
       ),
     );

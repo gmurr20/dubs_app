@@ -70,7 +70,9 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/temp_logo.png
-    - assets/DubsLogo.png
+    - assets/Logo@3x.png
+    - assets/Logo@2x.png
+    - assets/Logo.png
     - assets/google_fonts/
 
   # An image asset can refer to one or more resolution-specific "variants", see
