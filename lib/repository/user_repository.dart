@@ -211,57 +211,46 @@ class UserRepository {
     }
 
     // 2) search through the users existing friend requests
-    QuerySnapshot friendRequestQ;
+    DocumentSnapshot friendRequestQ;
     try {
-      friendRequestQ = await _store
-          .collection("users")
-          .document(user.uid)
-          .collection("friend_requests")
-          .getDocuments();
+      friendRequestQ =
+          await _store.collection("friend_requests").document(user.uid).get();
     } catch (e) {
       _logger.w(
           "searchForFriends- friend requests search returned with error ${e.toString()}");
       return Future.error(
           "A network error ocurred. Make sure your connection is fine");
     }
+    _logger.v("searchForFriends- friend request query returned");
 
     // 3) search through the users existing friends
-    QuerySnapshot friendsQ;
+    DocumentSnapshot friendsQ;
     try {
-      friendsQ = await _store
-          .collection("users")
-          .document(user.uid)
-          .collection("friends")
-          .getDocuments();
+      friendsQ = await _store.collection("friends").document(user.uid).get();
     } catch (e) {
       _logger.w(
           "searchForFriends- friends search returned with error ${e.toString()}");
       return Future.error(
           "A network error ocurred. Make sure your connection is fine");
     }
+    _logger.v("searchForFriends- friends query returned");
 
     // 4) compare the existing friend requests and friends with the search results
-    Map<String, UserRelationshipState> userIdToRelationship =
-        Map<String, UserRelationshipState>();
-    for (int i = 0; i < friendRequestQ.documents.length; i++) {
-      userIdToRelationship[friendRequestQ.documents[i].documentID] =
-          UserSearchResult.friendRequestStringToEnum(
-              friendRequestQ.documents[i].data["status"]);
-    }
-    for (int i = 0; i < friendsQ.documents.length; i++) {
-      userIdToRelationship[friendsQ.documents[i].documentID] =
-          UserRelationshipState.FRIENDS;
-    }
     for (int i = 0;
         i < usernameSearchQ.documents.length && searchResults.length < limit;
         i++) {
       String currSearchId = usernameSearchQ.documents[i].data["userid"];
       UserRelationshipState relationship;
-      if (userIdToRelationship.containsKey(currSearchId)) {
-        relationship = userIdToRelationship[currSearchId];
-      } else if (currSearchId == user.uid) {
+      if (currSearchId == user.uid) {
         _logger.v("searchForFriends- current user so skip");
         continue;
+      } else if (friendsQ.data != null &&
+          friendsQ.data.containsKey(currSearchId)) {
+        relationship = UserRelationshipState.FRIENDS;
+      } else if (friendRequestQ.data != null &&
+          friendRequestQ.data.containsKey(currSearchId)) {
+        relationship = UserSearchResult.friendRequestStringToEnum(
+            friendRequestQ.data[currSearchId]);
       } else {
         relationship = UserRelationshipState.NOT_FRIENDS;
       }
@@ -287,39 +276,38 @@ class UserRepository {
 
     try {
       await _store.runTransaction((transaction) async {
-        // grab user document
         DocumentSnapshot userSnapshot = await transaction
-            .get(_store.collection("users").document(user.uid));
-        // sanity check
-        if (!userSnapshot.exists) {
-          _logger.e("sendFriendRequest- user does not exist! WTF happened");
-          return Future.error("User does not exist. Contact support");
-        }
-        // Google SDK requires every read to have write so just put it back
-        await transaction.set(
-            _store.collection("users").document(user.uid), userSnapshot.data);
+            .get(_store.collection("friend_requests").document(user.uid));
+        DocumentSnapshot otherSnapshot = await transaction
+            .get(_store.collection("friend_requests").document(friendsId));
         // update our mapping
-        await transaction.set(
-            _store
-                .collection("users")
-                .document(user.uid)
-                .collection("friend_requests")
-                .document(friendsId),
-            {
-              "status": UserSearchResult.friendRequestEnumToString(
-                  UserRelationshipState.OUTSTANDING_INVITE)
-            });
+        if (!userSnapshot.exists) {
+          await transaction
+              .set(_store.collection("friend_requests").document(user.uid), {
+            friendsId: UserSearchResult.friendRequestEnumToString(
+                UserRelationshipState.OUTSTANDING_INVITE)
+          });
+        } else {
+          await transaction
+              .update(_store.collection("friend_requests").document(user.uid), {
+            friendsId: UserSearchResult.friendRequestEnumToString(
+                UserRelationshipState.OUTSTANDING_INVITE)
+          });
+        }
         // update the other user's mapping
-        return await transaction.set(
-            _store
-                .collection("users")
-                .document(friendsId)
-                .collection("friend_requests")
-                .document(user.uid),
-            {
-              "status": UserSearchResult.friendRequestEnumToString(
-                  UserRelationshipState.INCOMING_INVITE)
-            });
+        if (!otherSnapshot.exists) {
+          return await transaction
+              .set(_store.collection("friend_requests").document(friendsId), {
+            user.uid: UserSearchResult.friendRequestEnumToString(
+                UserRelationshipState.INCOMING_INVITE)
+          });
+        } else {
+          return await transaction.update(
+              _store.collection("friend_requests").document(friendsId), {
+            user.uid: UserSearchResult.friendRequestEnumToString(
+                UserRelationshipState.INCOMING_INVITE)
+          });
+        }
       });
     } catch (e) {
       _logger.e("sendFriendRequest- Caught error when running transaction '" +
@@ -347,47 +335,75 @@ class UserRepository {
     try {
       await _store.runTransaction((transaction) async {
         // grab user document
-        DocumentSnapshot friendRequestSnapshot = await transaction.get(_store
-            .collection("users")
-            .document(user.uid)
-            .collection("friend_requests")
-            .document(friendsId));
+        DocumentSnapshot friendRequestSnapshot = await transaction
+            .get(_store.collection("friend_requests").document(user.uid));
         // sanity check
         if (!friendRequestSnapshot.exists) {
-          _logger.e("acceptFriendRequest- friend request no longer exists");
-          return Future.error("Friend request no longer exists");
+          _logger.e("acceptFriendRequest- no friend requests available");
+          return Future.error("no friend requests available");
         }
+        if (!friendRequestSnapshot.data.containsKey(friendsId)) {
+          _logger.e("acceptFriendRequest- friend request could not be found");
+          return Future.error("friend request could not be found");
+        }
+        // grab the other friends document
+        DocumentSnapshot otherFriendRequestSnapshot = await transaction
+            .get(_store.collection("friend_requests").document(friendsId));
+        // sanity check
+        if (!otherFriendRequestSnapshot.exists) {
+          _logger.e(
+              "acceptFriendRequest- couldn't find the other friend's mapping");
+          return Future.error("no friend requests available");
+        }
+        if (!otherFriendRequestSnapshot.data.containsKey(user.uid)) {
+          _logger.e(
+              "acceptFriendRequest- friend request could not be found in the other mapping");
+          return Future.error("friend request could not be found");
+        }
+
+        DocumentSnapshot friendSnapshot = await transaction
+            .get(_store.collection("friends").document(user.uid));
+        DocumentSnapshot otherUserFriendsSnapshot = await transaction
+            .get(_store.collection("friends").document(friendsId));
+
         if (UserSearchResult.friendRequestStringToEnum(
-                friendRequestSnapshot.data["status"]) !=
+                friendRequestSnapshot.data[friendsId]) !=
             UserRelationshipState.INCOMING_INVITE) {
           _logger.e(
-              "acceptFriendRequest- friend request is not an incoming invite ${friendRequestSnapshot.data["status"]}");
+              "acceptFriendRequest- friend request is not an incoming invite ${friendRequestSnapshot.data[friendsId]}");
           return Future.error("Friend request no longer is available");
         }
 
         // delete the friend request
-        await transaction.delete(_store
-            .collection("users")
-            .document(user.uid)
-            .collection("friend_requests")
-            .document(friendsId));
+        var newData = friendRequestSnapshot.data;
+        newData.remove(friendsId);
+        await transaction.set(
+            _store.collection("friend_requests").document(user.uid), newData);
+
+        // delete the other users friend request
+        var otherNewData = friendRequestSnapshot.data;
+        otherNewData.remove(user.uid);
+        await transaction.set(
+            _store.collection("friend_requests").document(friendsId),
+            otherNewData);
 
         // update our mapping
-        await transaction.set(
-            _store
-                .collection("users")
-                .document(user.uid)
-                .collection("friends")
-                .document(friendsId),
-            {});
+        if (friendSnapshot.exists) {
+          await transaction.update(
+              _store.collection("friends").document(user.uid),
+              {friendsId: true});
+        } else {
+          await transaction.set(_store.collection("friends").document(user.uid),
+              {friendsId: true});
+        }
         // update the other user's mapping
+        if (otherUserFriendsSnapshot.exists) {
+          return await transaction.update(
+              _store.collection("friends").document(friendsId),
+              {user.uid: true});
+        }
         return await transaction.set(
-            _store
-                .collection("users")
-                .document(friendsId)
-                .collection("friends")
-                .document(user.uid),
-            {});
+            _store.collection("friends").document(friendsId), {user.uid: true});
       });
     } catch (e) {
       _logger.e("acceptFriendRequest- Caught error when running transaction '" +
@@ -415,36 +431,52 @@ class UserRepository {
     try {
       await _store.runTransaction((transaction) async {
         // grab user document
-        DocumentSnapshot friendRequestSnapshot = await transaction.get(_store
-            .collection("users")
-            .document(user.uid)
-            .collection("friend_requests")
-            .document(friendsId));
+        DocumentSnapshot friendRequestSnapshot = await transaction
+            .get(_store.collection("friend_requests").document(user.uid));
         // sanity check
         if (!friendRequestSnapshot.exists) {
           _logger.e("declineFriendRequest- friend request no longer exists");
           return Future.error("Friend request no longer exists");
         }
+        if (!friendRequestSnapshot.data.containsKey(friendsId)) {
+          _logger.e("declineFriendRequest- friend request could not be found");
+          return Future.error("friend request could not be found");
+        }
+        // grab other users document
+        DocumentSnapshot otherFriendRequestSnapshot = await transaction
+            .get(_store.collection("friend_requests").document(friendsId));
+        // sanity check
+        if (!otherFriendRequestSnapshot.exists) {
+          _logger.e(
+              "declineFriendRequest- friend request no longer exists from the other user");
+          return Future.error("Friend request no longer exists");
+        }
+        if (!otherFriendRequestSnapshot.data.containsKey(user.uid)) {
+          _logger.e(
+              "declineFriendRequest- friend request could not be found from the other user");
+          return Future.error("friend request could not be found");
+        }
+
+        // must be an incoming invite
         if (UserSearchResult.friendRequestStringToEnum(
-                friendRequestSnapshot.data["status"]) !=
+                friendRequestSnapshot.data[friendsId]) !=
             UserRelationshipState.INCOMING_INVITE) {
           _logger.e(
-              "declineFriendRequest- friend request is not an incoming invite ${friendRequestSnapshot.data["status"]}");
+              "declineFriendRequest- friend request is not an incoming invite ${friendRequestSnapshot.data[friendsId]}");
           return Future.error("Friend request no longer is available");
         }
 
         // delete the friend request
-        await transaction.delete(_store
-            .collection("users")
-            .document(user.uid)
-            .collection("friend_requests")
-            .document(friendsId));
+        var ourData = friendRequestSnapshot.data;
+        ourData.remove(friendsId);
+        await transaction.set(
+            _store.collection("friend_requests").document(user.uid), ourData);
         // delete the other user's mapping
-        return await transaction.delete(_store
-            .collection("users")
-            .document(friendsId)
-            .collection("friend_requests")
-            .document(user.uid));
+        var otherData = otherFriendRequestSnapshot.data;
+        otherData.remove(user.uid);
+        return await transaction.set(
+            _store.collection("friend_requests").document(friendsId),
+            otherData);
       });
     } catch (e) {
       _logger.e(
