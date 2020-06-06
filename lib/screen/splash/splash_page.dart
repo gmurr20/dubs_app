@@ -39,7 +39,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     _bloc = SplashBloc(userRepo: _userRepository);
-    // _bloc.add(AppStartEvent());
+    //  _bloc.add(AppStartEvent());
     _timerLogo = Timer(const Duration(seconds: 2), () {
       setState(() {
         _startLogoAnimation = true;
