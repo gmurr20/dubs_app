@@ -45,12 +45,12 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     _bloc = SplashBloc(userRepo: _userRepository);
     _bloc.add(AppStartEvent());
-    _timerLogo = Timer(const Duration(seconds: 2), () {
+    _timerLogo = Timer(const Duration(seconds: 1), () {
       setState(() {
         _startLogoAnimation = true;
       });
     });
-    _navigateTimer = Timer(const Duration(seconds: 4), () {
+    _navigateTimer = Timer(const Duration(seconds: 2), () {
       setState(() {
         _startNavigation = true;
         _navigateToNextPage();
