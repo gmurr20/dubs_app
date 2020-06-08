@@ -1,4 +1,5 @@
 import 'package:dubs_app/DesignSystem/colors.dart';
+import 'package:dubs_app/common/navigation.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,6 +37,8 @@ class _HomePageState extends State<HomePage> {
     return Stack(children: [
       Scaffold(
         backgroundColor: const Color(0xfff2f2f2),
+        bottomNavigationBar: NavigationHelper.buildBottomNav(
+            NavigationPageResult.HOME, context, _currentUser),
         body: SlidingUpPanel(
             controller: _spc,
             backdropEnabled: true,
