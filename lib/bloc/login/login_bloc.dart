@@ -2,12 +2,15 @@ import 'package:dubs_app/bloc/login/login_events.dart';
 import 'package:dubs_app/bloc/login/login_states.dart';
 import 'package:dubs_app/common/common_errors.dart';
 import 'package:dubs_app/common/text_validator.dart';
+import 'package:dubs_app/logger/log_printer.dart';
+import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserRepository _userRepo;
+  final _logger = getLogger("LoginBloc");
 
   LoginBloc({@required UserRepository userRepo})
       : assert(userRepo != null),
@@ -18,35 +21,43 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
-    if (event is AppStartEvent) {
-      yield* mapAppStartToState();
-    } else if (event is LoginUserEvent) {
+    _logger.v("mapEventToState- Entering");
+    if (event is LoginUserEvent) {
       yield* mapLoginUserState(event);
     }
   }
 
   Stream<LoginState> mapLoginUserState(LoginUserEvent event) async* {
+    _logger.v("mapLoginUserState- Entering");
     // change states to loading
     yield LoginLoadingState();
 
     // validate inputs
     InvalidInputState validateInputs = _validateUserEvent(event);
     if (validateInputs != null) {
+      _logger.d("mapLoginUserState- Inputs are invalid");
       yield validateInputs;
       return;
     }
 
     // contact the repo
+    User user;
     try {
-      yield LoggedInState(await _userRepo
-          .loginUser(event.email, event.password)
-          .timeout(const Duration(seconds: 5)));
+      user = await _userRepo.loginUser(event.email, event.password);
     } catch (e) {
+      _logger.w("mapLoginUserState- Failed to login to backend. Error: '" +
+          e.toString() +
+          "'");
       yield AuthenticationErrorState("Failed to login to backend");
+      return;
     }
+    yield LoggedInState(user);
   }
 
   InvalidInputState _validateUserEvent(LoginUserEvent event) {
+    _logger.v("_validateUserEvent- entering with email '" +
+        checkAndPrint(event.email) +
+        "'");
     String emailError;
     String passwordError;
     if (event.email == null || event.email.length == 0) {
@@ -60,17 +71,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
 
     if (emailError != null || passwordError != null) {
+      _logger.v("_validateUserEvent- email error '" +
+          checkAndPrint(emailError) +
+          "' and password error '" +
+          checkAndPrint(passwordError) +
+          "'");
       return InvalidInputState(emailError, passwordError);
     }
     return null;
-  }
-
-  Stream<LoginState> mapAppStartToState() async* {
-    final isLoggedIn = await _userRepo.isLoggedIn();
-    if (isLoggedIn) {
-      yield LoggedInState(await _userRepo.getUser());
-    } else {
-      yield NotLoggedInState();
-    }
   }
 }

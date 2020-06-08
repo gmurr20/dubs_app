@@ -1,11 +1,14 @@
 import 'package:dubs_app/bloc/login/login_bloc.dart';
 import 'package:dubs_app/bloc/login/login_events.dart';
 import 'package:dubs_app/bloc/login/login_states.dart';
+import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
+import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
 
 class LoginForm extends StatefulWidget {
@@ -27,7 +30,6 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     _loginBloc = LoginBloc(userRepo: _userRepository);
-    _loginBloc.add(AppStartEvent());
   }
 
   @override
@@ -63,89 +65,124 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Widget _buildEmailForm(LoginState state) {
-    return Container(
-      width: _currentWidth(),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
-        border: Border.all(
-          color: Colors.black,
-          width: 2,
-        ),
-      ),
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: 16),
-            width: _currentWidth() * .7,
-            child: Text(
-              "Email Login",
-              textAlign: TextAlign.left,
-              style: darkprimaryH1Bold,
+    return Stack(children: [
+      Container(
+        width: _currentWidth(),
+        decoration: BoxDecoration(),
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.topLeft,
+              padding: spacer.top.xxs,
+              margin: spacer.left.none,
+              child: Text(
+                "Email Login",
+                style: darkprimaryH1Bold,
+              ),
             ),
-          ),
-          Container(
-              width: _currentWidth() * .7,
+            Container(
+                child: TextFormField(
+                    style: darkprimaryPRegular,
+                    decoration: InputDecoration(
+                      labelText: "Email Address",
+                      fillColor: Colors.white,
+                      helperText: ' ',
+                      errorText: _emailError(state),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                    ),
+                    controller: _emailController)),
+            Container(
               child: TextFormField(
                   style: darkprimaryPRegular,
                   decoration: InputDecoration(
-                    labelText: "email",
+                    labelText: "Password",
                     fillColor: Colors.white,
                     helperText: ' ',
-                    errorText: _emailError(state),
+                    errorText: _passwordError(state),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
                   ),
-                  controller: _emailController)),
-          Container(
-            width: _currentWidth() * 0.7,
-            child: TextFormField(
-                style: darkprimaryPRegular,
-                decoration: InputDecoration(
-                  labelText: "password",
-                  fillColor: Colors.white,
-                  helperText: ' ',
-                  errorText: _passwordError(state),
-                ),
-                controller: _passwordController,
-                obscureText: true),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 0, bottom: 16),
-            width: _currentWidth() * 0.4,
-            child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              color: Colors.lightBlue[100],
-              onPressed:
-                  (state is! LoginLoadingState ? _onLoginButtonPressed : null),
-              child: Text('Login', style: darkprimaryPRegular),
+                  controller: _passwordController,
+                  obscureText: true),
             ),
-          ),
-        ],
-      ),
-    );
+            Container(
+              margin: EdgeInsets.only(top: 0, bottom: 16),
+              width: _currentWidth() * 0.4,
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                color: DarwinRed,
+                onPressed: (state is! LoginLoadingState
+                    ? _onLoginButtonPressed
+                    : null),
+                child: Text('Login', style: primaryPBold),
+              ),
+            ),
+          ],
+        ),
+      )
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
-      bloc: _loginBloc,
-      builder: (
-        BuildContext context,
-        LoginState state,
-      ) {
-        if (state is AuthenticationErrorState) {
-          _onWidgetDidBuild(() {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${state.errorMessage}'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          });
-        }
-
-        return Form(
-            child: Padding(
+    return BlocListener(
+        bloc: _loginBloc,
+        listener: (
+          BuildContext context,
+          LoginState state,
+        ) {
+          if (state is LoggedInState) {
+            switch (state.user.authState) {
+              case UserAuthState.FULLY_LOGGED_IN:
+                {
+                  Navigator.of(context)
+                      .pushNamed(homeRoute, arguments: state.user);
+                  return;
+                }
+              case UserAuthState.NOT_VERIFIED:
+                {
+                  Navigator.of(context)
+                      .pushNamed(verifyUserRoute, arguments: state.user);
+                  return;
+                }
+              case UserAuthState.NO_USERNAME:
+                {
+                  Navigator.of(context)
+                      .pushNamed(addUsernameRoute, arguments: state.user);
+                  return;
+                }
+            }
+          }
+        },
+        child: BlocBuilder(
+          bloc: _loginBloc,
+          builder: (
+            BuildContext context,
+            LoginState state,
+          ) {
+            if (state is AuthenticationErrorState) {
+              _onWidgetDidBuild(() {
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('${state.errorMessage}'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              });
+            }
+            return Form(
+              child: Padding(
                 padding: const EdgeInsets.all(36.0),
                 child: SingleChildScrollView(
                   child: Column(
@@ -159,9 +196,11 @@ class _LoginFormState extends State<LoginForm> {
                       )
                     ],
                   ),
-                )));
-      },
-    );
+                ),
+              ),
+            );
+          },
+        ));
   }
 
   void _onWidgetDidBuild(Function callback) {

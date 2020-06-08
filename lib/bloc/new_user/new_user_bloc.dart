@@ -2,6 +2,7 @@ import 'package:dubs_app/bloc/new_user/new_user_events.dart';
 import 'package:dubs_app/bloc/new_user/new_user_states.dart';
 import 'package:dubs_app/common/common_errors.dart';
 import 'package:dubs_app/common/text_validator.dart';
+import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:bloc/bloc.dart';
 
 class NewUserBloc extends Bloc<NewUserEvent, NewUserState> {
   final UserRepository _userRepo;
+  final _logger = getLogger("NewUserBloc");
 
   NewUserBloc({@required UserRepository userRepo})
       : assert(userRepo != null),
@@ -19,37 +21,52 @@ class NewUserBloc extends Bloc<NewUserEvent, NewUserState> {
 
   @override
   Stream<NewUserState> mapEventToState(NewUserEvent event) async* {
+    _logger.v("mapEventToState- Entering");
     if (event is AddUserEvent) {
       yield* mapAddUserEvent(event);
     }
   }
 
   Stream<NewUserState> mapAddUserEvent(AddUserEvent event) async* {
+    _logger.v("mapAddUserEvent- Entering");
     // change states to loading
     yield LoadingState();
 
     // validate inputs
     InvalidInputState validateInputs = _validateAddUserEvent(event);
     if (validateInputs != null) {
+      _logger.d("mapAddUserEvent- Inputs are invalid");
       yield validateInputs;
+      return;
+    }
+
+    // sanity check that user is not already logged in
+    if (await _userRepo.isLoggedIn()) {
+      _logger
+          .e("mapAddUserEvent- User is logged in. Can't create another user");
+      // TODO- maybe sign them out and continue
+      yield LoggedInState(await _userRepo.getUser());
       return;
     }
 
     // contact the repo
     User newUser;
     try {
-      newUser = await _userRepo
-          .createUser(event.email, event.password1)
-          .timeout(const Duration(seconds: 5));
+      newUser = await _userRepo.createUser(event.email, event.password1);
     } catch (e) {
-      yield LoginErrorState("Failed to create user");
+      _logger.e("mapAddUserEvent- Failed to create a user with error '" +
+          e.toString() +
+          "'");
+      yield LoginErrorState(e.toString());
+      return;
     }
-    yield LoggedInState(newUser);
+    _logger.d("mapAddUserEvent- user has been created");
 
-    // TODO: update the user information
+    yield LoggedInState(newUser);
   }
 
   InvalidInputState _validateAddUserEvent(AddUserEvent event) {
+    _logger.v("_validateAddUserEvent- entering");
     String emailError;
     String password1Error;
     String password2Error;
@@ -72,6 +89,13 @@ class NewUserBloc extends Bloc<NewUserEvent, NewUserState> {
     if (emailError != null ||
         password1Error != null ||
         password2Error != null) {
+      _logger.v("_validateAddUserEvent- email error '" +
+          checkAndPrint(emailError) +
+          "', p1 error '" +
+          checkAndPrint(password1Error) +
+          "', p2 error '" +
+          checkAndPrint(password2Error) +
+          "'");
       return InvalidInputState(emailError, password1Error, password2Error);
     }
     return null;
