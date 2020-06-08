@@ -247,6 +247,7 @@ class _AddFriendPageState extends State<AddFriendPage> {
                       textAlign: TextAlign.left,
                     ),
                   ),
+                  // TODO: Need to add friend requests here, and ideally this will only show when user has friends requests.
                 ]));
           }),
     );
