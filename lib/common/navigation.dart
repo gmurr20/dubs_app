@@ -53,14 +53,13 @@ class NavigationHelper {
     switch (navigateTo) {
       case NavigationPageResult.PROFILE:
         {
-          //     Navigator.of(context)
-          // //                     .pushNamed(homeRoute, arguments: user);
-          break;
+          Navigator.of(context).pushNamed(profilePageRoute, arguments: user);
+          return;
         }
       case NavigationPageResult.HOME:
         {
           Navigator.of(context).pushNamed(homeRoute, arguments: user);
-          break;
+          return;
         }
       case NavigationPageResult.CHAT:
         {
