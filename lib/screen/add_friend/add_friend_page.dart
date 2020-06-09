@@ -53,7 +53,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
 
   void _leavePage() {
     _logger.v("_leavePage- entering");
-    Navigator.of(context).pushNamed(homeRoute, arguments: _currentuser);
+    //  Navigator.of(context).pushNamed(homeRoute, arguments: _currentuser);
+    // [Brian:] this helps the animation, will it throw off the flow?
+    Navigator.of(context).pop();
   }
 
   void _acceptFriendRequest(String friendId) {
