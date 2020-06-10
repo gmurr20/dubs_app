@@ -1,10 +1,9 @@
 import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/router/main_page_navigation.dart';
 import 'package:dubs_app/screen/add_friend/add_friend_page.dart';
-import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
-import 'package:dubs_app/screen/profile/profile_page.dart';
 import 'package:dubs_app/screen/set_user_data/set_user_data_page.dart';
 import 'package:dubs_app/screen/splash/splash_page.dart';
 import 'package:dubs_app/screen/template_screen/template_screen.dart';
@@ -18,7 +17,6 @@ const String homeRoute = '/home';
 const String verifyUserRoute = "/verifyUser";
 const String addUsernameRoute = "/addUsername";
 const String addFriendsRoute = "/addFriends";
-const String profilePageRoute = "/profile";
 
 class Router {
   static UserRepository userRepo = UserRepository();
@@ -39,16 +37,14 @@ class Router {
             VerifyUserPage(userRepository: userRepo, user: endUser));
       case homeRoute:
         final User endUser = settings.arguments;
-        return _createNewPage(HomePage(user: endUser));
+        return _createNewPage(
+            MainPageNavigationController(user: endUser, userRepo: userRepo));
       case addFriendsRoute:
         final User endUser = settings.arguments;
         return _createNewPage(
             AddFriendPage(userRepository: userRepo, user: endUser));
       case addUsernameRoute:
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
-      case profilePageRoute:
-        final User endUser = settings.arguments;
-        return _createNewPage(ProfilePage(userRepo: userRepo, user: endUser));
       case testRoute:
         return _createNewPage(MyNewWidget());
       default:
