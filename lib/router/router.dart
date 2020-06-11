@@ -3,7 +3,6 @@ import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/router/main_page_navigation.dart';
 import 'package:dubs_app/screen/add_friend/add_friend_page.dart';
-import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/set_user_data/set_user_data_page.dart';
 import 'package:dubs_app/screen/splash/splash_page.dart';

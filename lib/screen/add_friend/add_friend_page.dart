@@ -53,7 +53,9 @@ class _AddFriendPageState extends State<AddFriendPage> {
 
   void _leavePage() {
     _logger.v("_leavePage- entering");
-    Navigator.of(context).pushNamed(homeRoute, arguments: _currentuser);
+    //  Navigator.of(context).pushNamed(homeRoute, arguments: _currentuser);
+    // [Brian:] this helps the animation, will it throw off the flow?
+    Navigator.of(context).pop();
   }
 
   void _acceptFriendRequest(String friendId) {
@@ -104,82 +106,74 @@ class _AddFriendPageState extends State<AddFriendPage> {
       );
     }
 
-    return Expanded(
-      child: Column(children: [
-        NotificationListener<ScrollNotification>(
-          onNotification: _onScroll,
-          child: ListView.separated(
-            padding: spacer.top.xs + spacer.left.xxs + spacer.right.xxs,
-            itemCount: searchResults.length,
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            separatorBuilder: (context, index) => Divider(
-              color: Colors.white,
-            ),
-            itemBuilder: (context, index) {
-              Widget trailingWidget;
-              switch (searchResults[index].state) {
-                case UserRelationshipState.FRIENDS:
-                  trailingWidget = Container(
-                    alignment: Alignment.centerRight,
-                    width: 25,
-                    child: Icon(Icons.people, color: Colors.white),
-                  );
-                  break;
-                case UserRelationshipState.INCOMING_INVITE:
-                  // TODO: this looks like shit
-                  trailingWidget = Container(
-                    alignment: Alignment.centerRight,
-                    width: 180,
-                    child: Row(children: <Widget>[
-                      RaisedButton(
-                          color: Colors.green[50],
-                          onPressed: () =>
-                              _acceptFriendRequest(searchResults[index].userId),
-                          child: Text("Accept")),
-                      RaisedButton(
-                          color: Colors.red[50],
-                          onPressed: () => _declineFriendRequest(
-                              searchResults[index].userId),
-                          child: Text("Decline"))
-                    ]),
-                  );
-                  ;
-                  break;
-                case UserRelationshipState.OUTSTANDING_INVITE:
-                  trailingWidget = Container(
-                      alignment: Alignment.centerRight,
-                      //  TODO: Need to fix this should not be a fixed width.
-                      width: 120,
-                      child: Row(children: <Widget>[
-                        Text(
-                          "Request sent",
-                          style: primaryPRegular,
-                        ),
-                        Icon(Icons.check, color: Colors.green[900])
-                      ]));
-                  break;
-                case UserRelationshipState.NOT_FRIENDS:
-                  trailingWidget = Container(
-                    alignment: Alignment.centerRight,
-                    width: 25,
-                    child: IconButton(
-                      icon: Icon(Icons.person_add, color: Colors.white),
+    return Column(children: [
+      NotificationListener<ScrollNotification>(
+        onNotification: _onScroll,
+        child: ListView.builder(
+          padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
+          itemCount: searchResults.length,
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          // separatorBuilder: (context, index) => Divider(),
+          itemBuilder: (context, index) {
+            Widget trailingWidget;
+            switch (searchResults[index].state) {
+              case UserRelationshipState.FRIENDS:
+                trailingWidget = IconButton(
+                  icon: Icon(Icons.people, color: Colors.black),
+                  tooltip: 'Friend',
+                  color: Colors.grey[300],
+                  onPressed: () {},
+                );
+                break;
+              case UserRelationshipState.INCOMING_INVITE:
+                // TODO: this looks like shit
+                trailingWidget = Row(children: <Widget>[
+                  RaisedButton(
+                      color: Colors.green[50],
                       onPressed: () =>
-                          _sendFriendRequest(searchResults[index].userId),
-                    ),
-                  );
-                  break;
-              }
-              return ListTile(
-                  title:
-                      Text(searchResults[index].username, style: primaryPBold),
-                  trailing: trailingWidget);
-            },
-          ),
+                          _acceptFriendRequest(searchResults[index].userId),
+                      child: Text("Accept")),
+                  RaisedButton(
+                      color: Colors.red[50],
+                      onPressed: () =>
+                          _declineFriendRequest(searchResults[index].userId),
+                      child: Text("Decline"))
+                ]);
+
+                ;
+                break;
+              case UserRelationshipState.OUTSTANDING_INVITE:
+                trailingWidget = IconButton(
+                  tooltip: 'Friend request sent',
+                  color: Colors.grey[300],
+                  icon: Icon(Icons.check, color: Colors.black),
+                  onPressed: () {},
+                );
+                break;
+              case UserRelationshipState.NOT_FRIENDS:
+                trailingWidget = IconButton(
+                  tooltip: 'Add friend',
+                  color: Colors.grey[300],
+                  icon: Icon(Icons.person_add, color: Colors.black),
+                  onPressed: () =>
+                      _sendFriendRequest(searchResults[index].userId),
+                );
+
+                break;
+            }
+            return Card(
+              child: ListTile(
+                title: Text(searchResults[index].username,
+                    style: darkprimaryPBold),
+                trailing: Container(
+                    decoration: BoxDecoration(), child: trailingWidget),
+              ),
+            );
+          },
         ),
-      ]),
-    );
+      ),
+    ]);
   }
 
   @override
@@ -204,18 +198,29 @@ class _AddFriendPageState extends State<AddFriendPage> {
                   // this close button will give the user an escape hatch
                   Container(
                     alignment: Alignment.topLeft,
+                    padding: spacer.top.xl + spacer.left.sm,
                     child: IconButton(
                       alignment: Alignment.topLeft,
-                      padding: spacer.top.xl + spacer.left.sm,
                       icon: Icon(Icons.arrow_back_ios),
                       color: Colors.white,
                       iconSize: 22,
                       onPressed: _leavePage,
                     ),
                   ),
+                  //  Container(
+                  //    alignment: Alignment.topLeft,
+                  //    padding: spacer.top.xxs + spacer.bottom.xs,
+                  //  margin: spacer.left.xs + spacer.right.xs,
+                  // child: Text(
+                  //  'Added me',
+                  //  style: primaryH1Bold,
+                  //  textAlign: TextAlign.left,
+                  //  ),
+                  // ),
+                  // TODO: Need to add friend requests here, and ideally this will only show when user has friends requests.
                   Container(
                     alignment: Alignment.topLeft,
-                    padding: spacer.top.xs + spacer.bottom.xs,
+                    padding: spacer.top.xxs + spacer.bottom.xs,
                     margin: spacer.left.xs + spacer.right.xs,
                     child: Text(
                       'Add friends',
@@ -227,23 +232,18 @@ class _AddFriendPageState extends State<AddFriendPage> {
                     alignment: Alignment.topLeft,
                     padding: spacer.top.none + spacer.bottom.xs,
                     margin: spacer.left.xs + spacer.right.xs,
-                    child: TextFormField(
-                        style: primaryPRegular,
-                        cursorColor: Colors.white,
-                        decoration: InputDecoration(
-                          labelText: "Search",
-                          labelStyle: primaryPRegular,
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                        ),
-                        onFieldSubmitted: _search,
+                    child: CupertinoTextField(
+                        style: darkprimaryPRegular,
+                        cursorColor: Colors.black,
+                        placeholder: 'Search',
+                        onSubmitted: _search,
+                        autocorrect: true,
+                        autofocus: true,
+                        showCursor: true,
+                        enableSuggestions: true,
                         controller: _searchController),
                   ),
-                  _buildSearchResults(state)
+                  _buildSearchResults(state),
                 ]));
           }),
     );
