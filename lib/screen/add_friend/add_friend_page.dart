@@ -119,45 +119,164 @@ class _AddFriendPageState extends State<AddFriendPage> {
             Widget trailingWidget;
             switch (searchResults[index].state) {
               case UserRelationshipState.FRIENDS:
-                trailingWidget = IconButton(
-                  icon: Icon(Icons.people, color: Colors.black),
-                  tooltip: 'Friend',
-                  color: Colors.grey[300],
+                trailingWidget = FlatButton(
+                  padding: spacer.all.none + spacer.right.xs,
+                  color: Colors.grey[100],
+                  splashColor: Colors.grey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100.0),
+                  ),
                   onPressed: () {},
+                  child: Wrap(
+                    // alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        alignment: Alignment.center,
+                        icon: Icon(
+                          Icons.people,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                        tooltip: 'Friends',
+                        enableFeedback: true,
+                        color: Colors.grey[300],
+                        onPressed: () {},
+                      ),
+                      Text(
+                        'Friends',
+                        // textAlign: TextAlign.center,
+                        style: darkprimaryPBoldSmall,
+                      ),
+                    ],
+                  ),
                 );
                 break;
               case UserRelationshipState.INCOMING_INVITE:
-                // TODO: this looks like shit
-                trailingWidget = Row(children: <Widget>[
-                  RaisedButton(
-                      color: Colors.green[50],
-                      onPressed: () =>
-                          _acceptFriendRequest(searchResults[index].userId),
-                      child: Text("Accept")),
-                  RaisedButton(
-                      color: Colors.red[50],
+                trailingWidget = Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 0,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        FlatButton(
+                          padding: spacer.all.none + spacer.right.xs,
+                          color: Colors.grey[100],
+                          splashColor: Colors.greenAccent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100.0),
+                          ),
+                          onPressed: () =>
+                              _acceptFriendRequest(searchResults[index].userId),
+                          child: Wrap(
+                            // alignment: WrapAlignment.center,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: <Widget>[
+                              IconButton(
+                                alignment: Alignment.center,
+                                icon: Icon(
+                                  Icons.person_add,
+                                  color: Colors.black,
+                                  size: 20,
+                                ),
+                                tooltip: 'Accept Request',
+                                enableFeedback: true,
+                                color: Colors.grey[300],
+                                onPressed: () {},
+                              ),
+                              Text(
+                                'Accept',
+                                // textAlign: TextAlign.center,
+                                style: darkprimaryPBoldSmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.clear,
+                        color: Colors.grey[400],
+                        size: 20,
+                      ),
+                      tooltip: 'Decline',
+                      enableFeedback: true,
+                      color: Colors.grey[300],
                       onPressed: () =>
                           _declineFriendRequest(searchResults[index].userId),
-                      child: Text("Decline"))
-                ]);
+                    )
+                  ],
+                );
 
-                ;
                 break;
               case UserRelationshipState.OUTSTANDING_INVITE:
-                trailingWidget = IconButton(
-                  tooltip: 'Friend request sent',
-                  color: Colors.grey[300],
-                  icon: Icon(Icons.check, color: Colors.black),
+                trailingWidget = FlatButton(
+                  padding: spacer.all.none + spacer.right.xs,
+                  color: Colors.grey[100],
+                  splashColor: Colors.grey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100.0),
+                  ),
                   onPressed: () {},
+                  child: Wrap(
+                    // alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        alignment: Alignment.center,
+                        icon: Icon(
+                          Icons.people_outline,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                        tooltip: 'Pending Request',
+                        enableFeedback: true,
+                        color: Colors.grey[300],
+                        onPressed: () {},
+                      ),
+                      Text(
+                        'Pending',
+                        // textAlign: TextAlign.center,
+                        style: darkprimaryPBoldSmall,
+                      ),
+                    ],
+                  ),
                 );
                 break;
               case UserRelationshipState.NOT_FRIENDS:
-                trailingWidget = IconButton(
-                  tooltip: 'Add friend',
-                  color: Colors.grey[300],
-                  icon: Icon(Icons.person_add, color: Colors.black),
+                trailingWidget = FlatButton(
+                  padding: spacer.all.none + spacer.right.xs,
+                  color: Colors.grey[100],
+                  splashColor: Colors.grey,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100.0),
+                  ),
                   onPressed: () =>
                       _sendFriendRequest(searchResults[index].userId),
+                  child: Wrap(
+                    // alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: <Widget>[
+                      IconButton(
+                        alignment: Alignment.center,
+                        icon: Icon(
+                          Icons.person_add,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                        tooltip: 'Send Friend Request',
+                        enableFeedback: true,
+                        color: Colors.grey[300],
+                        onPressed: () {},
+                      ),
+                      Text(
+                        'Add',
+                        // textAlign: TextAlign.center,
+                        style: darkprimaryPBoldSmall,
+                      ),
+                    ],
+                  ),
                 );
 
                 break;
@@ -166,8 +285,11 @@ class _AddFriendPageState extends State<AddFriendPage> {
               child: ListTile(
                 title: Text(searchResults[index].username,
                     style: darkprimaryPBold),
-                trailing: Container(
-                    decoration: BoxDecoration(), child: trailingWidget),
+                trailing: Container(child: trailingWidget),
+                contentPadding: spacer.top.xxs +
+                    spacer.bottom.xxs +
+                    spacer.left.xs +
+                    spacer.right.xxs,
               ),
             );
           },
