@@ -1,6 +1,7 @@
 import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/router/main_page_navigation.dart';
 import 'package:dubs_app/screen/add_friend/add_friend_page.dart';
 import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
@@ -37,7 +38,8 @@ class Router {
             VerifyUserPage(userRepository: userRepo, user: endUser));
       case homeRoute:
         final User endUser = settings.arguments;
-        return _createNewPage(HomePage(user: endUser));
+        return _createNewPage(
+            MainPageNavigationController(user: endUser, userRepo: userRepo));
       case addFriendsRoute:
         final User endUser = settings.arguments;
         return _createNewPage(
