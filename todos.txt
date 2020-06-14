@@ -5,3 +5,8 @@ What happens if the user is suddenly logged out on each page? Is the behavior wh
 Add tests for all the blocs and the user repo
 
 Better animations between pages
+
+On the add friends screen, we need to sort search results into the following sections: 
+1. Added Me (Appears on top, only when there are incoming requests)
+2. Add Friends (Looks good already)
+3. Friends (Should show all of the user's existing friends)
