@@ -1,6 +1,7 @@
 import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/screen/chat/chat_page.dart';
 import 'package:dubs_app/screen/home/home_page.dart';
 import 'package:dubs_app/screen/profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,7 +44,7 @@ class _MainPageNavigationControllerState
         key: PageStorageKey('home'),
         input: HomePageInput(_currentUser),
       ),
-      Container(child: Text("chat page"))
+      ChatPage(key: PageStorageKey("chat"), input: ChatPageInput(_currentUser))
     ];
   }
 
