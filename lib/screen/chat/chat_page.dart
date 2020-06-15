@@ -70,6 +70,22 @@ class _ChatPageState extends State<ChatPage> {
     List<ChatSearchResult> chats = List<ChatSearchResult>();
     chats.add(ChatSearchResult("G", "Gmilli20", "Dubs!", "1:01pm", ""));
     chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+    chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
+
     chats.add(
         ChatSearchResult("S", "SpookyCactus151", "No dubs.", "12:56pm", ""));
     return Scaffold(
@@ -94,16 +110,6 @@ class _ChatPageState extends State<ChatPage> {
             alignment: Alignment.topLeft,
             padding: spacer.top.xxl,
             margin: spacer.left.xs + spacer.right.xs,
-            //   decoration: BoxDecoration(
-            //    borderRadius: BorderRadius.circular(20.0),
-            //  color: const Color(0xffffffff),
-            // boxShadow: [
-            // BoxShadow(
-            //   color: const Color(0xcbf4f4f4),
-            // offset: Offset(-5, -5),
-            // blurRadius: 15)
-            // ],
-            // ),
             child: Stack(children: [
               Container(
                 padding: spacer.left.xs + spacer.top.xs + spacer.bottom.xs,
@@ -166,61 +172,65 @@ class _ChatPageState extends State<ChatPage> {
           ),
           NotificationListener<ScrollNotification>(
             onNotification: _onScroll,
-            child: ListView.builder(
-              padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
-              itemCount: chats.length,
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return Card(
-                    child: ListTile(
-                  title: Container(
-                    width: 200,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          margin: EdgeInsets.only(right: 10),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.grey),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              chats[index].iconInitials,
-                              style: TextStyle(color: Colors.white),
+            child: Container(
+              height: MediaQuery.of(context).size.height - 260,
+              child: ListView.builder(
+                padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
+                itemCount: chats.length,
+                addAutomaticKeepAlives: true,
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Card(
+                      child: ListTile(
+                    title: Container(
+                      width: 200,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            margin: EdgeInsets.only(right: 10),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.grey),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                chats[index].iconInitials,
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              chats[index].chatName,
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 5),
-                              child: Align(
-                                alignment: Alignment.bottomRight,
-                                child: Text(
-                                  chats[index].lastMessage,
-                                  style: TextStyle(fontSize: 15),
-                                ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                chats[index].chatName,
+                                style: TextStyle(fontSize: 20),
                               ),
-                            )
-                          ],
-                        )
-                      ],
+                              Container(
+                                margin: EdgeInsets.only(top: 5),
+                                child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(
+                                    chats[index].lastMessage,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  trailing: Text(chats[index].lastMessageTimestamp),
-                  contentPadding: spacer.top.xxs +
-                      spacer.bottom.xxs +
-                      spacer.left.xs +
-                      spacer.right.xxs,
-                ));
-              },
+                    trailing: Text(chats[index].lastMessageTimestamp),
+                    contentPadding: spacer.top.xxs +
+                        spacer.bottom.xxs +
+                        spacer.left.xs +
+                        spacer.right.xxs,
+                  ));
+                },
+              ),
             ),
           ),
         ]),
