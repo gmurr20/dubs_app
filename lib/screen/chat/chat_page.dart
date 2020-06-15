@@ -72,131 +72,159 @@ class _ChatPageState extends State<ChatPage> {
     chats.add(ChatSearchResult("B", "Bmac2233", "Dubs?", "12:58pm", ""));
     chats.add(
         ChatSearchResult("S", "SpookyCactus151", "No dubs.", "12:56pm", ""));
-    return SlidingUpPanel(
-      header: buildCloseButton(context),
-      controller: _pc,
-      backdropEnabled: true,
-      backdropColor: DarwinWhite,
-      backdropOpacity: .9,
-      backdropTapClosesPanel: true,
-      minHeight: 0,
-      maxHeight: MediaQuery.of(context).size.height,
-      panel: Container(
-          // child:
-          ),
-      body: Column(children: [
-        Container(
-            margin: EdgeInsets.only(top: 25, bottom: 10),
-            child: Row(children: [
-              Spacer(flex: 2),
-              Flexible(
-                flex: 3,
+    return Scaffold(
+      backgroundColor: const Color(0xfff2f2f2),
+      body: SlidingUpPanel(
+        header: buildCloseButton(context),
+        controller: _pc,
+        backdropEnabled: true,
+        margin: spacer.all.xs,
+        backdropColor: DarwinWhite,
+        backdropOpacity: .9,
+        backdropTapClosesPanel: true,
+        minHeight: 0,
+        maxHeight: 500,
+        borderRadius: BorderRadius.circular(20),
+        panel: Container(
+            // child:
+            ),
+        body: Column(children: [
+          //Header Modal
+          Container(
+            alignment: Alignment.topLeft,
+            padding: spacer.top.xxl,
+            margin: spacer.left.xs + spacer.right.xs,
+            //   decoration: BoxDecoration(
+            //    borderRadius: BorderRadius.circular(20.0),
+            //  color: const Color(0xffffffff),
+            // boxShadow: [
+            // BoxShadow(
+            //   color: const Color(0xcbf4f4f4),
+            // offset: Offset(-5, -5),
+            // blurRadius: 15)
+            // ],
+            // ),
+            child: Stack(children: [
+              Container(
+                padding: spacer.left.xs + spacer.top.xs + spacer.bottom.xs,
                 child: Container(
-                  alignment: Alignment.center,
+                  alignment: Alignment.topLeft,
+                  padding: spacer.top.xxs,
+                  margin: spacer.left.none,
                   child: Text(
-                    "Messages",
-                    style: TextStyle(fontSize: 30),
+                    "Message",
+                    style: darkprimaryH1Bold,
                   ),
                 ),
               ),
-              Spacer(flex: 1),
-              Flexible(
-                flex: 1,
+              Container(
+                alignment: Alignment.centerRight,
+                padding: spacer.top.xs + spacer.bottom.xs,
+                margin: spacer.right.md,
                 child: ClipOval(
                   child: Material(
-                    color: DarwinRed,
+                    borderOnForeground: true,
+                    color: Colors.white,
                     child: InkWell(
-                      child: SizedBox(
-                          width: 40, height: 40, child: Icon(Icons.edit)),
+                      child: Container(
+                          width: 40,
+                          height: 40,
+                          child: Icon(
+                            Icons.edit,
+                            color: DarwinRed,
+                          )),
                       onTap: _onNewMessagePressed,
                     ),
                   ),
                 ),
-              )
-            ])),
-        Container(
-          alignment: Alignment.topLeft,
-          padding: spacer.top.none + spacer.bottom.xs,
-          margin: spacer.left.xs + spacer.right.xs,
-          child: CupertinoTextField(
-              prefix: Icon(
-                Icons.search,
-                color: Colors.grey[500],
               ),
-              prefixMode: OverlayVisibilityMode.always,
-              obscureText: false,
-              enableInteractiveSelection: true,
-              style: darkprimaryPRegular,
-              cursorColor: Colors.black,
-              placeholder: 'Search',
-              onSubmitted: _search,
-              autocorrect: true,
-              autofocus: true,
-              showCursor: true,
-              enableSuggestions: true,
-              padding: spacer.all.xxs,
-              controller: _searchController),
-        ),
-        NotificationListener<ScrollNotification>(
-          onNotification: _onScroll,
-          child: ListView.builder(
-            padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
-            itemCount: chats.length,
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return Card(
-                  child: ListTile(
-                title: Container(
-                  width: 200,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        margin: EdgeInsets.only(right: 10),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.grey),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            chats[index].iconInitials,
-                            style: TextStyle(color: Colors.white),
+            ]),
+          ),
+
+          Container(
+            alignment: Alignment.topLeft,
+            padding: spacer.top.xxs + spacer.bottom.xxs,
+            margin: spacer.left.xs + spacer.right.xs,
+            child: CupertinoTextField(
+                prefix: Icon(
+                  Icons.search,
+                  color: Colors.grey[500],
+                ),
+                prefixMode: OverlayVisibilityMode.always,
+                obscureText: false,
+                enableInteractiveSelection: true,
+                style: darkprimaryPRegular,
+                cursorColor: Colors.black,
+                placeholder: 'Search',
+                onSubmitted: _search,
+                autocorrect: true,
+                autofocus: true,
+                showCursor: true,
+                enableSuggestions: true,
+                padding: spacer.all.xxs,
+                controller: _searchController),
+          ),
+          NotificationListener<ScrollNotification>(
+            onNotification: _onScroll,
+            child: ListView.builder(
+              padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
+              itemCount: chats.length,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return Card(
+                    child: ListTile(
+                  title: Container(
+                    width: 200,
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          margin: EdgeInsets.only(right: 10),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.grey),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              chats[index].iconInitials,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            chats[index].chatName,
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 5),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text(
-                                chats[index].lastMessage,
-                                style: TextStyle(fontSize: 15),
-                              ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              chats[index].chatName,
+                              style: TextStyle(fontSize: 20),
                             ),
-                          )
-                        ],
-                      )
-                    ],
+                            Container(
+                              margin: EdgeInsets.only(top: 5),
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: Text(
+                                  chats[index].lastMessage,
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                trailing: Text(chats[index].lastMessageTimestamp),
-                contentPadding: spacer.top.xxs +
-                    spacer.bottom.xxs +
-                    spacer.left.xs +
-                    spacer.right.xxs,
-              ));
-            },
+                  trailing: Text(chats[index].lastMessageTimestamp),
+                  contentPadding: spacer.top.xxs +
+                      spacer.bottom.xxs +
+                      spacer.left.xs +
+                      spacer.right.xxs,
+                ));
+              },
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

@@ -73,20 +73,33 @@ class _ProfilePageState extends State<ProfilePage> {
             ProfileState state,
           ) {
             return Scaffold(
-              backgroundColor: const Color(0xfff2f2f2),
-              body: Container(
-                alignment: Alignment.bottomCenter,
-                padding: spacer.bottom.xs + spacer.top.xs,
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text('Logout', style: primaryPBold),
-                  color: DarwinRed,
-                  onPressed: _onLogoutPressed,
-                ),
-              ),
-            );
+                backgroundColor: DarwinRed,
+                body: Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.topLeft,
+                      padding: spacer.top.xxl + spacer.bottom.xs,
+                      margin: spacer.left.sm + spacer.right.xs,
+                      child: Text(
+                        'Profile',
+                        style: primaryH1Bold,
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      padding: spacer.bottom.xs + spacer.top.xs,
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text('Logout', style: darkprimaryPBold),
+                        color: Colors.white,
+                        onPressed: _onLogoutPressed,
+                      ),
+                    ),
+                  ],
+                ));
           }),
     );
   }
