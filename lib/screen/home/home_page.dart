@@ -163,34 +163,14 @@ class _HomePageState extends State<HomePage> {
             children: [
               Column(
                 children: [
-                  //Header Modal
                   Container(
-                    height: 80.0,
-                    margin: EdgeInsets.only(top: 40, left: 12, right: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: const Color(0xffffffff),
-                      boxShadow: [
-                        BoxShadow(
-                            color: const Color(0xcbf4f4f4),
-                            offset: Offset(-5, -5),
-                            blurRadius: 15)
-                      ],
-                    ),
+                    alignment: Alignment.topLeft,
+                    padding: spacer.top.xxl,
+                    margin: spacer.left.xs + spacer.right.xs,
                     child: Stack(children: [
                       Container(
                         padding:
-                            spacer.left.md + spacer.top.xs + spacer.bottom.xs,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.0),
-                          color: const Color(0xffffffff),
-                          boxShadow: [
-                            BoxShadow(
-                                color: const Color(0x1a000000),
-                                offset: Offset(5, 5),
-                                blurRadius: 15)
-                          ],
-                        ),
+                            spacer.left.xs + spacer.top.xs + spacer.bottom.xs,
                         child: Container(
                           alignment: Alignment.topLeft,
                           padding: spacer.top.xxs,
@@ -202,16 +182,24 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Container(
-                        alignment: Alignment.topRight,
+                        alignment: Alignment.centerRight,
                         padding: spacer.top.xs + spacer.bottom.xs,
                         margin: spacer.right.md,
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                        child: ClipOval(
+                          child: Material(
+                            borderOnForeground: true,
+                            color: Colors.white,
+                            child: InkWell(
+                              child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  child: Icon(
+                                    Icons.edit,
+                                    color: DarwinRed,
+                                  )),
+                              onTap: () {},
+                            ),
                           ),
-                          child: Text('New Message', style: primaryPBold),
-                          color: DarwinRed,
-                          onPressed: () {},
                         ),
                       ),
                     ]),
