@@ -1,6 +1,7 @@
 import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
+import 'package:dubs_app/Widgets/WaveWidget.dart';
 import 'package:dubs_app/bloc/profile/profile_bloc.dart';
 import 'package:dubs_app/bloc/profile/profile_events.dart';
 import 'package:dubs_app/bloc/profile/profile_states.dart';
@@ -72,34 +73,54 @@ class _ProfilePageState extends State<ProfilePage> {
             BuildContext context,
             ProfileState state,
           ) {
+            final size = MediaQuery.of(context).size;
             return Scaffold(
                 backgroundColor: DarwinRed,
-                body: Column(
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.topLeft,
-                      padding: spacer.top.xxl + spacer.bottom.xs,
-                      margin: spacer.left.sm + spacer.right.xs,
-                      child: Text(
-                        'Profile',
-                        style: primaryH1Bold,
-                        textAlign: TextAlign.left,
+                body: Stack(children: [
+                  WaveWidget(
+                    size: size,
+                    yOffset: size.height / 1.25,
+                    color: const Color(0xfff2f2f2),
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.topLeft,
+                        padding: spacer.top.xxl,
+                        margin: spacer.left.xs + spacer.right.xs,
+                        child: Stack(children: [
+                          Container(
+                            padding: spacer.left.xs +
+                                spacer.top.xs +
+                                spacer.bottom.xs,
+                            child: Container(
+                              alignment: Alignment.topLeft,
+                              padding: spacer.top.xxs,
+                              margin: spacer.left.none,
+                              child: Text(
+                                "Profile",
+                                style: primaryH1Bold,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            padding: spacer.top.xs + spacer.bottom.xs,
+                            margin: spacer.right.md,
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text('Logout', style: darkprimaryPBold),
+                              color: Colors.white,
+                              onPressed: _onLogoutPressed,
+                            ),
+                          ),
+                        ]),
                       ),
-                    ),
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      padding: spacer.bottom.xs + spacer.top.xs,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text('Logout', style: darkprimaryPBold),
-                        color: Colors.white,
-                        onPressed: _onLogoutPressed,
-                      ),
-                    ),
-                  ],
-                ));
+                    ],
+                  )
+                ]));
           }),
     );
   }
