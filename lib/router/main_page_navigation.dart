@@ -64,7 +64,7 @@ class _MainPageNavigationControllerState
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.chat_bubble),
-          title: Text('Chat'),
+          title: Text('Message'),
         ),
       ],
     );
