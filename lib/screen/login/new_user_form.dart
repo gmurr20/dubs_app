@@ -70,7 +70,7 @@ class _NewUserFormState extends State<NewUserForm> {
       Column(children: [
         Container(
           alignment: Alignment.topLeft,
-          padding: spacer.top.xl + spacer.bottom.xxs,
+          padding: spacer.top.xl + spacer.bottom.sm,
           margin: spacer.left.none,
           child: Text(
             'Create Account',
@@ -84,16 +84,29 @@ class _NewUserFormState extends State<NewUserForm> {
                 color: Colors.white,
                 fontSize: 14,
               ),
-              cursorColor: Colors.white,
+              cursorColor: Colors.black,
               decoration: InputDecoration(
-                  labelText: "email",
-                  labelStyle: primaryPRegular,
+                  errorStyle: TextStyle(color: Colors.white),
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelText: "Email",
+                  labelStyle: darkprimaryPRegular,
+                  filled: true,
                   fillColor: Colors.white,
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   helperText: ' ',
                   errorText: _emailError(state)),
@@ -101,17 +114,30 @@ class _NewUserFormState extends State<NewUserForm> {
         ),
         Container(
           child: TextFormField(
-              style: TextStyle(fontSize: 14, color: Colors.white),
-              cursorColor: Colors.white,
+              style: TextStyle(fontSize: 14, color: Colors.black),
+              cursorColor: Colors.black,
               decoration: InputDecoration(
-                  labelText: "password",
-                  labelStyle: primaryPRegular,
+                  errorStyle: TextStyle(color: Colors.white),
+                  labelText: "Password",
+                  labelStyle: darkprimaryPRegular,
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  filled: true,
                   fillColor: Colors.white,
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  focusedBorder: UnderlineInputBorder(
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   helperText: ' ',
                   errorText: _password1Error(state)),
@@ -121,16 +147,29 @@ class _NewUserFormState extends State<NewUserForm> {
         Container(
           child: TextFormField(
               style: TextStyle(fontSize: 14, color: Colors.white),
-              cursorColor: Colors.white,
+              cursorColor: Colors.black,
               decoration: InputDecoration(
-                labelText: "confirm password",
-                labelStyle: primaryPRegular,
+                errorStyle: TextStyle(color: Colors.white),
+                labelText: "Confirm password",
+                labelStyle: darkprimaryPRegular,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                filled: true,
                 fillColor: Colors.white,
-                enabledBorder: UnderlineInputBorder(
+                enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
+                  borderRadius: BorderRadius.circular(15),
                 ),
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 helperText: ' ',
                 errorText: _password2Error(state),

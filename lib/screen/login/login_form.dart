@@ -72,43 +72,64 @@ class _LoginFormState extends State<LoginForm> {
         child: Column(
           children: [
             Container(
-              alignment: Alignment.topLeft,
-              padding: spacer.top.xxs,
-              margin: spacer.left.none,
-              child: Text(
-                "Email Login",
-                style: darkprimaryH1Bold,
-              ),
-            ),
-            Container(
                 child: TextFormField(
                     style: darkprimaryPRegular,
+                    cursorColor: Colors.black,
                     decoration: InputDecoration(
+                      errorStyle: TextStyle(color: Colors.white),
+                      filled: true,
+                      focusColor: Colors.white,
+                      hoverColor: Colors.white,
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
                       labelText: "Email Address",
                       fillColor: Colors.white,
                       helperText: ' ',
                       errorText: _emailError(state),
-                      enabledBorder: UnderlineInputBorder(
+                      errorBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      focusedBorder: UnderlineInputBorder(
+                      focusedErrorBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                        borderRadius: BorderRadius.circular(15),
                       ),
                     ),
                     controller: _emailController)),
             Container(
               child: TextFormField(
                   style: darkprimaryPRegular,
+                  cursorColor: Colors.black,
                   decoration: InputDecoration(
+                    errorStyle: TextStyle(color: Colors.white),
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    filled: true,
                     labelText: "Password",
                     fillColor: Colors.white,
                     helperText: ' ',
                     errorText: _passwordError(state),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    focusedBorder: UnderlineInputBorder(
+                    focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
                   controller: _passwordController,
@@ -121,11 +142,11 @@ class _LoginFormState extends State<LoginForm> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                color: DarwinRed,
+                color: Colors.white,
                 onPressed: (state is! LoginLoadingState
                     ? _onLoginButtonPressed
                     : null),
-                child: Text('Login', style: primaryPBold),
+                child: Text('Login', style: darkprimaryPBold),
               ),
             ),
           ],
@@ -176,7 +197,7 @@ class _LoginFormState extends State<LoginForm> {
                 Scaffold.of(context).showSnackBar(
                   SnackBar(
                     content: Text('${state.errorMessage}'),
-                    backgroundColor: Colors.red,
+                    backgroundColor: Colors.white,
                   ),
                 );
               });
