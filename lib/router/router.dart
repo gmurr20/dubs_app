@@ -7,8 +7,11 @@ import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/set_user_data/set_user_data_page.dart';
 import 'package:dubs_app/screen/splash/splash_page.dart';
 import 'package:dubs_app/screen/template_screen/template_screen.dart';
+import 'package:dubs_app/screen/verify_user/tutorial/home_model.dart';
+import 'package:dubs_app/screen/verify_user/tutorial/tutorial.dart';
 import 'package:dubs_app/screen/verify_user/verify_user_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 const String splashRoute = '/';
 const String loginRoute = '/login';
@@ -17,6 +20,7 @@ const String homeRoute = '/home';
 const String verifyUserRoute = "/verifyUser";
 const String addUsernameRoute = "/addUsername";
 const String addFriendsRoute = "/addFriends";
+const String tutorialROute = '/tutorial';
 
 class Router {
   static UserRepository userRepo = UserRepository();
@@ -46,7 +50,7 @@ class Router {
       case addUsernameRoute:
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case testRoute:
-        return _createNewPage(MyNewWidget());
+        return _createNewPage(HomeView());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
