@@ -1,11 +1,8 @@
-import 'dart:ffi';
-
 import 'package:dubs_app/DesignSystem/colors.dart';
-import 'package:dubs_app/screen/verify_user/tutorial/tutorial_bloc.dart';
-import 'package:dubs_app/screen/verify_user/tutorial/tutorial_events.dart';
-import 'package:dubs_app/screen/verify_user/tutorial/tutorial_states.dart';
+import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_bloc.dart';
+import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_events.dart';
+import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_states.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/widgets.dart';
 
@@ -17,21 +14,22 @@ class AnimatedCircle extends AnimatedWidget {
   final double flip;
   final Color color;
 
-  AnimatedCircle({
-    Key key,
-    @required this.animation,
-    this.horizontalTween,
-    this.horizontalAnimation,
-    @required this.color,
-    @required this.flip,
-    @required this.tween,
-  })  : assert(flip == 1 || flip == -1),
+  CircleAnimationState state;
+
+  AnimatedCircle(
+      {Key key,
+      @required this.animation,
+      this.horizontalTween,
+      this.horizontalAnimation,
+      @required this.color,
+      @required this.flip,
+      @required this.tween,
+      @required this.state})
+      : assert(flip == 1 || flip == -1),
         super(key: key, listenable: animation);
 
   @override
   Widget build(BuildContext context) {
-    final bloc = CircleAnimationState();
-
     return Transform(
       alignment: FractionalOffset.centerLeft,
       transform: Matrix4.identity()
@@ -58,7 +56,7 @@ class AnimatedCircle extends AnimatedWidget {
           ),
           child: Icon(
             flip == 1 ? Icons.keyboard_arrow_right : Icons.keyboard_arrow_left,
-            color: bloc.index % 2 == 0 ? Global.white : Global.mediumBlue,
+            color: state.index % 2 == 0 ? Global.white : Global.mediumBlue,
           ),
         ),
       ),
@@ -77,11 +75,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   Animation endAnimation;
   Animation horizontalAnimation;
   PageController pageController;
-  CircleAnimationBloc _bloc;
+  TutorialBloc _bloc;
 
   @override
   void initState() {
-    _bloc = CircleAnimationBloc();
+    _bloc = TutorialBloc();
     super.initState();
 
     pageController = PageController();
@@ -105,17 +103,15 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
     animationController
       ..addListener(() {
-        final bloc = CircleAnimationState();
         if (animationController.value > 0.5) {
-          bloc.isHalfWay = true;
+          _bloc.add(HalfwayEvent(true));
         } else {
-          bloc.isHalfWay = false;
+          _bloc.add(HalfwayEvent(false));
         }
       })
       ..addStatusListener((status) {
-        final bloc = CircleAnimationState();
         if (status == AnimationStatus.completed) {
-          bloc.swapColors();
+          _bloc.add(SwapColorsEvent());
           animationController.reset();
         }
       });
@@ -128,92 +124,106 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  void _onTapGestureDetector(CircleAnimationState state) {
+    if (animationController.status != AnimationStatus.forward) {
+      _bloc.add(NextPageEvent());
+      pageController.animateToPage(state.index,
+          duration: Duration(milliseconds: 500), curve: Curves.easeInOutQuad);
+      animationController.forward();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bloc = CircleAnimationState();
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return BlocListener(
       bloc: _bloc,
       listener: (
         BuildContext context,
-        CircleAnimation state,
+        TutorialState state,
       ) {},
-      child: Scaffold(
-        backgroundColor:
-            bloc.isHalfWay ? bloc.foreGroundColor : bloc.backGroundColor,
-        body: Stack(
-          children: <Widget>[
-            Container(
-              color:
-                  bloc.isHalfWay ? bloc.foreGroundColor : bloc.backGroundColor,
-              width: screenWidth / 2.0 - Global.radius / 2.0,
-              height: double.infinity,
-            ),
-            Transform(
-              transform: Matrix4.identity()
-                ..translate(
-                  screenWidth / 2 - Global.radius / 2.0,
-                  screenHeight - Global.radius - Global.bottomPadding,
-                ),
-              child: GestureDetector(
-                onTap: () {
-                  if (animationController.status != AnimationStatus.forward) {
-                    bloc.isToggled = !bloc.isToggled;
-                    bloc.index++;
-                    if (bloc.index > 3) {
-                      bloc.index = 0;
-                    }
-                    pageController.animateToPage(bloc.index,
-                        duration: Duration(milliseconds: 500),
-                        curve: Curves.easeInOutQuad);
-                    animationController.forward();
-                  }
-                },
-                child: Stack(
-                  children: <Widget>[
-                    AnimatedCircle(
-                      animation: startAnimation,
-                      color: bloc.foreGroundColor,
-                      flip: 1.0,
-                      tween: Tween<double>(begin: 1, end: Global.radius),
-                    ),
-                    AnimatedCircle(
-                      animation: endAnimation,
-                      color: bloc.backGroundColor,
-                      flip: -1.0,
-                      horizontalTween:
-                          Tween<double>(begin: 0, end: -Global.radius),
-                      horizontalAnimation: horizontalAnimation,
-                      tween: Tween<double>(begin: Global.radius, end: 1.0),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            IgnorePointer(
-              ignoring: true,
-              child: PageView.builder(
-                controller: pageController,
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Center(
-                    child: Text(
-                      'Page ${index + 1}',
-                      style: TextStyle(
-                        color:
-                            index % 2 == 0 ? Global.mediumBlue : Global.white,
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.w900,
+      child: BlocBuilder(
+          bloc: _bloc,
+          builder: (
+            BuildContext context,
+            TutorialState state,
+          ) {
+            CircleAnimationState animationState;
+            if (state is TempAnimationState) {
+              animationState = state.state;
+            } else {
+              animationState = state;
+            }
+            return Scaffold(
+              backgroundColor: animationState.isHalfWay
+                  ? animationState.foreGroundColor
+                  : animationState.backGroundColor,
+              body: Stack(
+                children: <Widget>[
+                  Container(
+                    color: animationState.isHalfWay
+                        ? animationState.foreGroundColor
+                        : animationState.backGroundColor,
+                    width: screenWidth / 2.0 - Global.radius / 2.0,
+                    height: double.infinity,
+                  ),
+                  Transform(
+                    transform: Matrix4.identity()
+                      ..translate(
+                        screenWidth / 2 - Global.radius / 2.0,
+                        screenHeight - Global.radius - Global.bottomPadding,
+                      ),
+                    child: GestureDetector(
+                      onTap: () => _onTapGestureDetector(animationState),
+                      child: Stack(
+                        children: <Widget>[
+                          AnimatedCircle(
+                              animation: startAnimation,
+                              color: animationState.foreGroundColor,
+                              flip: 1.0,
+                              tween:
+                                  Tween<double>(begin: 1, end: Global.radius),
+                              state: animationState),
+                          AnimatedCircle(
+                              animation: endAnimation,
+                              color: animationState.backGroundColor,
+                              flip: -1.0,
+                              horizontalTween:
+                                  Tween<double>(begin: 0, end: -Global.radius),
+                              horizontalAnimation: horizontalAnimation,
+                              tween:
+                                  Tween<double>(begin: Global.radius, end: 1.0),
+                              state: animationState),
+                        ],
                       ),
                     ),
-                  );
-                },
+                  ),
+                  IgnorePointer(
+                    ignoring: true,
+                    child: PageView.builder(
+                      controller: pageController,
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        return Center(
+                          child: Text(
+                            'Page ${index + 1}',
+                            style: TextStyle(
+                              color: index % 2 == 0
+                                  ? Global.mediumBlue
+                                  : Global.white,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 }
