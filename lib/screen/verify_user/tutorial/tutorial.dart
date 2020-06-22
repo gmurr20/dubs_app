@@ -1,7 +1,13 @@
+import 'dart:ffi';
+
 import 'package:dubs_app/DesignSystem/colors.dart';
-import 'package:dubs_app/screen/verify_user/tutorial/home_model.dart';
+import 'package:dubs_app/screen/verify_user/tutorial/tutorial_bloc.dart';
+import 'package:dubs_app/screen/verify_user/tutorial/tutorial_events.dart';
+import 'package:dubs_app/screen/verify_user/tutorial/tutorial_states.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/widgets.dart';
 
 class AnimatedCircle extends AnimatedWidget {
   final Tween<double> tween;
@@ -24,7 +30,8 @@ class AnimatedCircle extends AnimatedWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<HomeModel>(context);
+    final bloc = CircleAnimationState();
+
     return Transform(
       alignment: FractionalOffset.centerLeft,
       transform: Matrix4.identity()
@@ -51,7 +58,7 @@ class AnimatedCircle extends AnimatedWidget {
           ),
           child: Icon(
             flip == 1 ? Icons.keyboard_arrow_right : Icons.keyboard_arrow_left,
-            color: model.index % 2 == 0 ? Global.white : Global.mediumBlue,
+            color: bloc.index % 2 == 0 ? Global.white : Global.mediumBlue,
           ),
         ),
       ),
@@ -70,9 +77,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   Animation endAnimation;
   Animation horizontalAnimation;
   PageController pageController;
+  CircleAnimationBloc _bloc;
 
   @override
   void initState() {
+    _bloc = CircleAnimationBloc();
     super.initState();
 
     pageController = PageController();
@@ -95,19 +104,19 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     );
 
     animationController
-      ..addStatusListener((status) {
-        final model = Provider.of<HomeModel>(context);
-        if (status == AnimationStatus.completed) {
-          model.swapColors();
-          animationController.reset();
+      ..addListener(() {
+        final bloc = CircleAnimationState();
+        if (animationController.value > 0.5) {
+          bloc.isHalfWay = true;
+        } else {
+          bloc.isHalfWay = false;
         }
       })
-      ..addListener(() {
-        final model = Provider.of<HomeModel>(context);
-        if (animationController.value > 0.5) {
-          model.isHalfWay = true;
-        } else {
-          model.isHalfWay = false;
+      ..addStatusListener((status) {
+        final bloc = CircleAnimationState();
+        if (status == AnimationStatus.completed) {
+          bloc.swapColors();
+          animationController.reset();
         }
       });
   }
@@ -115,86 +124,95 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   @override
   void dispose() {
     animationController.dispose();
+    _bloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<HomeModel>(context);
+    final bloc = CircleAnimationState();
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor:
-          model.isHalfWay ? model.foreGroundColor : model.backGroundColor,
-      body: Stack(
-        children: <Widget>[
-          Container(
-            color:
-                model.isHalfWay ? model.foreGroundColor : model.backGroundColor,
-            width: screenWidth / 2.0 - Global.radius / 2.0,
-            height: double.infinity,
-          ),
-          Transform(
-            transform: Matrix4.identity()
-              ..translate(
-                screenWidth / 2 - Global.radius / 2.0,
-                screenHeight - Global.radius - Global.bottomPadding,
-              ),
-            child: GestureDetector(
-              onTap: () {
-                if (animationController.status != AnimationStatus.forward) {
-                  model.isToggled = !model.isToggled;
-                  model.index++;
-                  if (model.index > 3) {
-                    model.index = 0;
+    return BlocListener(
+      bloc: _bloc,
+      listener: (
+        BuildContext context,
+        CircleAnimation state,
+      ) {},
+      child: Scaffold(
+        backgroundColor:
+            bloc.isHalfWay ? bloc.foreGroundColor : bloc.backGroundColor,
+        body: Stack(
+          children: <Widget>[
+            Container(
+              color:
+                  bloc.isHalfWay ? bloc.foreGroundColor : bloc.backGroundColor,
+              width: screenWidth / 2.0 - Global.radius / 2.0,
+              height: double.infinity,
+            ),
+            Transform(
+              transform: Matrix4.identity()
+                ..translate(
+                  screenWidth / 2 - Global.radius / 2.0,
+                  screenHeight - Global.radius - Global.bottomPadding,
+                ),
+              child: GestureDetector(
+                onTap: () {
+                  if (animationController.status != AnimationStatus.forward) {
+                    bloc.isToggled = !bloc.isToggled;
+                    bloc.index++;
+                    if (bloc.index > 3) {
+                      bloc.index = 0;
+                    }
+                    pageController.animateToPage(bloc.index,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.easeInOutQuad);
+                    animationController.forward();
                   }
-                  pageController.animateToPage(model.index,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.easeInOutQuad);
-                  animationController.forward();
-                }
-              },
-              child: Stack(
-                children: <Widget>[
-                  AnimatedCircle(
-                    animation: startAnimation,
-                    color: model.foreGroundColor,
-                    flip: 1.0,
-                    tween: Tween<double>(begin: 1.0, end: Global.radius),
-                  ),
-                  AnimatedCircle(
-                    animation: endAnimation,
-                    color: model.backGroundColor,
-                    flip: -1.0,
-                    horizontalTween:
-                        Tween<double>(begin: 0, end: -Global.radius),
-                    horizontalAnimation: horizontalAnimation,
-                    tween: Tween<double>(begin: Global.radius, end: 1.0),
-                  ),
-                ],
+                },
+                child: Stack(
+                  children: <Widget>[
+                    AnimatedCircle(
+                      animation: startAnimation,
+                      color: bloc.foreGroundColor,
+                      flip: 1.0,
+                      tween: Tween<double>(begin: 1, end: Global.radius),
+                    ),
+                    AnimatedCircle(
+                      animation: endAnimation,
+                      color: bloc.backGroundColor,
+                      flip: -1.0,
+                      horizontalTween:
+                          Tween<double>(begin: 0, end: -Global.radius),
+                      horizontalAnimation: horizontalAnimation,
+                      tween: Tween<double>(begin: Global.radius, end: 1.0),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          IgnorePointer(
-            ignoring: true,
-            child: PageView.builder(
-              controller: pageController,
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return Center(
-                  child: Text(
-                    'Page ${index + 1}',
-                    style: TextStyle(
-                      color: index % 2 == 0 ? Global.mediumBlue : Global.white,
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w900,
+            IgnorePointer(
+              ignoring: true,
+              child: PageView.builder(
+                controller: pageController,
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  return Center(
+                    child: Text(
+                      'Page ${index + 1}',
+                      style: TextStyle(
+                        color:
+                            index % 2 == 0 ? Global.mediumBlue : Global.white,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
