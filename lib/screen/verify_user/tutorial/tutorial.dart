@@ -1,4 +1,5 @@
 import 'package:dubs_app/DesignSystem/colors.dart';
+import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_bloc.dart';
 import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_events.dart';
 import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_states.dart';
@@ -56,7 +57,7 @@ class AnimatedCircle extends AnimatedWidget {
           ),
           child: Icon(
             flip == 1 ? Icons.keyboard_arrow_right : Icons.keyboard_arrow_left,
-            color: state.index % 2 == 0 ? Global.white : Global.mediumBlue,
+            color: state.index % 2 == 0 ? Global.white : Colors.white,
           ),
         ),
       ),
@@ -137,6 +138,23 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    var image = AssetImage(
+      'assets/boyphone.png',
+    );
+    final image2 = AssetImage('assets/toolbox.png');
+    final image3 = AssetImage('assets/redcontroller.png');
+
+    var text = Text(
+      'Invite your friends to join you on Dubs.',
+      style: TextStyle(
+        color: Global.white,
+        fontSize: 30.0,
+        fontWeight: FontWeight.w900,
+      ),
+      textAlign: TextAlign.center,
+    );
+
     return BlocListener(
       bloc: _bloc,
       listener: (
@@ -205,18 +223,81 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       controller: pageController,
                       itemCount: 4,
                       itemBuilder: (context, index) {
-                        return Center(
-                          child: Text(
-                            'Page ${index + 1}',
+                        if (index == 0) {
+                          image = AssetImage('assets/boyphone.png');
+                        } else if (index == 1) {
+                          image = AssetImage('assets/toolbox.png');
+                        }
+
+                        if (index == 2) {
+                          image = AssetImage('assets/redcontroller.png');
+                        } else if (index == 3) {
+                          image = AssetImage('assets/rocket.png');
+                        }
+
+                        if (index == 0) {
+                          text = text;
+                        } else if (index == 1) {
+                          text = Text(
+                            'Add friends to build your friend list.',
                             style: TextStyle(
-                              color: index % 2 == 0
-                                  ? Global.mediumBlue
-                                  : Global.white,
+                              color: Colors.white,
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
                             ),
-                          ),
-                        );
+                            textAlign: TextAlign.center,
+                          );
+                        }
+
+                        if (index == 2) {
+                          text = Text(
+                            'Create a squad with your close friends for quick messaging.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.w900,
+                            ),
+                            textAlign: TextAlign.center,
+                          );
+                        } else if (index == 3) {
+                          text = Text(
+                            'Get some dubs!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.w900,
+                            ),
+                            textAlign: TextAlign.center,
+                          );
+                        }
+
+                        return Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.only(
+                                  top: 120,
+                                ),
+                                height: 250.0,
+                                width: 250.0,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: image,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30)),
+                                ),
+                              ),
+                              Container(
+                                margin: spacer.left.sm +
+                                    spacer.right.sm +
+                                    spacer.top.md,
+                                child: text,
+                              ),
+                            ]);
                       },
                     ),
                   ),
