@@ -142,8 +142,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     var image = AssetImage(
       'assets/boyphone.png',
     );
-    final image2 = AssetImage('assets/toolbox.png');
-    final image3 = AssetImage('assets/redcontroller.png');
 
     var text = Text(
       'Invite your friends to join you on Dubs.',
@@ -236,7 +234,16 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         }
 
                         if (index == 0) {
-                          text = text;
+                          text = Text(
+                            'Invite your friends to join you on Dubs.',
+                            style: TextStyle(
+                              color: Global.white,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.w900,
+                            ),
+                            textAlign: TextAlign.center,
+                          );
+                          ;
                         } else if (index == 1) {
                           text = Text(
                             'Add friends to build your friend list.',
