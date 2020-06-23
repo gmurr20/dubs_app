@@ -237,7 +237,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           text = Text(
                             'Invite your friends to join you on Dubs.',
                             style: TextStyle(
-                              color: Global.white,
+                              color: Global.mediumBlue,
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
                             ),
@@ -258,9 +258,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
                         if (index == 2) {
                           text = Text(
-                            'Create a squad with your close friends for quick messaging.',
+                            'Message your squad when you want to play.',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Global.mediumBlue,
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
                             ),

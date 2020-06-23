@@ -30,6 +30,14 @@ const primaryPBold = const TextStyle(
     fontStyle: FontStyle.normal,
     fontSize: 16.0);
 
+const uprimaryPBold = const TextStyle(
+    color: DarwinWhite,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Open Sans',
+    fontStyle: FontStyle.normal,
+    fontSize: 16.0,
+    decoration: TextDecoration.underline);
+
 ///
 /// Secondary Font Styles (Roboto)
 ///

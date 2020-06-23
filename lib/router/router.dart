@@ -29,6 +29,26 @@ class Router {
   static BuildContext context;
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case splashRoute:
+        return MaterialPageRoute(builder: (ctx) {
+          return SplashPage(userRepository: userRepo);
+        });
+      case loginRoute:
+        return _createNewPage(LoginPage(userRepository: userRepo));
+      case verifyUserRoute:
+        final User endUser = settings.arguments;
+        return _createNewPage(
+            VerifyUserPage(userRepository: userRepo, user: endUser));
+      case homeRoute:
+        final User endUser = settings.arguments;
+        return _createNewPage(
+            MainPageNavigationController(user: endUser, userRepo: userRepo));
+      case addFriendsRoute:
+        final User endUser = settings.arguments;
+        return _createNewPage(
+            AddFriendPage(userRepository: userRepo, user: endUser));
+      case addUsernameRoute:
+        return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case testRoute:
         return _createNewPage(HomeView());
       default:
