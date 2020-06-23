@@ -57,7 +57,7 @@ class AnimatedCircle extends AnimatedWidget {
           ),
           child: Icon(
             flip == 1 ? Icons.keyboard_arrow_right : Icons.keyboard_arrow_left,
-            color: state.index % 2 == 0 ? Global.white : Colors.white,
+            color: state.index % 2 == 0 ? Global.mediumBlue : Colors.white,
           ),
         ),
       ),
