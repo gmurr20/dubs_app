@@ -57,7 +57,7 @@ class AnimatedCircle extends AnimatedWidget {
           ),
           child: Icon(
             flip == 1 ? Icons.keyboard_arrow_right : Icons.keyboard_arrow_left,
-            color: state.index % 2 == 0 ? Global.mediumBlue : Colors.white,
+            color: state.index % 2 == 0 ? Global.white : Colors.white,
           ),
         ),
       ),
@@ -237,7 +237,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           text = Text(
                             'Invite your friends to join you on Dubs.',
                             style: TextStyle(
-                              color: Global.mediumBlue,
+                              color: Global.white,
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
                             ),
@@ -260,7 +260,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           text = Text(
                             'Message your squad when you want to play.',
                             style: TextStyle(
-                              color: Global.mediumBlue,
+                              color: Global.white,
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
                             ),
