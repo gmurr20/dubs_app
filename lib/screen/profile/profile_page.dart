@@ -157,7 +157,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  'BStrumillo',
+                                                  '${_currentUser.username}',
                                                   style:
                                                       TextStyle(fontSize: 20),
                                                   textAlign: TextAlign.center,
