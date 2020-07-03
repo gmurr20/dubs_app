@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dubs_app/DesignSystem/colors.dart';
-import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_events.dart';
-import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_states.dart';
+import 'package:dubs_app/bloc/tutorial/tutorial_events.dart';
+import 'package:dubs_app/bloc/tutorial/tutorial_states.dart';
 
 class TutorialBloc extends Bloc<TutorialEvent, TutorialState> {
   CircleAnimationState currentState = CircleAnimationState(

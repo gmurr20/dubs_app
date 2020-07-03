@@ -4,14 +4,10 @@ import 'package:dubs_app/bloc/login/login_states.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/router/router.dart';
-import 'package:dubs_app/screen/home/home_page.dart';
-import 'package:dubs_app/screen/verify_user/tutorial/tutorial.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
-import 'package:dubs_app/DesignSystem/colors.dart';
-import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class LoginForm extends StatefulWidget {

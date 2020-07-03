@@ -6,12 +6,9 @@ import 'package:dubs_app/screen/add_friend/add_friend_page.dart';
 import 'package:dubs_app/screen/login/login_page.dart';
 import 'package:dubs_app/screen/set_user_data/set_user_data_page.dart';
 import 'package:dubs_app/screen/splash/splash_page.dart';
-import 'package:dubs_app/screen/template_screen/template_screen.dart';
-import 'package:dubs_app/screen/verify_user/tutorial/home_model.dart';
-import 'package:dubs_app/screen/verify_user/tutorial/tutorial.dart';
+import 'package:dubs_app/screen/tutorial/tutorial.dart';
 import 'package:dubs_app/screen/verify_user/verify_user_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 const String splashRoute = '/';
 const String loginRoute = '/login';

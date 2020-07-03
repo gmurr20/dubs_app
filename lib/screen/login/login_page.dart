@@ -2,7 +2,7 @@ import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/Widgets/WaveWidget.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/screen/login/login_form.dart';
-import 'package:dubs_app/screen/verify_user/tutorial/tutorial.dart';
+import 'package:dubs_app/screen/tutorial/tutorial.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';

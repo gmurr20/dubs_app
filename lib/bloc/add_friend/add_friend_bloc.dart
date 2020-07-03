@@ -53,7 +53,7 @@ class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
     _logger
         .v("_handleSearchEvent- searching for username ${event.searchString}");
     try {
-      searchResults = await _userRepo.searchForFriends(
+      searchResults = await _userRepo.searchForUsers(
           event.searchString, PAGINATE_SEARCH_LENGTH, null);
     } catch (e) {
       _logger.i(
@@ -75,7 +75,7 @@ class AddFriendBloc extends Bloc<AddFriendEvent, AddFriendState> {
     _logger.v(
         "_handleSearchEvent- searching for username ${event.searchString} and last search name ${lastSearchName}");
     try {
-      searchResults.addAll(await _userRepo.searchForFriends(
+      searchResults.addAll(await _userRepo.searchForUsers(
           event.searchString, PAGINATE_SEARCH_LENGTH, lastSearchName));
     } catch (e) {
       _logger.i(

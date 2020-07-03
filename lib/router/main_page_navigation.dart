@@ -42,7 +42,7 @@ class _MainPageNavigationControllerState
       ),
       HomePage(
         key: PageStorageKey('home'),
-        input: HomePageInput(_currentUser),
+        input: HomePageInput(_currentUser, _userRepo),
       ),
       ChatPage(key: PageStorageKey("chat"), input: ChatPageInput(_currentUser))
     ];

@@ -164,13 +164,13 @@ class UserRepository {
     return await getUser();
   }
 
-  // Search for friends given a limit to the response back and a startAfter username for pagination
-  Future<List<UserSearchResult>> searchForFriends(
+  // Search for users given a limit to the response back and a startAfter username for pagination
+  Future<List<UserSearchResult>> searchForUsers(
       String searchString, int limit, String startAfter) async {
-    _logger.v("searchForFriends- Entered");
+    _logger.v("searchForUsers- Entered");
     final user = await _auth.currentUser();
     if (user == null) {
-      _logger.e("searchForFriends- User is not signed in");
+      _logger.e("searchForUsers- User is not signed in");
       return Future.error("User is not signed in");
     }
 
@@ -198,15 +198,15 @@ class UserRepository {
       usernameSearchQ = await currQ.getDocuments();
     } catch (e) {
       _logger.e(
-          "searchForFriends- caught error when searching usernames ${e.toString()}");
+          "searchForUsers- caught error when searching usernames ${e.toString()}");
       return Future.error("Username query failed ${e.toString()}");
     }
     _logger.v(
-        "searchForFriends- got ${usernameSearchQ.documents.length} search results back");
+        "searchForUsers- got ${usernameSearchQ.documents.length} search results back");
     List<UserSearchResult> searchResults = List<UserSearchResult>();
     if (usernameSearchQ.documents.isEmpty) {
       _logger.v(
-          "searchForFriends- username search returned no results with search ${normalizedSearch}");
+          "searchForUsers- username search returned no results with search ${normalizedSearch}");
       return searchResults;
     }
 
@@ -217,11 +217,11 @@ class UserRepository {
           await _store.collection("friend_requests").document(user.uid).get();
     } catch (e) {
       _logger.w(
-          "searchForFriends- friend requests search returned with error ${e.toString()}");
+          "searchForUsers- friend requests search returned with error ${e.toString()}");
       return Future.error(
           "A network error ocurred. Make sure your connection is fine");
     }
-    _logger.v("searchForFriends- friend request query returned");
+    _logger.v("searchForUsers- friend request query returned");
 
     // 3) search through the users existing friends
     DocumentSnapshot friendsQ;
@@ -229,11 +229,11 @@ class UserRepository {
       friendsQ = await _store.collection("friends").document(user.uid).get();
     } catch (e) {
       _logger.w(
-          "searchForFriends- friends search returned with error ${e.toString()}");
+          "searchForUsers- friends search returned with error ${e.toString()}");
       return Future.error(
           "A network error ocurred. Make sure your connection is fine");
     }
-    _logger.v("searchForFriends- friends query returned");
+    _logger.v("searchForUsers- friends query returned");
 
     // 4) compare the existing friend requests and friends with the search results
     for (int i = 0;
@@ -242,7 +242,7 @@ class UserRepository {
       String currSearchId = usernameSearchQ.documents[i].data["userid"];
       UserRelationshipState relationship;
       if (currSearchId == user.uid) {
-        _logger.v("searchForFriends- current user so skip");
+        _logger.v("searchForUsers- current user so skip");
         continue;
       } else if (friendsQ.data != null &&
           friendsQ.data.containsKey(currSearchId)) {
@@ -261,6 +261,42 @@ class UserRepository {
     return searchResults;
   }
 
+  // Search for friend requests given the relationship state (INCOMING, PENDING, etc.)
+  Future<List<UserSearchResult>> searchForFriendRequests(
+      UserRelationshipState state) async {
+    _logger.v("searchForIncomingInvites- Entered");
+    final user = await _auth.currentUser();
+    if (user == null) {
+      _logger.e("searchForIncomingInvites- User is not signed in");
+      return Future.error("User is not signed in");
+    }
+
+    DocumentSnapshot friendReqSnapshot;
+    try {
+      friendReqSnapshot =
+          await _store.collection("friend_requests").document(user.uid).get();
+    } catch (e) {
+      _logger.e(
+          "searchForIncomingInvites- error when reading from store ${e.toString()}");
+      return Future.error("Failed to read db");
+    }
+
+    if (!friendReqSnapshot.exists) {
+      _logger.d("searchForIncomingInvites- no friend requests");
+      return List<UserSearchResult>();
+    }
+
+    List<String> userIds = List<String>();
+    friendReqSnapshot.data.forEach((key, value) {
+      if (value == UserSearchResult.friendRequestEnumToString(state)) {
+        userIds.add(key);
+      }
+    });
+    // return a list of users
+    return _userIdsToSearchResults(userIds, state);
+  }
+
+  // Send a friend request to the user id
   Future<void> sendFriendRequest(String friendsId) async {
     _logger.v("sendFriendRequest- Entered");
     final user = await _auth.currentUser();
@@ -318,6 +354,7 @@ class UserRepository {
     return;
   }
 
+  // Accept a friend request from the user id
   Future<void> acceptFriendRequest(String friendsId) async {
     _logger.v("acceptFriendRequest- Entered");
     final user = await _auth.currentUser();
@@ -414,6 +451,7 @@ class UserRepository {
     return;
   }
 
+  // Decline a friend request from the user id
   Future<void> declineFriendRequest(String friendsId) async {
     _logger.v("declineFriendRequest- Entered");
     final user = await _auth.currentUser();
@@ -540,5 +578,36 @@ class UserRepository {
     _logger.v("_userFromFirebase- found username ${username}");
     return User(fbUser.uid, fbUser.email, username, null,
         UserAuthState.FULLY_LOGGED_IN);
+  }
+
+  // Given a list of ids and the relationship, return search results
+  Future<List<UserSearchResult>> _userIdsToSearchResults(
+      List<String> userIds, UserRelationshipState state) async {
+    _logger.v("_userIdsToSearchResults- entered");
+
+    List<UserSearchResult> searchResults = List<UserSearchResult>();
+
+    if (userIds.isEmpty) {
+      _logger.d("_userIdsToSearchResults- empty");
+      return searchResults;
+    }
+
+    QuerySnapshot userDocs;
+    try {
+      userDocs = await _store
+          .collection("users")
+          .where(FieldPath.documentId, whereIn: userIds)
+          .getDocuments();
+    } catch (e) {
+      _logger.e(
+          "_userIdsToSearchResults- failed to run query with error ${e.toString()}");
+      return Future.error("Failed to contact db");
+    }
+
+    for (int i = 0; i < userDocs.documents.length; i++) {
+      searchResults.add(UserSearchResult(userDocs.documents[i].documentID,
+          userDocs.documents[i].data["username"], state));
+    }
+    return searchResults;
   }
 }
