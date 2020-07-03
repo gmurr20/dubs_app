@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 
+class Global {
+  static const Color white = const Color(0xffffffff);
+  static const Color mediumBlue = const Color(0xff4A64FE);
+  static const Color blueAccent = const Color(0xffb1cbcd);
+  static const List<Color> palette = [mediumBlue, DarwinRed];
+  static const double scale = 1;
+  static const double radius = 88.0;
+  static const double bottomPadding = 75.0;
+}
+
 ///
 /// Solid color system
 /// consists of solid colors, without transparency

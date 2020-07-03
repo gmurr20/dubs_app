@@ -24,6 +24,9 @@ dependencies:
   bloc: ^2.0.0
   flutter_bloc: ^2.0.1
   equatable: ^1.1.1
+
+  # provider
+  provider: ^3.0.0
   
   # firebase dependencies
   firebase_auth: ^0.14.0+5
@@ -71,6 +74,12 @@ flutter:
   assets:
     - assets/Logo.png
     - assets/google_fonts/
+    - assets/bluecontroller.png
+    - assets/boyphone.png
+    - assets/redcontroller.png
+    - assets/toolbox.png
+    - assets/openvault.png
+    - assets/rocket.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

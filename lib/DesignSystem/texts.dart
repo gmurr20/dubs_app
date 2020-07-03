@@ -9,6 +9,20 @@ const primaryH1Bold = const TextStyle(
     fontStyle: FontStyle.normal,
     fontSize: 26.0);
 
+const darkPrimaryH1Bold = const TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Open Sans',
+    fontStyle: FontStyle.normal,
+    fontSize: 26.0);
+
+const redPrimaryH1Bold = const TextStyle(
+    color: DarwinRed,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Open Sans',
+    fontStyle: FontStyle.normal,
+    fontSize: 26.0);
+
 const primaryH1Regular = const TextStyle(
     color: DarwinWhite,
     fontWeight: FontWeight.w300,
@@ -29,6 +43,14 @@ const primaryPBold = const TextStyle(
     fontFamily: 'Open Sans',
     fontStyle: FontStyle.normal,
     fontSize: 16.0);
+
+const uprimaryPBold = const TextStyle(
+    color: DarwinWhite,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Open Sans',
+    fontStyle: FontStyle.normal,
+    fontSize: 16.0,
+    decoration: TextDecoration.underline);
 
 ///
 /// Secondary Font Styles (Roboto)

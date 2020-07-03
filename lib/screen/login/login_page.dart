@@ -2,6 +2,7 @@ import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/Widgets/WaveWidget.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/screen/login/login_form.dart';
+import 'package:dubs_app/screen/verify_user/tutorial/tutorial.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -23,6 +24,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   UserRepository get _userRepository => widget.userRepository;
   PanelController _pc = PanelController();
+  PanelController _tpc = PanelController();
 
   // Builds a close button
   Widget buildCloseButton(BuildContext context) {
@@ -34,6 +36,22 @@ class _LoginPageState extends State<LoginPage> {
       iconSize: 28,
       onPressed: () => _pc.close(),
     );
+  }
+
+  // Builds a close button
+  Widget buildTutorialCloseButton(BuildContext context) {
+    return Container(
+        padding: spacer.top.lg + spacer.left.md,
+        child: Center(
+            child: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: IconButton(
+                  alignment: Alignment.center,
+                  icon: Icon(Icons.close),
+                  color: Colors.black,
+                  iconSize: 22,
+                  onPressed: () => _tpc.close(),
+                ))));
   }
 
   @override
@@ -62,59 +80,85 @@ class _LoginPageState extends State<LoginPage> {
                   panel: Container(
                     child: NewUserForm(userRepository: _userRepository),
                   ),
-                  body: Stack(
-                    children: [
-                      Column(
-                        children: [
-                          //Header Modal
-                          Container(
-                            height: 80.0,
-                            margin:
-                                EdgeInsets.only(top: 90, left: 12, right: 12),
-                            child: Stack(children: [
-                              Container(
-                                padding: spacer.left.md +
-                                    spacer.top.xs +
-                                    spacer.bottom.none,
-                                child: Container(
-                                  alignment: Alignment.topLeft,
-                                  padding: spacer.top.xxs,
-                                  margin: spacer.left.none,
-                                  child: Text(
-                                    "Login",
-                                    style: primaryH1Bold,
+                  body: SlidingUpPanel(
+                    header: buildTutorialCloseButton(context),
+                    controller: _tpc,
+                    backdropEnabled: false,
+                    backdropColor: DarwinWhite,
+                    backdropOpacity: .9,
+                    backdropTapClosesPanel: true,
+                    minHeight: 0,
+                    maxHeight: MediaQuery.of(context).size.height,
+                    panel: HomeView(),
+                    body: Stack(
+                      children: [
+                        Column(
+                          children: [
+                            //Header Modal
+                            Container(
+                              height: 80.0,
+                              margin:
+                                  EdgeInsets.only(top: 90, left: 12, right: 12),
+                              child: Stack(children: [
+                                Container(
+                                  padding: spacer.left.md +
+                                      spacer.top.xs +
+                                      spacer.bottom.none,
+                                  child: Container(
+                                    alignment: Alignment.topLeft,
+                                    padding: spacer.top.xxs,
+                                    margin: spacer.left.none,
+                                    child: Text(
+                                      "Login",
+                                      style: primaryH1Bold,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                alignment: Alignment.topRight,
-                                padding: spacer.top.xs + spacer.bottom.none,
-                                margin: spacer.right.md,
-                                child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                                Container(
+                                  alignment: Alignment.topRight,
+                                  padding: spacer.top.xs + spacer.bottom.none,
+                                  margin: spacer.right.md,
+                                  child: RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text('Create Account',
+                                        style: darkprimaryPBold),
+                                    color: Colors.white,
+                                    onPressed: () => _pc.open(),
                                   ),
-                                  child: Text('Create Account',
-                                      style: darkprimaryPBold),
-                                  color: Colors.white,
-                                  onPressed: () => _pc.open(),
                                 ),
-                              ),
-                            ]),
-                          ),
-                          // Modal containing login form
-                          Container(
-                            height: 350.0,
-                            margin:
-                                EdgeInsets.only(top: 0, left: 12, right: 12),
-                            child: Container(
-                              child: LoginForm(userRepository: _userRepository),
+                              ]),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )),
+                            // Modal containing login form
+                            Container(
+                              height: 350.0,
+                              margin:
+                                  EdgeInsets.only(top: 0, left: 12, right: 12),
+                              child: Container(
+                                child:
+                                    LoginForm(userRepository: _userRepository),
+                              ),
+                            ),
+
+                            Container(
+                                margin: spacer.top.none,
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () => _tpc.open(),
+                                    child: Text(
+                                      'Learn how Dubs works',
+                                      style: uprimaryPBold,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ))
             ],
           )),
     ]);
