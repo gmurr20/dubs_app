@@ -1,4 +1,3 @@
-import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 

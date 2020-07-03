@@ -1,8 +1,8 @@
 import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
-import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_bloc.dart';
-import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_events.dart';
-import 'package:dubs_app/bloc/verify_user/tutorial/tutorial_states.dart';
+import 'package:dubs_app/bloc/tutorial/tutorial_bloc.dart';
+import 'package:dubs_app/bloc/tutorial/tutorial_events.dart';
+import 'package:dubs_app/bloc/tutorial/tutorial_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/widgets.dart';
