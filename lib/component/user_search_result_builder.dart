@@ -13,6 +13,7 @@ Widget buildSearchResults(
     padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
     itemCount: searchResults.length,
     scrollDirection: Axis.vertical,
+    physics: const NeverScrollableScrollPhysics(),
     shrinkWrap: true,
     itemBuilder: (context, index) {
       Widget trailingWidget;
@@ -174,6 +175,9 @@ Widget buildSearchResults(
           break;
       }
       return Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
         child: ListTile(
           title: Text(searchResults[index].username, style: darkprimaryPBold),
           trailing: Container(child: trailingWidget),
