@@ -102,14 +102,13 @@ class _HomePageState extends State<HomePage> {
     return Container(
       alignment: Alignment.topLeft,
       padding: spacer.top.xs,
-      margin: spacer.left.xs + spacer.right.xs,
       child: Column(children: [
         Container(
           padding: spacer.left.xs + spacer.top.xs + spacer.bottom.xs,
           child: Container(
             alignment: Alignment.topLeft,
             padding: spacer.top.xxs,
-            margin: spacer.left.none,
+            margin: spacer.left.xs + spacer.right.xs,
             child: Text(
               "Added me",
               style: darkPrimaryH1Bold,
@@ -145,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                   body: Stack(children: [
                     WaveWidget(
                       size: size,
-                      yOffset: size.height / 5.5,
+                      yOffset: size.height / 3.2,
                       color: const Color(0xfff2f2f2),
                     ),
                     SlidingUpPanel(
@@ -269,11 +268,99 @@ class _HomePageState extends State<HomePage> {
                       body: Stack(
                         children: [
                           SingleChildScrollView(
+                            padding: spacer.all.none +
+                                spacer.bottom.xxl +
+                                spacer.bottom.xxl,
                             child: Column(
                               children: [
+                                // Modal containing 'add friends' form
+
+                                Container(
+                                  height: 175.0,
+                                  margin: EdgeInsets.only(
+                                      top: 60, left: 12, right: 12),
+                                  child: Stack(children: [
+                                    Container(
+                                      padding: spacer.left.md +
+                                          spacer.top.xs +
+                                          spacer.bottom.xs,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        color: const Color(0xffffffff),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color: const Color(0x1a000000),
+                                              offset: Offset(5, 5),
+                                              blurRadius: 15)
+                                        ],
+                                      ),
+                                      child: Column(children: [
+                                        Container(
+                                          alignment: Alignment.topLeft,
+                                          padding: spacer.top.xxs,
+                                          margin: spacer.left.none +
+                                              spacer.right.xxs,
+                                          child: Text(
+                                            "Welcome, ${_currentUser.username}",
+                                            style: darkprimaryH1Bold,
+                                          ),
+                                        ),
+                                        Container(
+                                          alignment: Alignment.topLeft,
+                                          padding: spacer.top.xxs,
+                                          margin: spacer.left.none +
+                                              spacer.right.xxs,
+                                          child: Text(
+                                            "Let’s get started by adding some of your friends.",
+                                            style: darkprimaryPBold,
+                                          ),
+                                        ),
+                                      ]),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.bottomRight,
+                                      padding: spacer.bottom.xs +
+                                          spacer.top.xs +
+                                          spacer.right.md,
+                                      child: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Text('Add Friends',
+                                            style: primaryPBold),
+                                        color: DarwinRed,
+                                        onPressed: () {
+                                          Navigator.of(context).pushNamed(
+                                              addFriendsRoute,
+                                              arguments: _currentUser);
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.bottomLeft,
+                                      padding: spacer.bottom.xs +
+                                          spacer.top.xs +
+                                          spacer.left.sm,
+                                      child: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          side: BorderSide(width: 0.5),
+                                        ),
+                                        child: Text('Invite Friends',
+                                            style: darkprimaryPBold),
+                                        color: Colors.white,
+                                        onPressed: () => _spc.open(),
+                                      ),
+                                    ),
+                                  ]),
+                                ),
+                                _buildAddedFriendsList(state),
                                 Container(
                                   alignment: Alignment.topLeft,
-                                  padding: spacer.top.xxl,
+                                  padding: spacer.top.xs,
                                   margin: spacer.left.xs + spacer.right.xs,
                                   child: Stack(children: [
                                     Container(
@@ -285,8 +372,8 @@ class _HomePageState extends State<HomePage> {
                                         padding: spacer.top.xxs,
                                         margin: spacer.left.none,
                                         child: Text(
-                                          "Home",
-                                          style: primaryH1Bold,
+                                          "Friends",
+                                          style: darkPrimaryH1Bold,
                                         ),
                                       ),
                                     ),
@@ -294,227 +381,86 @@ class _HomePageState extends State<HomePage> {
                                       alignment: Alignment.centerRight,
                                       padding: spacer.top.xs + spacer.bottom.xs,
                                       margin: spacer.right.md,
-                                      child: ClipOval(
-                                        child: Material(
-                                          borderOnForeground: true,
+                                      child: Container(
+                                        width: 45,
+                                        child: FlatButton(
+                                          padding: spacer.all.none +
+                                              spacer.right.none,
                                           color: Colors.white,
-                                          child: InkWell(
-                                            child: Container(
-                                                width: 40,
-                                                height: 40,
-                                                child: Icon(
-                                                  Icons.edit,
-                                                  color: DarwinRed,
-                                                )),
-                                            onTap: () {},
+                                          splashColor: Colors.grey,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(100.0),
+                                          ),
+                                          onPressed: () {},
+                                          child: Wrap(
+                                            alignment: WrapAlignment.center,
+                                            crossAxisAlignment:
+                                                WrapCrossAlignment.center,
+                                            children: <Widget>[
+                                              Text(
+                                                'Edit',
+                                                // textAlign: TextAlign.center,
+                                                style: darkprimaryPBoldSmall,
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
                                     ),
                                   ]),
                                 ),
-                                // Modal containing 'add friends' form
-                                Container(
-                                  height: MediaQuery.of(context).size.height,
-                                  child: ListView(
-                                    scrollDirection: Axis.vertical,
-                                    padding: spacer.all.none,
-                                    children: [
-                                      Container(
-                                        height: 175.0,
-                                        margin: EdgeInsets.only(
-                                            top: 40, left: 12, right: 12),
-                                        child: Stack(children: [
-                                          Container(
-                                            padding: spacer.left.md +
-                                                spacer.top.xs +
-                                                spacer.bottom.xs,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                              color: const Color(0xffffffff),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color:
-                                                        const Color(0x1a000000),
-                                                    offset: Offset(5, 5),
-                                                    blurRadius: 15)
-                                              ],
-                                            ),
-                                            child: Column(children: [
-                                              Container(
-                                                alignment: Alignment.topLeft,
-                                                padding: spacer.top.xxs,
-                                                margin: spacer.left.none,
-                                                child: Text(
-                                                  "Welcome, ${_currentUser.username}",
-                                                  style: darkprimaryH1Bold,
-                                                ),
-                                              ),
-                                              Container(
-                                                alignment: Alignment.topLeft,
-                                                padding: spacer.top.xxs,
-                                                margin: spacer.left.none +
-                                                    spacer.right.xxs,
-                                                child: Text(
-                                                  "Let’s get started by adding some of your friends.",
-                                                  style: darkprimaryPBold,
-                                                ),
-                                              ),
-                                            ]),
-                                          ),
-                                          Container(
-                                            alignment: Alignment.bottomRight,
-                                            padding: spacer.bottom.xs +
-                                                spacer.top.xs +
-                                                spacer.right.md,
-                                            child: RaisedButton(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                              ),
-                                              child: Text('Add Friends',
-                                                  style: primaryPBold),
-                                              color: DarwinRed,
-                                              onPressed: () {
-                                                Navigator.of(context).pushNamed(
-                                                    addFriendsRoute,
-                                                    arguments: _currentUser);
-                                              },
-                                            ),
-                                          ),
-                                          Container(
-                                            alignment: Alignment.bottomLeft,
-                                            padding: spacer.bottom.xs +
-                                                spacer.top.xs +
-                                                spacer.left.sm,
-                                            child: RaisedButton(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                side: BorderSide(width: 0.5),
-                                              ),
-                                              child: Text('Invite Friends',
-                                                  style: darkprimaryPBold),
-                                              color: Colors.white,
-                                              onPressed: () => _spc.open(),
-                                            ),
-                                          ),
-                                        ]),
-                                      ),
-                                      _buildAddedFriendsList(state),
-                                      Container(
-                                        alignment: Alignment.topLeft,
-                                        padding: spacer.top.xs,
-                                        margin:
-                                            spacer.left.xs + spacer.right.xs,
-                                        child: Stack(children: [
-                                          Container(
-                                            padding: spacer.left.xs +
-                                                spacer.top.xs +
-                                                spacer.bottom.xs,
-                                            child: Container(
-                                              alignment: Alignment.topLeft,
-                                              padding: spacer.top.xxs,
-                                              margin: spacer.left.none,
-                                              child: Text(
-                                                "Friends",
-                                                style: darkPrimaryH1Bold,
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            alignment: Alignment.centerRight,
-                                            padding: spacer.top.xs +
-                                                spacer.bottom.xs,
-                                            margin: spacer.right.md,
-                                            child: Container(
-                                              width: 45,
-                                              child: FlatButton(
-                                                padding: spacer.all.none +
-                                                    spacer.right.none,
-                                                color: Colors.white,
-                                                splashColor: Colors.grey,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          100.0),
-                                                ),
-                                                onPressed: () {},
-                                                child: Wrap(
-                                                  alignment:
-                                                      WrapAlignment.center,
-                                                  crossAxisAlignment:
-                                                      WrapCrossAlignment.center,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'Edit',
-                                                      // textAlign: TextAlign.center,
-                                                      style:
-                                                          darkprimaryPBoldSmall,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ]),
-                                      ),
-                                      Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15.0),
-                                        ),
-                                        margin: spacer.left.xs +
-                                            spacer.right.xs +
-                                            spacer.bottom.xxs,
-                                        child: ListTile(
-                                          title: Text('Gmilli20',
-                                              style: darkprimaryPBold),
-                                          trailing: FlatButton(
-                                            padding: spacer.all.none +
-                                                spacer.right.xs,
-                                            color: Colors.grey[100],
-                                            splashColor: Colors.grey,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(100.0),
-                                            ),
-                                            onPressed: () {},
-                                            child: Wrap(
-                                              // alignment: WrapAlignment.center,
-                                              crossAxisAlignment:
-                                                  WrapCrossAlignment.center,
-                                              children: <Widget>[
-                                                IconButton(
-                                                  alignment: Alignment.center,
-                                                  icon: Icon(
-                                                    Icons.people,
-                                                    color: Colors.black,
-                                                    size: 20,
-                                                  ),
-                                                  tooltip: 'Friends',
-                                                  enableFeedback: true,
-                                                  color: Colors.grey[300],
-                                                  onPressed: () {},
-                                                ),
-                                                Text(
-                                                  'Friends',
-                                                  // textAlign: TextAlign.center,
-                                                  style: darkprimaryPBoldSmall,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          contentPadding: spacer.top.xxs +
-                                              spacer.bottom.xxs +
-                                              spacer.left.xs +
-                                              spacer.right.xxs,
-                                        ),
-                                      ),
-                                    ],
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
                                   ),
-                                )
+                                  margin: spacer.left.xs +
+                                      spacer.right.xs +
+                                      spacer.bottom.xxs,
+                                  child: ListTile(
+                                    title: Text('Gmilli20',
+                                        style: darkprimaryPBold),
+                                    trailing: FlatButton(
+                                      padding:
+                                          spacer.all.none + spacer.right.xs,
+                                      color: Colors.grey[100],
+                                      splashColor: Colors.grey,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(100.0),
+                                      ),
+                                      onPressed: () {},
+                                      child: Wrap(
+                                        // alignment: WrapAlignment.center,
+                                        crossAxisAlignment:
+                                            WrapCrossAlignment.center,
+                                        children: <Widget>[
+                                          IconButton(
+                                            alignment: Alignment.center,
+                                            icon: Icon(
+                                              Icons.people,
+                                              color: Colors.black,
+                                              size: 20,
+                                            ),
+                                            tooltip: 'Friends',
+                                            enableFeedback: true,
+                                            color: Colors.grey[300],
+                                            onPressed: () {},
+                                          ),
+                                          Text(
+                                            'Friends',
+                                            // textAlign: TextAlign.center,
+                                            style: darkprimaryPBoldSmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    contentPadding: spacer.top.xxs +
+                                        spacer.bottom.xxs +
+                                        spacer.left.xs +
+                                        spacer.right.xxs,
+                                  ),
+                                ),
                               ],
                             ),
                           )
