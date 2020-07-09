@@ -418,7 +418,7 @@ class UserRepository {
             _store.collection("friend_requests").document(user.uid), newData);
 
         // delete the other users friend request
-        var otherNewData = friendRequestSnapshot.data;
+        var otherNewData = otherFriendRequestSnapshot.data;
         otherNewData.remove(user.uid);
         await transaction.set(
             _store.collection("friend_requests").document(friendsId),
