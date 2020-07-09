@@ -2,8 +2,6 @@ import 'package:dubs_app/logger/log_printer.dart';
 
 // The result from searching for a username
 class ChatSearchResult {
-  static final _logger = getLogger("ChatSearchResult");
-
   // initials of people in the chat
   String iconInitials;
 

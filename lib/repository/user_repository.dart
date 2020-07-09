@@ -123,14 +123,10 @@ class UserRepository {
     _logger.v("setUserData- Setting user data");
     String usernameId = userInfo.username.toLowerCase();
 
-    // TODO- hack for full text search and pagination
-    _logger.v("setUserData- Generating username tokens");
-    List<String> usernameSearchTokens = List<String>();
-    String currentSearchToken = "";
-    for (int i = 0; i < usernameId.length; i++) {
-      currentSearchToken += usernameId[i];
-      usernameSearchTokens.add(currentSearchToken);
-    }
+    _logger.v("setUserData- Generating username data");
+    Map<String, dynamic> userDataToStore = _generateUsernameInfo(User(
+        user.uid, "", userInfo.username, "", UserAuthState.FULLY_LOGGED_IN));
+
     bool usernameTaken = false;
     try {
       await _store.runTransaction((transaction) async {
@@ -141,12 +137,9 @@ class UserRepository {
           usernameTaken = true;
           return Future.error("Username is taken");
         }
-        await transaction
-            .set(_store.collection("usernames").document(usernameId), {
-          "userid": user.uid,
-          "displayName": userInfo.username,
-          "searchTokens": usernameSearchTokens
-        });
+        await transaction.set(
+            _store.collection("usernames").document(usernameId),
+            userDataToStore);
         return transaction.set(_store.collection("users").document(user.uid),
             {"username": usernameId});
       });
@@ -223,19 +216,7 @@ class UserRepository {
     }
     _logger.v("searchForUsers- friend request query returned");
 
-    // 3) search through the users existing friends
-    DocumentSnapshot friendsQ;
-    try {
-      friendsQ = await _store.collection("friends").document(user.uid).get();
-    } catch (e) {
-      _logger.w(
-          "searchForUsers- friends search returned with error ${e.toString()}");
-      return Future.error(
-          "A network error ocurred. Make sure your connection is fine");
-    }
-    _logger.v("searchForUsers- friends query returned");
-
-    // 4) compare the existing friend requests and friends with the search results
+    // 3) compare the existing friend requests and friends with the search results
     for (int i = 0;
         i < usernameSearchQ.documents.length && searchResults.length < limit;
         i++) {
@@ -244,8 +225,20 @@ class UserRepository {
       if (currSearchId == user.uid) {
         _logger.v("searchForUsers- current user so skip");
         continue;
-      } else if (friendsQ.data != null &&
-          friendsQ.data.containsKey(currSearchId)) {
+      }
+      // check if friendship exists in firebase
+      bool isFriend = false;
+      try {
+        isFriend = (await _store
+                .collection("friends_" + user.uid)
+                .document(currSearchId)
+                .get())
+            .exists;
+      } catch (e) {
+        _logger.e("searchForUsers- failed to check friendship");
+        return Future.error("Failed to check friendship for ${currSearchId}");
+      }
+      if (isFriend) {
         relationship = UserRelationshipState.FRIENDS;
       } else if (friendRequestQ.data != null &&
           friendRequestQ.data.containsKey(currSearchId)) {
@@ -369,6 +362,9 @@ class UserRepository {
       return Future.error("Cannot accept a friend request to yourself");
     }
 
+    Map<String, dynamic> ourUserData =
+        _generateUsernameInfo(await _userFromFirebase(user));
+
     try {
       await _store.runTransaction((transaction) async {
         // grab user document
@@ -397,12 +393,6 @@ class UserRepository {
               "acceptFriendRequest- friend request could not be found in the other mapping");
           return Future.error("friend request could not be found");
         }
-
-        DocumentSnapshot friendSnapshot = await transaction
-            .get(_store.collection("friends").document(user.uid));
-        DocumentSnapshot otherUserFriendsSnapshot = await transaction
-            .get(_store.collection("friends").document(friendsId));
-
         if (UserSearchResult.friendRequestStringToEnum(
                 friendRequestSnapshot.data[friendsId]) !=
             UserRelationshipState.INCOMING_INVITE) {
@@ -410,6 +400,27 @@ class UserRepository {
               "acceptFriendRequest- friend request is not an incoming invite ${friendRequestSnapshot.data[friendsId]}");
           return Future.error("Friend request no longer is available");
         }
+
+        // read the friends username info for quick searching
+        DocumentSnapshot friendSnapshot = await transaction
+            .get(_store.collection("users").document(friendsId));
+        if (!friendSnapshot.exists ||
+            !friendSnapshot.data.containsKey("username")) {
+          _logger.e(
+              "acceptFriendRequest- could not find friend ${friendsId} in users collection");
+          return Future.error("Friend is not in the users collection");
+        }
+        DocumentSnapshot friendsUserData = await transaction.get(_store
+            .collection("usernames")
+            .document(friendSnapshot.data["username"]));
+        // every read requires a write in a transaction
+        await transaction.set(_store.collection("users").document(friendsId),
+            friendSnapshot.data);
+        await transaction.set(
+            _store
+                .collection("usernames")
+                .document(friendSnapshot.data["username"]),
+            friendsUserData.data);
 
         // delete the friend request
         var newData = friendRequestSnapshot.data;
@@ -425,22 +436,14 @@ class UserRepository {
             otherNewData);
 
         // update our mapping
-        if (friendSnapshot.exists) {
-          await transaction.update(
-              _store.collection("friends").document(user.uid),
-              {friendsId: true});
-        } else {
-          await transaction.set(_store.collection("friends").document(user.uid),
-              {friendsId: true});
-        }
-        // update the other user's mapping
-        if (otherUserFriendsSnapshot.exists) {
-          return await transaction.update(
-              _store.collection("friends").document(friendsId),
-              {user.uid: true});
-        }
+        await transaction.set(
+            _store.collection("friends_" + user.uid).document(friendsId),
+            friendsUserData.data);
+
+        // update their mapping
         return await transaction.set(
-            _store.collection("friends").document(friendsId), {user.uid: true});
+            _store.collection("friends_" + friendsId).document(user.uid),
+            ourUserData);
       });
     } catch (e) {
       _logger.e("acceptFriendRequest- Caught error when running transaction '" +
@@ -578,6 +581,22 @@ class UserRepository {
     _logger.v("_userFromFirebase- found username ${username}");
     return User(fbUser.uid, fbUser.email, username, null,
         UserAuthState.FULLY_LOGGED_IN);
+  }
+
+  // generates the info to be stored under the users collection
+  Map<String, dynamic> _generateUsernameInfo(User user) {
+    String usernameId = user.username.toLowerCase();
+    List<String> usernameSearchTokens = List<String>();
+    String currentSearchToken = "";
+    for (int i = 0; i < usernameId.length; i++) {
+      currentSearchToken += usernameId[i];
+      usernameSearchTokens.add(currentSearchToken);
+    }
+    return {
+      "userid": user.userid,
+      "displayName": user.username,
+      "searchTokens": usernameSearchTokens
+    };
   }
 
   // Given a list of ids and the relationship, return search results
