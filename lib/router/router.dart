@@ -1,3 +1,4 @@
+import 'package:dubs_app/screen/dubs_session/SessionLeader.dart';
 import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
@@ -17,6 +18,7 @@ const String homeRoute = '/home';
 const String verifyUserRoute = "/verifyUser";
 const String addUsernameRoute = "/addUsername";
 const String addFriendsRoute = "/addFriends";
+const String startSessionRoute = "/startSession";
 const String tutorialROute = '/tutorial';
 
 class Router {
@@ -46,8 +48,10 @@ class Router {
             AddFriendPage(userRepository: userRepo, user: endUser));
       case addUsernameRoute:
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
+      case startSessionRoute:
+        return _createNewPage(SessionLeader());
       case testRoute:
-        return _createNewPage(HomeView());
+        return _createNewPage(SessionLeader());
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
