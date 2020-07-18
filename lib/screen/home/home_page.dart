@@ -357,6 +357,62 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ]),
                                 ),
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  padding: spacer.top.xs,
+                                  margin: spacer.left.xs + spacer.right.xs,
+                                  child: Stack(children: [
+                                    Container(
+                                      padding: spacer.left.xs +
+                                          spacer.top.xs +
+                                          spacer.bottom.xs,
+                                      child: Container(
+                                        alignment: Alignment.topLeft,
+                                        padding: spacer.top.xxs,
+                                        margin: spacer.left.none,
+                                        child: Text(
+                                          "About to play?",
+                                          style: darkPrimaryH1Bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ]),
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  margin: spacer.left.xs +
+                                      spacer.right.xs +
+                                      spacer.bottom.xxs,
+                                  child: ListTile(
+                                    title: Text('Keep track of your dubs!',
+                                        style: darkprimaryPBold),
+                                    trailing: FlatButton(
+                                      padding: spacer.top.xs + spacer.bottom.xs,
+                                      color: Colors.greenAccent,
+                                      splashColor: Colors.grey,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(100.0),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pushNamed(
+                                            startSessionRoute,
+                                            arguments: _currentUser);
+                                      },
+                                      child: Text(
+                                        'Start',
+                                        textAlign: TextAlign.center,
+                                        style: darkprimaryPBoldSmall,
+                                      ),
+                                    ),
+                                    contentPadding: spacer.top.xxs +
+                                        spacer.bottom.xxs +
+                                        spacer.left.xs +
+                                        spacer.right.xxs,
+                                  ),
+                                ),
                                 _buildAddedFriendsList(state),
                                 Container(
                                   alignment: Alignment.topLeft,
