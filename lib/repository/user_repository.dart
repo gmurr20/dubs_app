@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dubs_app/common/common_errors.dart';
 import 'package:dubs_app/logger/log_printer.dart';
@@ -257,7 +259,7 @@ class UserRepository {
   }
 
   // Search through the users friends
-  Future<List<NewChatSearchResult>> searchForFriends(
+  Future<LinkedHashSet<NewChatSearchResult>> searchForFriends(
       String searchString, int limit, String startAfter) async {
     _logger.v("searchForFriends- Entered");
     final user = await _auth.currentUser();
@@ -273,7 +275,7 @@ class UserRepository {
     if (startAfter != null) {
       currQ = _store
           .collection("friends_" + user.uid)
-          .orderBy(FieldPath.documentId)
+          .orderBy("displayName")
           .startAfter([startAfter.toLowerCase()])
           .where("searchTokens", arrayContains: normalizedSearch)
           .limit(searchLimit);
@@ -294,7 +296,8 @@ class UserRepository {
     }
     _logger.v(
         "searchForFriends- got ${friendsSearchQ.documents.length} search results back");
-    List<NewChatSearchResult> searchResults = List<NewChatSearchResult>();
+    LinkedHashSet<NewChatSearchResult> searchResults =
+        LinkedHashSet<NewChatSearchResult>();
     if (friendsSearchQ.documents.isEmpty) {
       _logger.v(
           "searchForFriends- friends search returned no results with search ${normalizedSearch}");
@@ -311,7 +314,8 @@ class UserRepository {
   }
 
   // creates a chat with the following user ids
-  Future<void> createChat(List<String> userIds) async {
+  // returns the chat id on success
+  Future<String> createChat(List<String> userIds) async {
     _logger.v("createChat- Entered");
     if (userIds.isEmpty) {
       _logger.e("createChat- No user ids available");
@@ -326,6 +330,8 @@ class UserRepository {
 
     // add yourself
     userIds.add(user.uid);
+
+    String chatId = Uuid().v4();
 
     // add chat to users and create chat
     try {
@@ -342,7 +348,6 @@ class UserRepository {
           }
         }
 
-        String chatId = Uuid().v4();
         var msgTimestamp = Timestamp.now();
 
         // create chat metadata
@@ -379,6 +384,7 @@ class UserRepository {
           "'");
       return Future.error(e.toString());
     }
+    return chatId;
   }
 
   // Search for friend requests given the relationship state (INCOMING, PENDING, etc.)

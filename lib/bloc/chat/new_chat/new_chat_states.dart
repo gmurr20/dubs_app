@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dubs_app/model/new_chat_search_result.dart';
 import 'package:dubs_app/model/user_search_result.dart';
 import 'package:equatable/equatable.dart';
@@ -17,9 +19,9 @@ class StartingState extends NewChatState {
 
 // results came back
 class ResultsState extends NewChatState {
-  List<NewChatSearchResult> selected;
+  LinkedHashSet<NewChatSearchResult> selected;
 
-  List<NewChatSearchResult> searchResults;
+  LinkedHashSet<NewChatSearchResult> searchResults;
 
   ResultsState(this.selected, this.searchResults);
 
@@ -29,19 +31,28 @@ class ResultsState extends NewChatState {
 
 // searching for more results
 class SearchingState extends NewChatState {
-  List<NewChatSearchResult> selected;
+  LinkedHashSet<NewChatSearchResult> selected;
 
-  List<NewChatSearchResult> searchResults;
+  LinkedHashSet<NewChatSearchResult> searchResults;
 
   SearchingState(this.selected, this.searchResults);
   @override
   String toString() => 'SearchingState';
 }
 
+class ChatCreatedState extends NewChatState {
+  String chatId;
+
+  ChatCreatedState(this.chatId);
+
+  @override
+  String toString() => 'ChatCreatedState';
+}
+
 // an error occurred
 class ErrorState extends NewChatState {
-  List<NewChatSearchResult> selected;
-  List<NewChatSearchResult> searchResults;
+  LinkedHashSet<NewChatSearchResult> selected;
+  LinkedHashSet<NewChatSearchResult> searchResults;
   String message;
 
   ErrorState(this.selected, this.searchResults, this.message);
