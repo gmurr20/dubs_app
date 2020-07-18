@@ -11,6 +11,11 @@ class NewChatSearchResult {
   // is the user selected
   bool isSelected;
 
+  // override the hash code
+  int get hashCode {
+    return userId.hashCode;
+  }
+
   NewChatSearchResult(
       this.userId, this.username, this.iconInitials, this.isSelected);
 }

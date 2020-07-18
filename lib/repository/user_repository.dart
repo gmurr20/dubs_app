@@ -1,9 +1,13 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dubs_app/common/common_errors.dart';
 import 'package:dubs_app/logger/log_printer.dart';
+import 'package:dubs_app/model/new_chat_search_result.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/model/user_search_result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uuid/uuid.dart';
 
 class UserRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -252,6 +256,135 @@ class UserRepository {
     }
     // return a list of users
     return searchResults;
+  }
+
+  // Search through the users friends
+  Future<LinkedHashSet<NewChatSearchResult>> searchForFriends(
+      String searchString, int limit, String startAfter) async {
+    _logger.v("searchForFriends- Entered");
+    final user = await _auth.currentUser();
+    if (user == null) {
+      _logger.e("searchForFriends- User is not signed in");
+      return Future.error("User is not signed in");
+    }
+
+    // 1) search through your friends in the database
+    String normalizedSearch = searchString.toLowerCase();
+    int searchLimit = limit;
+    Query currQ;
+    if (startAfter != null) {
+      currQ = _store
+          .collection("friends_" + user.uid)
+          .orderBy("displayName")
+          .startAfter([startAfter.toLowerCase()])
+          .where("searchTokens", arrayContains: normalizedSearch)
+          .limit(searchLimit);
+    } else {
+      currQ = _store
+          .collection("friends_" + user.uid)
+          .orderBy(FieldPath.documentId)
+          .where("searchTokens", arrayContains: normalizedSearch)
+          .limit(searchLimit);
+    }
+    QuerySnapshot friendsSearchQ;
+    try {
+      friendsSearchQ = await currQ.getDocuments();
+    } catch (e) {
+      _logger.e(
+          "searchForFriends- caught error when searching usernames ${e.toString()}");
+      return Future.error("Friends query failed ${e.toString()}");
+    }
+    _logger.v(
+        "searchForFriends- got ${friendsSearchQ.documents.length} search results back");
+    LinkedHashSet<NewChatSearchResult> searchResults =
+        LinkedHashSet<NewChatSearchResult>();
+    if (friendsSearchQ.documents.isEmpty) {
+      _logger.v(
+          "searchForFriends- friends search returned no results with search ${normalizedSearch}");
+      return searchResults;
+    }
+
+    for (int i = 0; i < friendsSearchQ.documents.length; i++) {
+      var currDoc = friendsSearchQ.documents[i];
+      searchResults.add(NewChatSearchResult(currDoc.documentID,
+          currDoc.data["displayName"], currDoc.data["displayName"][0], false));
+    }
+    // return a list of friends
+    return searchResults;
+  }
+
+  // creates a chat with the following user ids
+  // returns the chat id on success
+  Future<String> createChat(List<String> userIds) async {
+    _logger.v("createChat- Entered");
+    if (userIds.isEmpty) {
+      _logger.e("createChat- No user ids available");
+      return Future.error("No user ids passed in");
+    }
+
+    final user = await _auth.currentUser();
+    if (user == null) {
+      _logger.e("createChat- User is not signed in");
+      return Future.error("User is not signed in");
+    }
+
+    // add yourself
+    userIds.add(user.uid);
+
+    String chatId = Uuid().v4();
+
+    // add chat to users and create chat
+    try {
+      await _store.runTransaction((transaction) async {
+        // snapshot the user data
+        List<DocumentSnapshot> userSnapshots = List<DocumentSnapshot>();
+        for (int i = 0; i < userIds.length; i++) {
+          try {
+            userSnapshots.add(await transaction
+                .get(_store.collection("users").document(userIds[i])));
+          } catch (e) {
+            _logger.e("createChat- Failed to find user ${userIds[i]}");
+            return Future.error("Could not find a user in the chat");
+          }
+        }
+
+        var msgTimestamp = Timestamp.now();
+
+        // create chat metadata
+        try {
+          await transaction.set(_store.collection("chat").document(chatId), {
+            "group_name": "",
+            "users": userIds,
+            "last_message_time": msgTimestamp
+          });
+        } catch (e) {
+          _logger.e("createChat- Failed to create the chat metadata");
+          return Future.error("Failed to create chat metadata");
+        }
+
+        // add chat to each user
+        for (int i = 0; i < userIds.length; i++) {
+          var dataToSet = userSnapshots[i].data;
+          if (!dataToSet.containsKey("chats")) {
+            dataToSet["chats"] = List<String>();
+          }
+          dataToSet["chats"].add(chatId);
+          try {
+            await transaction.update(
+                _store.collection("users").document(userIds[i]), dataToSet);
+          } catch (e) {
+            _logger.e("createChat- Failed to update user ${userIds[i]}");
+            return Future.error("Failed to update user ${userIds[i]}");
+          }
+        }
+      });
+    } catch (e) {
+      _logger.e("createChat- Caught error when running transaction '" +
+          e.toString() +
+          "'");
+      return Future.error(e.toString());
+    }
+    return chatId;
   }
 
   // Search for friend requests given the relationship state (INCOMING, PENDING, etc.)

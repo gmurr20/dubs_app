@@ -1,3 +1,4 @@
+import 'package:dubs_app/model/new_chat_search_result.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -26,9 +27,9 @@ class PaginateSearchEvent extends NewChatEvent {
 }
 
 class AddToChatEvent extends NewChatEvent {
-  String userId;
+  NewChatSearchResult personToAdd;
 
-  AddToChatEvent(this.userId);
+  AddToChatEvent(this.personToAdd);
 
   @override
   String toString() => 'AddToChatEvent';
