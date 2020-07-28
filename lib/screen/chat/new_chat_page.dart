@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/bloc/chat/new_chat/new_chat_bloc.dart';
@@ -39,6 +38,7 @@ class _NewChatPageState extends State<NewChatPage> {
   @override
   void initState() {
     _bloc = NewChatBloc(userRepo: _userRepository);
+    _bloc.add(FindAllFriendsEvent());
   }
 
   @override
@@ -104,7 +104,7 @@ class _NewChatPageState extends State<NewChatPage> {
       return Container();
     }
     _logger.v("_buildSearchResults- got ${searchResults.length} results");
-    if (searchResults.isEmpty && state is ResultsState) {
+    if (searchResults.length == 0) {
       return Container(
         margin: spacer.top.xxs + spacer.left.xs + spacer.right.xs,
         child: Text(
@@ -131,8 +131,10 @@ class _NewChatPageState extends State<NewChatPage> {
                 ),
                 child: ListTile(
                   title: Text(searchRes.username, style: darkprimaryPBold),
-                  trailing: Container(
-                      child: CheckboxListTile(
+                  trailing: SizedBox(
+                      width: 10,
+                      height: 10,
+                      child: Checkbox(
                           value: searchRes.isSelected,
                           onChanged: (bool value) {
                             _bloc.add(SelectChangeEvent(searchRes, value));
@@ -144,7 +146,7 @@ class _NewChatPageState extends State<NewChatPage> {
                 ),
               );
             }),
-      )
+      ),
     ]);
   }
 
@@ -164,45 +166,43 @@ class _NewChatPageState extends State<NewChatPage> {
             BuildContext context,
             NewChatState state,
           ) {
-            return Scaffold(
-                backgroundColor: DarwinRed,
-                body: Column(children: [
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: spacer.top.xxs + spacer.bottom.xs,
-                    margin: spacer.left.xs + spacer.right.xs,
-                    child: Text(
-                      'Start Chat',
-                      style: primaryH1Bold,
-                      textAlign: TextAlign.left,
+            return Column(children: [
+              Container(
+                alignment: Alignment.topRight,
+                padding: spacer.top.xxs + spacer.bottom.xs,
+                margin: spacer.left.xs + spacer.right.xs,
+                child: Text(
+                  'Start Chat',
+                  style: primaryH1Bold,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Container(
+                alignment: Alignment.topLeft,
+                padding: spacer.top.none + spacer.bottom.xs,
+                margin: spacer.left.xs + spacer.right.xs,
+                child: CupertinoTextField(
+                    prefix: Icon(
+                      Icons.search,
+                      color: Colors.grey[500],
                     ),
-                  ),
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: spacer.top.none + spacer.bottom.xs,
-                    margin: spacer.left.xs + spacer.right.xs,
-                    child: CupertinoTextField(
-                        prefix: Icon(
-                          Icons.search,
-                          color: Colors.grey[500],
-                        ),
-                        prefixMode: OverlayVisibilityMode.always,
-                        obscureText: false,
-                        enableInteractiveSelection: true,
-                        style: darkprimaryPRegular,
-                        cursorColor: Colors.black,
-                        placeholder: 'Search Friends',
-                        onSubmitted: _search,
-                        autocorrect: true,
-                        autofocus: true,
-                        showCursor: true,
-                        enableSuggestions: true,
-                        padding: spacer.all.xxs,
-                        controller: _searchController),
-                  ),
-                  _buildSelected(state),
-                  _buildSearchResults(state),
-                ]));
+                    prefixMode: OverlayVisibilityMode.always,
+                    obscureText: false,
+                    enableInteractiveSelection: true,
+                    style: darkprimaryPRegular,
+                    cursorColor: Colors.black,
+                    placeholder: 'Search Friends',
+                    onSubmitted: _search,
+                    autocorrect: true,
+                    autofocus: true,
+                    showCursor: true,
+                    enableSuggestions: true,
+                    padding: spacer.all.xxs,
+                    controller: _searchController),
+              ),
+              _buildSelected(state),
+              _buildSearchResults(state),
+            ]);
           }),
     );
   }

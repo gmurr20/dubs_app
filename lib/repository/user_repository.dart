@@ -225,6 +225,7 @@ class UserRepository {
         i < usernameSearchQ.documents.length && searchResults.length < limit;
         i++) {
       String currSearchId = usernameSearchQ.documents[i].data["userid"];
+      String currSearchName = usernameSearchQ.documents[i].documentID;
       UserRelationshipState relationship;
       if (currSearchId == user.uid) {
         _logger.v("searchForUsers- current user so skip");
@@ -235,7 +236,7 @@ class UserRepository {
       try {
         isFriend = (await _store
                 .collection("friends_" + user.uid)
-                .document(currSearchId)
+                .document(currSearchName)
                 .get())
             .exists;
       } catch (e) {
@@ -269,23 +270,17 @@ class UserRepository {
     }
 
     // 1) search through your friends in the database
-    String normalizedSearch = searchString.toLowerCase();
-    int searchLimit = limit;
-    Query currQ;
+    Query currQ =
+        _store.collection("friends_" + user.uid).orderBy(FieldPath.documentId);
     if (startAfter != null) {
-      currQ = _store
-          .collection("friends_" + user.uid)
-          .orderBy("displayName")
-          .startAfter([startAfter.toLowerCase()])
-          .where("searchTokens", arrayContains: normalizedSearch)
-          .limit(searchLimit);
-    } else {
-      currQ = _store
-          .collection("friends_" + user.uid)
-          .orderBy(FieldPath.documentId)
-          .where("searchTokens", arrayContains: normalizedSearch)
-          .limit(searchLimit);
+      currQ = currQ.startAfter([startAfter.toLowerCase()]);
     }
+    if (searchString != null && searchString != "") {
+      currQ = currQ.where("searchTokens",
+          arrayContains: searchString.toLowerCase());
+    }
+    currQ = currQ.limit(limit);
+
     QuerySnapshot friendsSearchQ;
     try {
       friendsSearchQ = await currQ.getDocuments();
@@ -300,7 +295,7 @@ class UserRepository {
         LinkedHashSet<NewChatSearchResult>();
     if (friendsSearchQ.documents.isEmpty) {
       _logger.v(
-          "searchForFriends- friends search returned no results with search ${normalizedSearch}");
+          "searchForFriends- friends search returned no results with search ${searchString}");
       return searchResults;
     }
 
@@ -569,13 +564,19 @@ class UserRepository {
             otherNewData);
 
         // update our mapping
+        assert(friendsUserData.data.containsKey("displayName"));
         await transaction.set(
-            _store.collection("friends_" + user.uid).document(friendsId),
+            _store
+                .collection("friends_" + user.uid)
+                .document(friendsUserData.data["displayName"].toLowerCase()),
             friendsUserData.data);
 
         // update their mapping
+        assert(ourUserData.containsKey("displayName"));
         return await transaction.set(
-            _store.collection("friends_" + friendsId).document(user.uid),
+            _store
+                .collection("friends_" + friendsId)
+                .document(ourUserData["displayName"].toLowerCase()),
             ourUserData);
       });
     } catch (e) {

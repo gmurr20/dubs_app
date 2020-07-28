@@ -36,6 +36,11 @@ class SelectChangeEvent extends NewChatEvent {
   String toString() => 'AddToChatEvent';
 }
 
+class FindAllFriendsEvent extends NewChatEvent {
+  @override
+  String toString() => 'FindAllFriendsEvent';
+}
+
 class StartChatEvent extends NewChatEvent {
   @override
   String toString() => 'StartChatEvent';
