@@ -12,8 +12,14 @@ class NewChatSearchResult {
   bool isSelected;
 
   // override the hash code
+  @override
   int get hashCode {
     return userId.hashCode;
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return this.userId == other.userId;
   }
 
   NewChatSearchResult(

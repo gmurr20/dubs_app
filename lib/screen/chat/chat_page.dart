@@ -5,6 +5,8 @@ import 'package:dubs_app/Widgets/WaveWidget.dart';
 import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/chat_search_result.dart';
 import 'package:dubs_app/model/user.dart';
+import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/screen/chat/new_chat_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -12,8 +14,9 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class ChatPageInput {
   User user;
+  UserRepository userRepo;
 
-  ChatPageInput(this.user);
+  ChatPageInput(this.user, this.userRepo) : assert(userRepo != null);
 }
 
 class ChatPage extends StatefulWidget {
@@ -32,6 +35,7 @@ class _ChatPageState extends State<ChatPage> {
   PanelController _pc = PanelController();
 
   User get _currentUser => widget.input.user;
+  UserRepository get _userRepo => widget.input.userRepo;
 
   @override
   void initState() {
@@ -120,29 +124,30 @@ class _ChatPageState extends State<ChatPage> {
                   onPressed: () => _pc.close(),
                 ),
               ),
-              Container(
-                alignment: Alignment.topLeft,
-                padding: spacer.top.none,
-                margin: spacer.left.xs + spacer.right.xs,
-                child: CupertinoTextField(
-                    prefix: Icon(
-                      Icons.search,
-                      color: Colors.grey[500],
-                    ),
-                    prefixMode: OverlayVisibilityMode.always,
-                    obscureText: false,
-                    enableInteractiveSelection: true,
-                    style: darkprimaryPRegular,
-                    cursorColor: Colors.black,
-                    placeholder: 'Search',
-                    onSubmitted: _search,
-                    autocorrect: true,
-                    autofocus: false,
-                    showCursor: true,
-                    enableSuggestions: true,
-                    padding: spacer.all.xxs,
-                    controller: _searchController),
-              ),
+              // Container(
+              //   alignment: Alignment.topLeft,
+              //   padding: spacer.top.none,
+              //   margin: spacer.left.xs + spacer.right.xs,
+              //   child: CupertinoTextField(
+              //       prefix: Icon(
+              //         Icons.search,
+              //         color: Colors.grey[500],
+              //       ),
+              //       prefixMode: OverlayVisibilityMode.always,
+              //       obscureText: false,
+              //       enableInteractiveSelection: true,
+              //       style: darkprimaryPRegular,
+              //       cursorColor: Colors.black,
+              //       placeholder: 'Search',
+              //       onSubmitted: _search,
+              //       autocorrect: true,
+              //       autofocus: false,
+              //       showCursor: true,
+              //       enableSuggestions: true,
+              //       padding: spacer.all.xxs,
+              //       controller: _searchController),
+              // ),
+              NewChatPage(userRepository: _userRepo, user: _currentUser)
             ],
           ),
           body: Container(

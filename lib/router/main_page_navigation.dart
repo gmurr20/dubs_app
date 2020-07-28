@@ -44,7 +44,9 @@ class _MainPageNavigationControllerState
         key: PageStorageKey('home'),
         input: HomePageInput(_currentUser, _userRepo),
       ),
-      ChatPage(key: PageStorageKey("chat"), input: ChatPageInput(_currentUser))
+      ChatPage(
+          key: PageStorageKey("chat"),
+          input: ChatPageInput(_currentUser, _userRepo))
     ];
   }
 
