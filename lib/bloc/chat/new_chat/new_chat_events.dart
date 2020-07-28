@@ -26,10 +26,11 @@ class PaginateSearchEvent extends NewChatEvent {
   String toString() => 'PaginateSearchEvent';
 }
 
-class AddToChatEvent extends NewChatEvent {
+class SelectChangeEvent extends NewChatEvent {
   NewChatSearchResult personToAdd;
+  bool newSelectValue;
 
-  AddToChatEvent(this.personToAdd);
+  SelectChangeEvent(this.personToAdd, this.newSelectValue);
 
   @override
   String toString() => 'AddToChatEvent';

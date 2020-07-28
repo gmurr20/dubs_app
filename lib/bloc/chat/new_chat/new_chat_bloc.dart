@@ -89,14 +89,16 @@ class NewChatBloc extends Bloc<NewChatEvent, NewChatState> {
     yield ResultsState(selected, searchResults);
   }
 
-  Stream<NewChatState> _handleAddToChatEvent(AddToChatEvent event) async* {
+  Stream<NewChatState> _handleAddToChatEvent(SelectChangeEvent event) async* {
     yield SearchingState(selected, searchResults);
 
-    if (!selected.contains(event.personToAdd)) {
+    if (event.newSelectValue && !selected.contains(event.personToAdd)) {
       selected.add(event.personToAdd);
+    } else {
+      selected.remove(event.personToAdd);
     }
 
-    searchResults.lookup(event.personToAdd).isSelected = true;
+    searchResults.lookup(event.personToAdd).isSelected = event.newSelectValue;
 
     yield ResultsState(selected, searchResults);
   }
