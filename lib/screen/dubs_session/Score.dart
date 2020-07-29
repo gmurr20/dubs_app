@@ -1,21 +1,29 @@
 import 'package:dubs_app/bloc/dubs_session/session_bloc.dart';
 import 'package:dubs_app/bloc/dubs_session/session_events.dart';
 import 'package:dubs_app/bloc/dubs_session/session_states.dart';
+import 'package:dubs_app/logger/log_printer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Score extends StatelessWidget {
+class Score extends StatefulWidget {
+  SessionBloc sessionBloc;
+
   Score({
     Key key,
+    this.sessionBloc,
   }) : super(key: key);
 
   @override
+  _ScoreState createState() => _ScoreState();
+}
+
+class _ScoreState extends State<Score> {
+  SessionBloc get sessionBloc => widget.sessionBloc;
+
+  final _logger = getLogger("Count");
+
+  @override
   Widget build(BuildContext context) {
-    // int get count => sessionBloc.count;
-    final sessionBloc = SessionBloc();
-
-    sessionBloc.listen(print);
-
     return BlocListener(
         bloc: sessionBloc,
         listener: (
@@ -29,6 +37,7 @@ class Score extends StatelessWidget {
               SessionState state,
             ) {
               int count;
+
               if (state is CountState) {
                 CountState countState = state;
                 count = countState.count;
@@ -36,7 +45,7 @@ class Score extends StatelessWidget {
                 TempAnimationState countState = state;
                 count = countState.count;
               }
-
+              _logger.v('Print ${count}');
               return Stack(
                 children: <Widget>[
                   // Adobe XD layer: 'Modal BG' (group)

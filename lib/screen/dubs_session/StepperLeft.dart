@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StepperLeft extends StatefulWidget {
+  SessionBloc sessionBloc;
+
   StepperLeft({
     Key key,
+    this.sessionBloc,
   }) : super(key: key);
 
   @override
@@ -14,10 +17,11 @@ class StepperLeft extends StatefulWidget {
 }
 
 class _StepperLeftState extends State<StepperLeft> {
+  SessionBloc get _sessionBloc => widget.sessionBloc;
+
   @override
   Widget build(BuildContext context) {
-    final _sessionBloc = SessionBloc();
-    _sessionBloc.listen(print);
+    // _sessionBloc.listen(print);
 
     return BlocListener(
         bloc: _sessionBloc,
