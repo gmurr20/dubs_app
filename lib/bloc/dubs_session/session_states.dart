@@ -10,8 +10,9 @@ class SessionState extends Equatable {
 // ignore: must_be_immutable
 class CountState extends SessionState {
   // CountState countState = CountState(0);
-  int count;
-  CountState(this.count);
+  int wcount;
+  int lcount;
+  CountState(this.wcount, this.lcount);
 
   @override
   String toString() => 'CountState';
@@ -20,8 +21,10 @@ class CountState extends SessionState {
 // This is some BS where the state always has to change
 class TempAnimationState extends SessionState {
   // int count;
+  int wcount;
+  int lcount;
   CountState state;
-  int count;
+
   TempAnimationState(this.state);
 
   @override

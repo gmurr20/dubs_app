@@ -84,7 +84,9 @@ class _SessionLeaderState extends State<SessionLeader> {
                               StepperLeft(
                                 sessionBloc: _sessionBloc,
                               ),
-                              StepperRight(),
+                              StepperRight(
+                                sessionBloc: _sessionBloc,
+                              ),
                             ],
                           )
                           // Adobe XD layer: 'Stepper Left' (component)

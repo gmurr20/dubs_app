@@ -21,7 +21,8 @@ class _ScoreState extends State<Score> {
   SessionBloc get sessionBloc => widget.sessionBloc;
 
   final _logger = getLogger("Count");
-
+  int wcount;
+  int lcount;
   @override
   Widget build(BuildContext context) {
     return BlocListener(
@@ -36,16 +37,15 @@ class _ScoreState extends State<Score> {
               BuildContext context,
               SessionState state,
             ) {
-              int count;
-
               if (state is CountState) {
                 CountState countState = state;
-                count = countState.count;
+                wcount = countState.wcount;
+                lcount = countState.lcount;
               } else if (state is TempAnimationState) {
                 TempAnimationState countState = state;
-                count = countState.count;
               }
-              _logger.v('Print ${count}');
+
+              _logger.v('Print Screen Wins: ${wcount} Losses: ${lcount}');
               return Stack(
                 children: <Widget>[
                   // Adobe XD layer: 'Modal BG' (group)
@@ -87,7 +87,7 @@ class _ScoreState extends State<Score> {
                   Transform.translate(
                     offset: Offset(244.0, 69.0),
                     child: Text(
-                      '0',
+                      "$lcount",
                       style: TextStyle(
                         fontFamily: 'Arial Black',
                         fontSize: 70,
@@ -96,11 +96,12 @@ class _ScoreState extends State<Score> {
                       textAlign: TextAlign.left,
                     ),
                   ),
+
                   Transform.translate(
                     offset: Offset(58.0, 69.0),
                     child: Text(
                       // ignore: unnecessary_brace_in_string_interps
-                      "${count}",
+                      "$wcount",
                       style: TextStyle(
                         fontFamily: 'Arial Black',
                         fontSize: 70,
