@@ -4,12 +4,10 @@ import 'package:meta/meta.dart';
 class SessionState extends Equatable {
   @override
   List<Object> get props => [];
-  //int count;
 }
 
 // ignore: must_be_immutable
 class CountState extends SessionState {
-  // CountState countState = CountState(0);
   int wcount;
   int lcount;
   CountState(this.wcount, this.lcount);

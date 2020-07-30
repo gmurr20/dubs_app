@@ -21,8 +21,7 @@ class _ScoreState extends State<Score> {
   SessionBloc get sessionBloc => widget.sessionBloc;
 
   final _logger = getLogger("Count");
-  int wcount;
-  int lcount;
+
   @override
   Widget build(BuildContext context) {
     return BlocListener(
@@ -37,12 +36,16 @@ class _ScoreState extends State<Score> {
               BuildContext context,
               SessionState state,
             ) {
+              int wcount;
+              int lcount;
               if (state is CountState) {
                 CountState countState = state;
                 wcount = countState.wcount;
                 lcount = countState.lcount;
               } else if (state is TempAnimationState) {
                 TempAnimationState countState = state;
+                wcount = countState.wcount;
+                lcount = countState.lcount;
               }
 
               _logger.v('Print Screen Wins: ${wcount} Losses: ${lcount}');
@@ -100,7 +103,6 @@ class _ScoreState extends State<Score> {
                   Transform.translate(
                     offset: Offset(58.0, 69.0),
                     child: Text(
-                      // ignore: unnecessary_brace_in_string_interps
                       "$wcount",
                       style: TextStyle(
                         fontFamily: 'Arial Black',
