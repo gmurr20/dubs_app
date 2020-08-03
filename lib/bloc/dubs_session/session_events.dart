@@ -8,7 +8,6 @@ abstract class SessionEvent extends Equatable {
 }
 
 class IncrementWinEvent extends SessionEvent {
-  int count;
   @override
   String toString() => 'IncrementWinEvent';
 }
@@ -24,6 +23,21 @@ class IncrementLossEvent extends SessionEvent {
 }
 
 class DecrementLossEvent extends SessionEvent {
+  @override
+  String toString() => 'DecrementLossEvent';
+}
+
+class SessionStartEvent extends SessionEvent {
+  @override
+  String toString() => 'IncrementLossEvent';
+}
+
+class SessionEndEvent extends SessionEvent {
+  @override
+  String toString() => 'DecrementLossEvent';
+}
+
+class SessionPausedEvent extends SessionEvent {
   @override
   String toString() => 'DecrementLossEvent';
 }

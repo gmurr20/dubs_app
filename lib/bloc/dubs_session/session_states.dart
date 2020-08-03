@@ -28,3 +28,15 @@ class TempAnimationState extends SessionState {
   @override
   String toString() => 'TempAnimationState';
 }
+
+class SessionTimerState extends SessionState {
+  bool sessionOngoing;
+  bool sessionPaused;
+  bool sessionCompleted;
+  String elapsedTime;
+
+  SessionTimerState(this.sessionOngoing, this.sessionPaused,
+      this.sessionCompleted, this.elapsedTime);
+  @override
+  String toString() => 'SessionTimerState';
+}
