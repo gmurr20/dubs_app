@@ -34,6 +34,8 @@ class SessionTimerState extends SessionState {
   bool sessionPaused;
   bool sessionCompleted;
   String elapsedTime;
+  var swatch = Stopwatch();
+  final dur = const Duration(seconds: 1);
 
   SessionTimerState(this.sessionOngoing, this.sessionPaused,
       this.sessionCompleted, this.elapsedTime);

@@ -15,8 +15,10 @@ class NewChatBloc extends Bloc<NewChatEvent, NewChatState> {
   String lastSearchName = "";
 
   // cache the results for pagination
-  LinkedHashSet<NewChatSearchResult> selected;
-  LinkedHashSet<NewChatSearchResult> searchResults;
+  LinkedHashSet<NewChatSearchResult> selected =
+      LinkedHashSet<NewChatSearchResult>();
+  LinkedHashSet<NewChatSearchResult> searchResults =
+      LinkedHashSet<NewChatSearchResult>();
 
   String lastSearchElement;
 
@@ -38,8 +40,11 @@ class NewChatBloc extends Bloc<NewChatEvent, NewChatState> {
     } else if (event is PaginateSearchEvent) {
       yield* _handlePaginateEvent(event);
       return;
-    } else if (event is AddToChatEvent) {
+    } else if (event is SelectChangeEvent) {
       yield* _handleAddToChatEvent(event);
+      return;
+    } else if (event is FindAllFriendsEvent) {
+      yield* _handleFindAllFriendsEvent(event);
       return;
     } else if (event is StartChatEvent) {
       yield* _handleStartChatEvent(event);
@@ -68,6 +73,28 @@ class NewChatBloc extends Bloc<NewChatEvent, NewChatState> {
     yield ResultsState(selected, searchResults);
   }
 
+  Stream<NewChatState> _handleFindAllFriendsEvent(
+      FindAllFriendsEvent event) async* {
+    yield SearchingState(selected, searchResults);
+    searchResults.clear();
+    // Call to search
+    _logger.v("_handleFindAllFriendsEvent- grabbing all friends");
+    try {
+      searchResults =
+          await _userRepo.searchForFriends(null, PAGINATE_SEARCH_LENGTH, null);
+    } catch (e) {
+      _logger.i(
+          "_handleFindAllFriendsEvent- error while searching for all friends: ${e.toString()}");
+      yield ErrorState(selected, searchResults, e.toString());
+    }
+
+    _updateLastSearchName();
+
+    _logger
+        .v("_handleFindAllFriendsEvent- found ${searchResults.length} results");
+    yield ResultsState(selected, searchResults);
+  }
+
   Stream<NewChatState> _handlePaginateEvent(PaginateSearchEvent event) async* {
     yield SearchingState(selected, searchResults);
     // Call to search
@@ -89,14 +116,16 @@ class NewChatBloc extends Bloc<NewChatEvent, NewChatState> {
     yield ResultsState(selected, searchResults);
   }
 
-  Stream<NewChatState> _handleAddToChatEvent(AddToChatEvent event) async* {
+  Stream<NewChatState> _handleAddToChatEvent(SelectChangeEvent event) async* {
     yield SearchingState(selected, searchResults);
 
-    if (!selected.contains(event.personToAdd)) {
+    if (event.newSelectValue && !selected.contains(event.personToAdd)) {
       selected.add(event.personToAdd);
+    } else {
+      selected.remove(event.personToAdd);
     }
 
-    searchResults.lookup(event.personToAdd).isSelected = true;
+    searchResults.lookup(event.personToAdd).isSelected = event.newSelectValue;
 
     yield ResultsState(selected, searchResults);
   }
