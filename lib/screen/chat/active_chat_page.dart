@@ -162,14 +162,59 @@ class _ActiveChatPageState extends State<ActiveChatPage> {
             NewChatState state,
           ) {
             return Container(
-              height: 600,
-              child: Center(
-                child: Stack(children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
+              height: size.height,
+              padding: EdgeInsets.only(bottom: 210),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Container(
                       alignment: Alignment.bottomCenter,
-                      margin: spacer.left.xxl + spacer.right.xs,
+                      margin: spacer.left.xs + spacer.right.xs,
+                      height: 60,
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: spacer.right.xxs + spacer.left.xxs,
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text('Dubs?', style: primaryPBold),
+                              color: DarwinRed,
+                              onPressed: () {},
+                            ),
+                          ),
+                          Padding(
+                            padding: spacer.right.xxs + spacer.left.xxs,
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text('Dubs!', style: primaryPBold),
+                              color: DarwinRed,
+                              onPressed: () {},
+                            ),
+                          ),
+                          Padding(
+                            padding: spacer.right.xxs + spacer.left.xxs,
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text('No Dubs', style: primaryPBold),
+                              color: DarwinRed,
+                              onPressed: () {},
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      // alignment: Alignment.bottomCenter,
+                      margin: spacer.left.xs + spacer.right.xs,
                       height: 80,
                       width: double.infinity,
                       child: Row(
@@ -197,16 +242,27 @@ class _ActiveChatPageState extends State<ActiveChatPage> {
                                           border: InputBorder.none),
                                     ),
                                   ),
+                                  Padding(
+                                    padding: spacer.right.xxs + spacer.left.xxs,
+                                    child: RaisedButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text('Go', style: primaryPBold),
+                                      color: DarwinRed,
+                                      onPressed: () {},
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
-                          //SizedBox(width: 15),
+                          // SizedBox(width: 15),
                         ],
                       ),
                     ),
-                  ),
-                ]),
+                  ]),
+                ],
               ),
             );
           }),
