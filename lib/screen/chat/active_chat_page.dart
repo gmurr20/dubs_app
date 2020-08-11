@@ -192,10 +192,10 @@ class _ActiveChatPageState extends State<ActiveChatPage> {
                       children: [
                         Bubble(
                           alignment: Alignment.center,
-                          color: Color.fromARGB(255, 212, 234, 244),
+                          color: Colors.grey[200],
                           elevation: 1 * px,
                           margin: BubbleEdges.only(top: 8.0),
-                          child: Text('TODAY', style: TextStyle(fontSize: 10)),
+                          child: Text('TODAY', style: darkprimaryPBoldSmall),
                         ),
                         Bubble(
                           style: styleSomebody,
