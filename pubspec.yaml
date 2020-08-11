@@ -47,6 +47,9 @@ dependencies:
   # adobe_xd
   adobe_xd: ^0.1.3
 
+  # Chat Bubble
+  bubble: ^1.1.9+1
+
   # Circle Check Box
   circular_check_box: ^1.0.2
   

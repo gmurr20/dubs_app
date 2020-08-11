@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:bubble/bubble.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
@@ -146,6 +147,24 @@ class _ActiveChatPageState extends State<ActiveChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    double pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    double px = 1 / pixelRatio;
+
+    BubbleStyle styleSomebody = BubbleStyle(
+      nip: BubbleNip.leftTop,
+      color: Colors.grey[200],
+      elevation: 1 * px,
+      margin: BubbleEdges.only(top: 8.0, right: 50.0),
+      alignment: Alignment.topLeft,
+    );
+    BubbleStyle styleMe = BubbleStyle(
+      nip: BubbleNip.rightTop,
+      color: DarwinRed,
+      elevation: 1 * px,
+      margin: BubbleEdges.only(top: 8.0, left: 50.0),
+      alignment: Alignment.topRight,
+    );
+
     final size = MediaQuery.of(context).size;
     return BlocListener(
       bloc: _bloc,
@@ -164,82 +183,76 @@ class _ActiveChatPageState extends State<ActiveChatPage> {
             return Container(
               height: size.height,
               padding: EdgeInsets.only(bottom: 210),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+              child: Stack(
                 children: [
-                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      margin: spacer.left.xs + spacer.right.xs,
-                      height: 60,
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Padding(
-                            padding: spacer.right.xxs + spacer.left.xxs,
-                            child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text('Dubs?', style: primaryPBold),
-                              color: DarwinRed,
-                              onPressed: () {},
-                            ),
+                  Container(
+                    color: Colors.transparent,
+                    child: ListView(
+                      padding: EdgeInsets.all(8.0),
+                      children: [
+                        Bubble(
+                          alignment: Alignment.center,
+                          color: Color.fromARGB(255, 212, 234, 244),
+                          elevation: 1 * px,
+                          margin: BubbleEdges.only(top: 8.0),
+                          child: Text('TODAY', style: TextStyle(fontSize: 10)),
+                        ),
+                        Bubble(
+                          style: styleSomebody,
+                          child: Text(
+                            'Hi Snoop, I\'m dave very nice to meet.',
+                            style: darkprimaryPRegular,
                           ),
-                          Padding(
-                            padding: spacer.right.xxs + spacer.left.xxs,
-                            child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text('Dubs!', style: primaryPBold),
-                              color: DarwinRed,
-                              onPressed: () {},
-                            ),
+                        ),
+                        Bubble(
+                          style: styleMe,
+                          child: Text(
+                            'Whats\'up?',
+                            style: primaryPRegular,
                           ),
-                          Padding(
-                            padding: spacer.right.xxs + spacer.left.xxs,
-                            child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text('No Dubs', style: primaryPBold),
-                              color: DarwinRed,
-                              onPressed: () {},
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        Bubble(
+                          style: styleSomebody,
+                          child: Text('Dubs?', style: darkprimaryPRegular),
+                        ),
+                        Bubble(
+                          style: styleMe,
+                          child: Text('Dubs!', style: primaryPRegular),
+                        ),
+                        Bubble(
+                          style: styleMe,
+                          nip: BubbleNip.no,
+                          margin: BubbleEdges.only(top: 2.0),
+                          child: Text('Let\'s hop on in 15.',
+                              style: primaryPRegular),
+                        ),
+                      ],
                     ),
-                    Container(
-                      // alignment: Alignment.bottomCenter,
-                      margin: spacer.left.xs + spacer.right.xs,
-                      height: 80,
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(35.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                      offset: Offset(0, 3),
-                                      blurRadius: 5,
-                                      color: Colors.grey)
-                                ],
-                              ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              alignment: Alignment.bottomCenter,
+                              margin: spacer.left.xs + spacer.right.xs,
+                              height: 60,
+                              width: double.infinity,
                               child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  IconButton(
-                                      icon: Icon(Icons.face), onPressed: () {}),
-                                  Expanded(
-                                    child: TextField(
-                                      decoration: InputDecoration(
-                                          hintText: "Aa",
-                                          border: InputBorder.none),
+                                  Padding(
+                                    padding: spacer.right.xxs + spacer.left.xxs,
+                                    child: RaisedButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Text('Dubs?', style: primaryPBold),
+                                      color: DarwinRed,
+                                      onPressed: () {},
                                     ),
                                   ),
                                   Padding(
@@ -248,7 +261,19 @@ class _ActiveChatPageState extends State<ActiveChatPage> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),
                                       ),
-                                      child: Text('Go', style: primaryPBold),
+                                      child: Text('Dubs!', style: primaryPBold),
+                                      color: DarwinRed,
+                                      onPressed: () {},
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: spacer.right.xxs + spacer.left.xxs,
+                                    child: RaisedButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child:
+                                          Text('No Dubs', style: primaryPBold),
                                       color: DarwinRed,
                                       onPressed: () {},
                                     ),
@@ -256,12 +281,63 @@ class _ActiveChatPageState extends State<ActiveChatPage> {
                                 ],
                               ),
                             ),
-                          ),
-                          // SizedBox(width: 15),
-                        ],
-                      ),
-                    ),
-                  ]),
+                            Container(
+                              // alignment: Alignment.bottomCenter,
+                              margin: spacer.left.xs + spacer.right.xs,
+                              height: 80,
+                              width: double.infinity,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(35.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: Offset(0, 3),
+                                              blurRadius: 5,
+                                              color: Colors.grey)
+                                        ],
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          IconButton(
+                                              icon: Icon(Icons.face),
+                                              onPressed: () {}),
+                                          Expanded(
+                                            child: TextField(
+                                              decoration: InputDecoration(
+                                                  hintText: "Aa",
+                                                  border: InputBorder.none),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: spacer.right.xxs +
+                                                spacer.left.xxs,
+                                            child: RaisedButton(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Text('Go',
+                                                  style: primaryPBold),
+                                              color: DarwinRed,
+                                              onPressed: () {},
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  // SizedBox(width: 15),
+                                ],
+                              ),
+                            ),
+                          ]),
+                    ],
+                  ),
                 ],
               ),
             );
