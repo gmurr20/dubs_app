@@ -98,6 +98,7 @@ class _ChatPageState extends State<ChatPage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: DarwinRed,
+      resizeToAvoidBottomInset: true,
       body: Stack(children: [
         WaveWidget(
           size: size,
@@ -148,7 +149,7 @@ class _ChatPageState extends State<ChatPage> {
               //       padding: spacer.all.xxs,
               //       controller: _searchController),
               // ),
-              ActiveChatPage(userRepository: _userRepo, user: _currentUser)
+              NewChatPage(userRepository: _userRepo, user: _currentUser)
             ],
           ),
           body: Container(

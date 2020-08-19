@@ -1,4 +1,5 @@
 import 'package:dubs_app/bloc/dubs_session/session_bloc.dart';
+import 'package:dubs_app/screen/chat/active_chat_page.dart';
 import 'package:dubs_app/screen/dubs_session/SessionLeader.dart';
 import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/user.dart';
@@ -21,6 +22,7 @@ const String addUsernameRoute = "/addUsername";
 const String addFriendsRoute = "/addFriends";
 const String startSessionRoute = "/startSession";
 const String tutorialROute = '/tutorial';
+const String activeChatRoute = '/tutorial';
 
 class Router {
   static UserRepository userRepo = UserRepository();
@@ -53,6 +55,9 @@ class Router {
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case startSessionRoute:
         return _createNewPage(SessionLeader(sessionBloc: _sessionBloc));
+      case activeChatRoute:
+        return _createNewPage(
+            ActiveChatPage(userRepository: userRepo, user: currentUser));
       case testRoute:
         return _createNewPage(SessionLeader(sessionBloc: _sessionBloc));
       default:

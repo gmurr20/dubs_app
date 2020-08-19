@@ -11,6 +11,7 @@ import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/new_chat_search_result.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/router/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -159,24 +160,27 @@ class _NewChatPageState extends State<NewChatPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  child: ListTile(
-                    title: Text(searchRes.username, style: darkprimaryPBold),
-                    trailing: Padding(
-                      padding: spacer.right.sm,
-                      child: SizedBox(
-                          width: 10,
-                          height: 10,
-                          child: CircularCheckBox(
-                              activeColor: Colors.black,
-                              value: searchRes.isSelected,
-                              onChanged: (bool value) {
-                                _bloc.add(SelectChangeEvent(searchRes, value));
-                              })),
+                  child: Container(
+                    child: ListTile(
+                      title: Text(searchRes.username, style: darkprimaryPBold),
+                      trailing: Padding(
+                        padding: spacer.right.sm,
+                        child: SizedBox(
+                            width: 10,
+                            height: 10,
+                            child: CircularCheckBox(
+                                activeColor: Colors.black,
+                                value: searchRes.isSelected,
+                                onChanged: (bool value) {
+                                  _bloc
+                                      .add(SelectChangeEvent(searchRes, value));
+                                })),
+                      ),
+                      contentPadding: spacer.top.xxs +
+                          spacer.bottom.xxs +
+                          spacer.left.xs +
+                          spacer.right.xxs,
                     ),
-                    contentPadding: spacer.top.xxs +
-                        spacer.bottom.xxs +
-                        spacer.left.xs +
-                        spacer.right.xxs,
                   ),
                 );
               }),
@@ -222,17 +226,20 @@ class _NewChatPageState extends State<NewChatPage> {
                   Container(
                     alignment: Alignment.centerRight,
                     padding: spacer.top.xs + spacer.bottom.xs,
-                    margin: spacer.right.none,
+                    margin: spacer.right.xs + spacer.left.xs,
                     child: Container(
-                      width: 55,
+                      width: 80,
                       child: FlatButton(
                         padding: spacer.right.none,
-                        color: DarwinRed,
+                        color: Colors.black,
                         splashColor: Colors.grey,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100.0),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(activeChatRoute,
+                              arguments: _currentuser);
+                        },
                         child: Wrap(
                           alignment: WrapAlignment.center,
                           crossAxisAlignment: WrapCrossAlignment.center,
