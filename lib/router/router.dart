@@ -1,3 +1,4 @@
+import 'package:dubs_app/bloc/dubs_session/session_bloc.dart';
 import 'package:dubs_app/screen/dubs_session/SessionLeader.dart';
 import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/user.dart';
@@ -23,9 +24,11 @@ const String tutorialROute = '/tutorial';
 
 class Router {
   static UserRepository userRepo = UserRepository();
+  static SessionBloc _sessionBloc = SessionBloc();
   static User currentUser;
   static final _logger = getLogger("Router");
   static BuildContext context;
+
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splashRoute:
@@ -49,9 +52,9 @@ class Router {
       case addUsernameRoute:
         return _createNewPage(SetUserDataPage(userRepository: userRepo));
       case startSessionRoute:
-        return _createNewPage(SessionLeader());
+        return _createNewPage(SessionLeader(sessionBloc: _sessionBloc));
       case testRoute:
-        return _createNewPage(SessionLeader());
+        return _createNewPage(SessionLeader(sessionBloc: _sessionBloc));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(
