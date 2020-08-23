@@ -12,6 +12,7 @@ import 'package:dubs_app/model/new_chat_search_result.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
 import 'package:dubs_app/router/router.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -147,6 +148,7 @@ class _NewChatPageState extends State<NewChatPage> {
     return Column(children: [
       NotificationListener<ScrollNotification>(
         onNotification: _onScroll,
+
         child: SingleChildScrollView(
           child: ListView.builder(
               padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
