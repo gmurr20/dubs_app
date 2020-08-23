@@ -6,6 +6,8 @@ import 'package:dubs_app/bloc/dubs_session/session_states.dart';
 
 class SessionBloc extends Bloc<SessionEvent, SessionState> {
   CountState countState = CountState(0, 0);
+  SessionTimerState timeState =
+      SessionTimerState(false, false, false, "00:00:00");
 
   final _logger = getLogger("SessionBloc");
   @override
@@ -27,8 +29,16 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
       yield CountState(countState.lcount - 1, countState.wcount);
       countState.lcount -= 1;
     }
+    if (event is SessionStartEvent) {
+      yield* mapSessionStartEvent(event);
+    }
 
     _logger.v(
         'Print Bloc Wins: ${countState.wcount} Losses: ${countState.lcount}');
+  }
+
+  Stream<SessionState> mapSessionStartEvent(SessionStartEvent event) async* {
+    yield SessionTimerState(false, false, false, "00:00:00");
+    if (event is SessionStartEvent) {}
   }
 }

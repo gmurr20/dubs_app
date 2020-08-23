@@ -1,5 +1,7 @@
 import 'dart:collection';
 
+import 'package:circular_check_box/circular_check_box.dart';
+import 'package:dubs_app/DesignSystem/colors.dart';
 import 'package:dubs_app/DesignSystem/dimensions.dart';
 import 'package:dubs_app/DesignSystem/texts.dart';
 import 'package:dubs_app/bloc/chat/new_chat/new_chat_bloc.dart';
@@ -9,6 +11,8 @@ import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/new_chat_search_result.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/router/router.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -81,11 +85,38 @@ class _NewChatPageState extends State<NewChatPage> {
     String startChatText = "";
     for (int i = 0; i < selected.length; i++) {
       startChatText += selected.elementAt(i).username;
+      // TODO: Might need to rethink this because it would be good to have each selected user seperate to remove them.
       if (i < selected.length - 1) {
         startChatText += ", ";
       }
     }
-    return Container(child: Text(startChatText));
+    return Container();
+    // return FlatButton(
+    //     padding: spacer.all.none + spacer.right.xs,
+    //     color: Colors.grey[100],
+    //     splashColor: Colors.grey,
+    //     shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.circular(100.0),
+    //     ),
+    //     onPressed: () {},
+    //     child: Wrap(
+    //         // alignment: WrapAlignment.center,
+    //         crossAxisAlignment: WrapCrossAlignment.center,
+    //         children: <Widget>[
+    //           IconButton(
+    //             alignment: Alignment.center,
+    //             icon: Icon(
+    //               Icons.people,
+    //               color: Colors.black,
+    //               size: 20,
+    //             ),
+    //             tooltip: 'Friends',
+    //             enableFeedback: true,
+    //             color: Colors.grey[300],
+    //             onPressed: () {},
+    //           ),
+    //           Container(child: Text(startChatText))
+    //         ]));
   }
 
   Widget _buildSearchResults(NewChatState state) {
@@ -117,35 +148,45 @@ class _NewChatPageState extends State<NewChatPage> {
     return Column(children: [
       NotificationListener<ScrollNotification>(
         onNotification: _onScroll,
-        child: ListView.builder(
-            padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
-            itemCount: searchResults.length,
-            scrollDirection: Axis.vertical,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              NewChatSearchResult searchRes = searchResults.elementAt(index);
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: ListTile(
-                  title: Text(searchRes.username, style: darkprimaryPBold),
-                  trailing: SizedBox(
-                      width: 10,
-                      height: 10,
-                      child: Checkbox(
-                          value: searchRes.isSelected,
-                          onChanged: (bool value) {
-                            _bloc.add(SelectChangeEvent(searchRes, value));
-                          })),
-                  contentPadding: spacer.top.xxs +
-                      spacer.bottom.xxs +
-                      spacer.left.xs +
-                      spacer.right.xxs,
-                ),
-              );
-            }),
+
+        child: SingleChildScrollView(
+          child: ListView.builder(
+              padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
+              itemCount: searchResults.length,
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                NewChatSearchResult searchRes = searchResults.elementAt(index);
+                return Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: Container(
+                    child: ListTile(
+                      title: Text(searchRes.username, style: darkprimaryPBold),
+                      trailing: Padding(
+                        padding: spacer.right.sm,
+                        child: SizedBox(
+                            width: 10,
+                            height: 10,
+                            child: CircularCheckBox(
+                                activeColor: Colors.black,
+                                value: searchRes.isSelected,
+                                onChanged: (bool value) {
+                                  _bloc
+                                      .add(SelectChangeEvent(searchRes, value));
+                                })),
+                      ),
+                      contentPadding: spacer.top.xxs +
+                          spacer.bottom.xxs +
+                          spacer.left.xs +
+                          spacer.right.xxs,
+                    ),
+                  ),
+                );
+              }),
+        ),
       ),
     ]);
   }
@@ -168,33 +209,86 @@ class _NewChatPageState extends State<NewChatPage> {
           ) {
             return Column(children: [
               Container(
-                alignment: Alignment.topRight,
-                padding: spacer.top.xxs + spacer.bottom.xs,
+                alignment: Alignment.topLeft,
+                padding: spacer.top.none,
                 margin: spacer.left.xs + spacer.right.xs,
-                child: Text(
-                  'Start Chat',
-                  style: primaryH1Bold,
-                  textAlign: TextAlign.left,
-                ),
+                child: Stack(children: [
+                  Container(
+                    padding: spacer.top.xs + spacer.bottom.xs,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      padding: spacer.top.xxs,
+                      margin: spacer.left.none,
+                      child: Text(
+                        "Choose Friends",
+                        style: darkPrimaryH1Bold,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    padding: spacer.top.xs + spacer.bottom.xs,
+                    margin: spacer.right.xs + spacer.left.xs,
+                    child: Container(
+                      width: 80,
+                      child: FlatButton(
+                        padding: spacer.right.none,
+                        color: Colors.black,
+                        splashColor: Colors.grey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100.0),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(activeChatRoute,
+                              arguments: _currentuser);
+                        },
+                        child: Wrap(
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Done',
+                              // textAlign: TextAlign.center,
+                              style: primaryPBoldSmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
               ),
               Container(
                 alignment: Alignment.topLeft,
                 padding: spacer.top.none + spacer.bottom.xs,
                 margin: spacer.left.xs + spacer.right.xs,
                 child: CupertinoTextField(
-                    prefix: Icon(
-                      Icons.search,
-                      color: Colors.grey[500],
+                    prefix: Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Icon(
+                        Icons.search,
+                        color: Colors.grey[500],
+                      ),
                     ),
                     prefixMode: OverlayVisibilityMode.always,
                     obscureText: false,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(35.0),
+                      boxShadow: [
+                        BoxShadow(
+                            offset: Offset(0, 3),
+                            blurRadius: 3,
+                            color: Colors.grey[400])
+                      ],
+                    ),
                     enableInteractiveSelection: true,
                     style: darkprimaryPRegular,
                     cursorColor: Colors.black,
                     placeholder: 'Search Friends',
                     onSubmitted: _search,
                     autocorrect: true,
-                    autofocus: true,
+                    autofocus: false,
                     showCursor: true,
                     enableSuggestions: true,
                     padding: spacer.all.xxs,

@@ -6,6 +6,7 @@ import 'package:dubs_app/logger/log_printer.dart';
 import 'package:dubs_app/model/chat_search_result.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/repository/user_repository.dart';
+import 'package:dubs_app/screen/chat/active_chat_page.dart';
 import 'package:dubs_app/screen/chat/new_chat_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +98,7 @@ class _ChatPageState extends State<ChatPage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: DarwinRed,
+      resizeToAvoidBottomInset: true,
       body: Stack(children: [
         WaveWidget(
           size: size,
@@ -107,9 +109,9 @@ class _ChatPageState extends State<ChatPage> {
           // header: buildCloseButton(context),
           controller: _pc,
           backdropEnabled: true,
-          margin: spacer.all.xs + spacer.top.xxl,
+          margin: spacer.top.xxl,
           backdropColor: DarwinWhite,
-          backdropOpacity: .9,
+          backdropOpacity: .6,
           backdropTapClosesPanel: true,
           minHeight: 0,
           maxHeight: MediaQuery.of(context).size.height,

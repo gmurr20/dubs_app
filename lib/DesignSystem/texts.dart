@@ -119,6 +119,13 @@ const darkprimaryPBoldSmall = const TextStyle(
     fontStyle: FontStyle.normal,
     fontSize: 12.0);
 
+const primaryPBoldSmall = const TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Open Sans',
+    fontStyle: FontStyle.normal,
+    fontSize: 12.0);
+
 const redprimaryPBold = const TextStyle(
     color: DarwinDarkRed,
     fontWeight: FontWeight.w700,
