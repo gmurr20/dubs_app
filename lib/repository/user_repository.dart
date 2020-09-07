@@ -7,7 +7,15 @@ import 'package:dubs_app/model/new_chat_search_result.dart';
 import 'package:dubs_app/model/user.dart';
 import 'package:dubs_app/model/user_search_result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:uuid/uuid.dart';
+import 'package:collection/collection.dart';
+
+List<String> convertToStrings(List<dynamic> dlist) {
+  List<String> stringList = List<String>();
+  for (int i = 0; i < dlist.length; i++) {
+    stringList.add(dlist[i].toString());
+  }
+  return stringList;
+}
 
 class UserRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -301,7 +309,7 @@ class UserRepository {
 
     for (int i = 0; i < friendsSearchQ.documents.length; i++) {
       var currDoc = friendsSearchQ.documents[i];
-      searchResults.add(NewChatSearchResult(currDoc.documentID,
+      searchResults.add(NewChatSearchResult(currDoc.data["userid"],
           currDoc.data["displayName"], currDoc.data["displayName"][0], false));
     }
     // return a list of friends
@@ -326,14 +334,19 @@ class UserRepository {
     // add yourself
     userIds.add(user.uid);
 
-    String chatId = Uuid().v4();
+    String chatId;
 
     // add chat to users and create chat
     try {
       await _store.runTransaction((transaction) async {
         // snapshot the user data
         List<DocumentSnapshot> userSnapshots = List<DocumentSnapshot>();
+        List<DocumentReference> referencesToWriteBack =
+            List<DocumentReference>();
+        List<DocumentSnapshot> snapshotsToWriteBack = List<DocumentSnapshot>();
+
         for (int i = 0; i < userIds.length; i++) {
+          _logger.v("createChat- Reading user ${userIds[i]}");
           try {
             userSnapshots.add(await transaction
                 .get(_store.collection("users").document(userIds[i])));
@@ -341,21 +354,79 @@ class UserRepository {
             _logger.e("createChat- Failed to find user ${userIds[i]}");
             return Future.error("Could not find a user in the chat");
           }
+
+          referencesToWriteBack
+              .add(_store.collection("users").document(userIds[i]));
+          snapshotsToWriteBack.add(userSnapshots[i]);
         }
 
-        var msgTimestamp = Timestamp.now();
+        // ensure the chat with the users does not already exist
+        if (userSnapshots[0].data.containsKey("chats")) {
+          List<String> chatIds =
+              convertToStrings(userSnapshots[0].data["chats"]);
+          Set<String> compareTo = userIds.toSet();
+          int startingIndex = referencesToWriteBack.length;
+          // make sure there user ids don't show up in an existing chat
+          for (int i = 0; i < chatIds.length; i++) {
+            DocumentSnapshot chatSnapshot = await transaction
+                .get(_store.collection("chats").document(chatIds[i]));
+            referencesToWriteBack
+                .add(_store.collection("chats").document(chatIds[i]));
+            snapshotsToWriteBack.add(chatSnapshot);
+            List<String> users = convertToStrings(chatSnapshot.data["users"]);
+            if (users.length != userIds.length) {
+              _logger.v(
+                  "createChat- chat ${chatIds[i]} user length does not match");
+              continue;
+            }
+            Set<String> currentChat = users.toSet();
+            bool equals = true;
+            for (var val in currentChat) {
+              if (!compareTo.contains(val)) {
+                equals = false;
+                break;
+              }
+            }
+            if (equals) {
+              chatId = chatIds[i];
+              _logger.d("createChat- chat already exist with id ${chatId}");
+              break;
+            }
+          }
 
+          // write back because transaction must write everything it read
+          if (chatId == null) {
+            _logger.v("createChat- chat does not exist. Writing back reads");
+            for (int i = startingIndex; i < referencesToWriteBack.length; i++) {
+              await transaction.set(
+                  referencesToWriteBack[i], snapshotsToWriteBack[i].data);
+            }
+          } else {
+            _logger.v("createChat- chat does exist. Writing back reads");
+            for (int i = 0; i < referencesToWriteBack.length - 1; i++) {
+              await transaction.set(
+                  referencesToWriteBack[i], snapshotsToWriteBack[i].data);
+            }
+            return await transaction.set(
+                referencesToWriteBack[referencesToWriteBack.length - 1],
+                snapshotsToWriteBack[referencesToWriteBack.length - 1].data);
+          }
+        }
+
+        var chatCollectionRef = _store.collection("chats");
+        DocumentReference chatRef;
         // create chat metadata
         try {
-          await transaction.set(_store.collection("chat").document(chatId), {
+          chatRef = await chatCollectionRef.add({
             "group_name": "",
             "users": userIds,
-            "last_message_time": msgTimestamp
+            "last_message_time": FieldValue.serverTimestamp()
           });
         } catch (e) {
           _logger.e("createChat- Failed to create the chat metadata");
           return Future.error("Failed to create chat metadata");
         }
+        chatId = chatRef.documentID;
 
         // add chat to each user
         for (int i = 0; i < userIds.length; i++) {
@@ -364,6 +435,7 @@ class UserRepository {
             dataToSet["chats"] = List<String>();
           }
           dataToSet["chats"].add(chatId);
+          _logger.v("createChat- Updating user ${userIds[i]}");
           try {
             await transaction.update(
                 _store.collection("users").document(userIds[i]), dataToSet);
@@ -379,6 +451,9 @@ class UserRepository {
           "'");
       return Future.error(e.toString());
     }
+
+    assert(chatId != null);
+    _logger.v("createChat- Chat created with id ${chatId}");
     return chatId;
   }
 

@@ -119,6 +119,58 @@ class _NewChatPageState extends State<NewChatPage> {
     //         ]));
   }
 
+  Widget _buildStartChatButton(NewChatState state) {
+    LinkedHashSet<NewChatSearchResult> res;
+    if (state is ResultsState) {
+      ResultsState resState = state;
+      res = resState.selected;
+    } else if (state is SearchingState) {
+      SearchingState searchState = state;
+      res = searchState.selected;
+    } else if (state is ErrorState) {
+      ErrorState errorState = state;
+      res = errorState.selected;
+      _logger.e("_buildStartChatButton- error here ${errorState.message}");
+    } else {
+      return Container();
+    }
+
+    if (res.isEmpty) {
+      return Container();
+    }
+
+    return Container(
+      alignment: Alignment.centerRight,
+      padding: spacer.top.xs + spacer.bottom.xs,
+      margin: spacer.right.xs + spacer.left.xs,
+      child: Container(
+        width: 80,
+        child: FlatButton(
+          padding: spacer.right.none,
+          color: Colors.black,
+          splashColor: Colors.grey,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(100.0),
+          ),
+          onPressed: () {
+            _bloc.add(StartChatEvent());
+          },
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: <Widget>[
+              Text(
+                'Start Chat',
+                // textAlign: TextAlign.center,
+                style: primaryPBoldSmall,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildSearchResults(NewChatState state) {
     LinkedHashSet<NewChatSearchResult> searchResults;
     if (state is ResultsState) {
@@ -148,7 +200,6 @@ class _NewChatPageState extends State<NewChatPage> {
     return Column(children: [
       NotificationListener<ScrollNotification>(
         onNotification: _onScroll,
-
         child: SingleChildScrollView(
           child: ListView.builder(
               padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
@@ -200,6 +251,12 @@ class _NewChatPageState extends State<NewChatPage> {
         NewChatState state,
       ) {
         _pageState = state;
+        if (state is ChatCreatedState) {
+          ChatCreatedState newChatState = state;
+          _logger.v("Entering new chat with id ${newChatState.chatId}");
+          Navigator.of(context)
+              .pushNamed(activeChatRoute, arguments: _currentuser);
+        }
       },
       child: BlocBuilder(
           bloc: _bloc,
@@ -225,37 +282,7 @@ class _NewChatPageState extends State<NewChatPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.centerRight,
-                    padding: spacer.top.xs + spacer.bottom.xs,
-                    margin: spacer.right.xs + spacer.left.xs,
-                    child: Container(
-                      width: 80,
-                      child: FlatButton(
-                        padding: spacer.right.none,
-                        color: Colors.black,
-                        splashColor: Colors.grey,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100.0),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(activeChatRoute,
-                              arguments: _currentuser);
-                        },
-                        child: Wrap(
-                          alignment: WrapAlignment.center,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Done',
-                              // textAlign: TextAlign.center,
-                              style: primaryPBoldSmall,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildStartChatButton(state),
                 ]),
               ),
               Container(
