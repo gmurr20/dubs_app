@@ -82,15 +82,300 @@ class _NewChatPageState extends State<NewChatPage> {
     } else {
       return Container();
     }
-    String startChatText = "";
-    for (int i = 0; i < selected.length; i++) {
-      startChatText += selected.elementAt(i).username;
-      // TODO: Might need to rethink this because it would be good to have each selected user seperate to remove them.
-      if (i < selected.length - 1) {
-        startChatText += ", ";
-      }
+    // String startChatText = "";
+    // for (int i = 0; i < selected.length; i++) {
+    //   startChatText += selected.elementAt(i).username;
+    //   // TODO: Might need to rethink this because it would be good to have each selected user seperate to remove them.
+    //   if (i < selected.length - 1) {
+    //     startChatText += selected.elementAt(i).username;
+    //   }
+    // }
+
+    if (selected.isEmpty) {
+      return Container();
     }
-    return Container();
+
+    return Container(
+      padding: spacer.left.xs,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Center(
+          child: Row(
+            children: [
+              Padding(
+                padding: spacer.left.xxs,
+                child: FlatButton(
+                    padding: spacer.all.none + spacer.right.xs,
+                    color: Colors.black,
+                    splashColor: Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.0),
+                    ),
+                    onPressed: () {},
+                    child: Wrap(
+                        // alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: <Widget>[
+                          Container(
+                              padding: spacer.left.xs,
+                              child: Text(
+                                "Test",
+                                style: primaryPBoldSmall,
+                              )),
+                          IconButton(
+                            padding: spacer.right.none,
+                            alignment: Alignment.centerRight,
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            tooltip: 'Clear',
+                            enableFeedback: true,
+                            color: Colors.grey[300],
+                            onPressed: () {},
+                          ),
+                        ])),
+              ),
+              Padding(
+                padding: spacer.left.xxs,
+                child: FlatButton(
+                    padding: spacer.all.none + spacer.right.xs,
+                    color: Colors.black,
+                    splashColor: Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.0),
+                    ),
+                    onPressed: () {},
+                    child: Wrap(
+                        // alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: <Widget>[
+                          Container(
+                              padding: spacer.left.xs,
+                              child: Text(
+                                "Test",
+                                style: primaryPBoldSmall,
+                              )),
+                          IconButton(
+                            padding: spacer.right.none,
+                            alignment: Alignment.centerRight,
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            tooltip: 'Clear',
+                            enableFeedback: true,
+                            color: Colors.grey[300],
+                            onPressed: () {},
+                          ),
+                        ])),
+              ),
+              Padding(
+                padding: spacer.left.xxs,
+                child: FlatButton(
+                    padding: spacer.all.none + spacer.right.xs,
+                    color: Colors.black,
+                    splashColor: Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.0),
+                    ),
+                    onPressed: () {},
+                    child: Wrap(
+                        // alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: <Widget>[
+                          Container(
+                              padding: spacer.left.xs,
+                              child: Text(
+                                "Test",
+                                style: primaryPBoldSmall,
+                              )),
+                          IconButton(
+                            padding: spacer.right.none,
+                            alignment: Alignment.centerRight,
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            tooltip: 'Clear',
+                            enableFeedback: true,
+                            color: Colors.grey[300],
+                            onPressed: () {},
+                          ),
+                        ])),
+              ),
+              Padding(
+                padding: spacer.left.xxs,
+                child: FlatButton(
+                    padding: spacer.all.none + spacer.right.xs,
+                    color: Colors.black,
+                    splashColor: Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.0),
+                    ),
+                    onPressed: () {},
+                    child: Wrap(
+                        // alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: <Widget>[
+                          Container(
+                              padding: spacer.left.xs,
+                              child: Text(
+                                "Test",
+                                style: primaryPBoldSmall,
+                              )),
+                          IconButton(
+                            padding: spacer.right.none,
+                            alignment: Alignment.centerRight,
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            tooltip: 'Clear',
+                            enableFeedback: true,
+                            color: Colors.grey[300],
+                            onPressed: () {},
+                          ),
+                        ])),
+              ),
+              Padding(
+                padding: spacer.left.xxs,
+                child: FlatButton(
+                    padding: spacer.all.none + spacer.right.xs,
+                    color: Colors.black,
+                    splashColor: Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.0),
+                    ),
+                    onPressed: () {},
+                    child: Wrap(
+                        // alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: <Widget>[
+                          Container(
+                              padding: spacer.left.xs,
+                              child: Text(
+                                "Test",
+                                style: primaryPBoldSmall,
+                              )),
+                          IconButton(
+                            padding: spacer.right.none,
+                            alignment: Alignment.centerRight,
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            tooltip: 'Clear',
+                            enableFeedback: true,
+                            color: Colors.grey[300],
+                            onPressed: () {},
+                          ),
+                        ])),
+              ),
+              Padding(
+                padding: spacer.left.xxs,
+                child: FlatButton(
+                    padding: spacer.all.none + spacer.right.xs,
+                    color: Colors.black,
+                    splashColor: Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100.0),
+                    ),
+                    onPressed: () {},
+                    child: Wrap(
+                        // alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: <Widget>[
+                          Container(
+                              padding: spacer.left.xs,
+                              child: Text(
+                                "Test",
+                                style: primaryPBoldSmall,
+                              )),
+                          IconButton(
+                            padding: spacer.right.none,
+                            alignment: Alignment.centerRight,
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            tooltip: 'Clear',
+                            enableFeedback: true,
+                            color: Colors.grey[300],
+                            onPressed: () {},
+                          ),
+                        ])),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    //Container(
+    //   padding: spacer.top.xs + spacer.bottom.xs,
+    //   child: Row(children: [
+    //     NotificationListener<ScrollNotification>(
+    //       onNotification: _onScroll,
+    //       child: ListView.builder(
+    //           padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
+    //           itemCount: selected.length,
+    //           scrollDirection: Axis.horizontal,
+    //           shrinkWrap: true,
+    //           itemBuilder: (context, index) {
+    //             NewChatSearchResult selected;
+    //             return Card(
+    //               elevation: 2,
+    //               shape: RoundedRectangleBorder(
+    //                 borderRadius: BorderRadius.circular(35.0),
+    //               ),
+    //               child: Container(
+    //                 child: ListTile(
+    //                   title: Text(selected.username, style: darkprimaryPBold),
+    //                   trailing: Padding(
+    //                     padding: spacer.right.sm,
+    //                     child: SizedBox(
+    //                       width: 10,
+    //                       height: 10,
+    //                       child: IconButton(
+    //                         padding: spacer.right.none,
+    //                         alignment: Alignment.centerRight,
+    //                         icon: Icon(
+    //                           Icons.clear,
+    //                           color: Colors.black,
+    //                           size: 18,
+    //                         ),
+    //                         tooltip: 'Clear',
+    //                         enableFeedback: true,
+    //                         color: Colors.grey[300],
+    //                         onPressed: () {},
+    //                       ),
+    //                       // CircularCheckBox(
+    //                       //     activeColor: Colors.black,
+    //                       //     value: selected.isSelected,
+    //                       //     onChanged: (bool value) {
+    //                       //       _bloc.add(SelectChangeEvent(selected, value));
+    //                       //     })
+    //                     ),
+    //                   ),
+    //                   contentPadding: spacer.top.xxs +
+    //                       spacer.bottom.xxs +
+    //                       spacer.left.xs +
+    //                       spacer.right.xxs,
+    //                 ),
+    //               ),
+    //             );
+    //           }),
+    //     ),
+    //   ]),
+    // );
+
     // return FlatButton(
     //     padding: spacer.all.none + spacer.right.xs,
     //     color: Colors.grey[100],
@@ -103,19 +388,20 @@ class _NewChatPageState extends State<NewChatPage> {
     //         // alignment: WrapAlignment.center,
     //         crossAxisAlignment: WrapCrossAlignment.center,
     //         children: <Widget>[
+    //           Container(padding: spacer.left.xs, child: Text(startChatText)),
     //           IconButton(
-    //             alignment: Alignment.center,
+    //             padding: spacer.right.none,
+    //             alignment: Alignment.centerRight,
     //             icon: Icon(
-    //               Icons.people,
+    //               Icons.clear,
     //               color: Colors.black,
-    //               size: 20,
+    //               size: 18,
     //             ),
-    //             tooltip: 'Friends',
+    //             tooltip: 'Clear',
     //             enableFeedback: true,
     //             color: Colors.grey[300],
     //             onPressed: () {},
     //           ),
-    //           Container(child: Text(startChatText))
     //         ]));
   }
 
@@ -228,6 +514,84 @@ class _NewChatPageState extends State<NewChatPage> {
                                   _bloc
                                       .add(SelectChangeEvent(searchRes, value));
                                 })),
+                      ),
+                      contentPadding: spacer.top.xxs +
+                          spacer.bottom.xxs +
+                          spacer.left.xs +
+                          spacer.right.xxs,
+                    ),
+                  ),
+                );
+              }),
+        ),
+      ),
+    ]);
+  }
+
+  Widget _buildSelectedResults(NewChatState state) {
+    LinkedHashSet<NewChatSearchResult> selected;
+    if (state is ResultsState) {
+      ResultsState resState = state;
+      selected = resState.selected;
+    } else if (state is SearchingState) {
+      SearchingState searchState = state;
+      selected = searchState.selected;
+    } else if (state is ErrorState) {
+      ErrorState errorState = state;
+      selected = errorState.selected;
+      _logger.e("_buildSearchResults- error here ${errorState.message}");
+    } else {
+      return Container();
+    }
+    _logger.v("_buildSearchResults- got ${selected.length} results");
+    if (selected.length == 0) {
+      return Container();
+    }
+
+    return Row(children: [
+      NotificationListener<ScrollNotification>(
+        onNotification: _onScroll,
+        child: SingleChildScrollView(
+          child: ListView.builder(
+              padding: spacer.top.none + spacer.left.xxs + spacer.right.xxs,
+              itemCount: selected.length,
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                NewChatSearchResult selected;
+                return Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(35.0),
+                  ),
+                  child: Container(
+                    child: ListTile(
+                      title: Text(selected.username, style: darkprimaryPBold),
+                      trailing: Padding(
+                        padding: spacer.right.sm,
+                        child: SizedBox(
+                          width: 10,
+                          height: 10,
+                          child: IconButton(
+                            padding: spacer.right.none,
+                            alignment: Alignment.centerRight,
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.black,
+                              size: 18,
+                            ),
+                            tooltip: 'Clear',
+                            enableFeedback: true,
+                            color: Colors.grey[300],
+                            onPressed: () {},
+                          ),
+                          // CircularCheckBox(
+                          //     activeColor: Colors.black,
+                          //     value: selected.isSelected,
+                          //     onChanged: (bool value) {
+                          //       _bloc.add(SelectChangeEvent(selected, value));
+                          //     })
+                        ),
                       ),
                       contentPadding: spacer.top.xxs +
                           spacer.bottom.xxs +

@@ -30,7 +30,7 @@ const DarwinDangerLight = const Color(0xfffce8e6);
 const DarwinWhite = const Color(0xffffffff);
 const DarwinGray = const Color(0xffc2c7cf);
 const DarwinBlack = const Color(0xff000000);
-const DarwinRed = const Color(0xffF27D7D);
+const DarwinRed = const Color(0xff0f52BA);
 const DarwinLightRed = const Color(0xffF27D7D);
 const DarwinDarkRed = const Color(0xFFB71C1C);
 

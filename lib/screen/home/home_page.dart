@@ -140,12 +140,12 @@ class _HomePageState extends State<HomePage> {
             return Stack(
               children: <Widget>[
                 Scaffold(
-                  backgroundColor: DarwinRed,
+                  backgroundColor: const Color(0xff0f52BA),
                   body: Stack(children: [
                     WaveWidget(
                       size: size,
                       yOffset: size.height / 3.2,
-                      color: const Color(0xfff2f2f2),
+                      color: const Color(0xff0f52BA),
                     ),
                     SlidingUpPanel(
                       controller: _spc,
@@ -287,7 +287,7 @@ class _HomePageState extends State<HomePage> {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(20.0),
-                                        color: const Color(0xffffffff),
+                                        color: Colors.white70,
                                         boxShadow: [
                                           BoxShadow(
                                               color: const Color(0x1a000000),
@@ -327,10 +327,11 @@ class _HomePageState extends State<HomePage> {
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(20),
+                                          side: BorderSide(width: 0.5),
                                         ),
                                         child: Text('Add Friends',
-                                            style: primaryPBold),
-                                        color: DarwinRed,
+                                            style: darkprimaryPBold),
+                                        color: Colors.white,
                                         onPressed: () {
                                           Navigator.of(context).pushNamed(
                                               addFriendsRoute,
@@ -372,13 +373,14 @@ class _HomePageState extends State<HomePage> {
                                         margin: spacer.left.none,
                                         child: Text(
                                           "About to play?",
-                                          style: darkPrimaryH1Bold,
+                                          style: primaryH1Bold,
                                         ),
                                       ),
                                     ),
                                   ]),
                                 ),
                                 Card(
+                                  color: Colors.white70,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15.0),
                                   ),
@@ -390,11 +392,12 @@ class _HomePageState extends State<HomePage> {
                                         style: darkprimaryPBold),
                                     trailing: FlatButton(
                                       padding: spacer.top.xs + spacer.bottom.xs,
-                                      color: Colors.greenAccent,
+                                      color: Colors.white,
                                       splashColor: Colors.grey,
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(100.0),
+                                        side: BorderSide(width: 0.5),
                                       ),
                                       onPressed: () {
                                         Navigator.of(context).pushNamed(
@@ -429,7 +432,7 @@ class _HomePageState extends State<HomePage> {
                                         margin: spacer.left.none,
                                         child: Text(
                                           "Friends",
-                                          style: darkPrimaryH1Bold,
+                                          style: primaryH1Bold,
                                         ),
                                       ),
                                     ),
@@ -467,6 +470,7 @@ class _HomePageState extends State<HomePage> {
                                   ]),
                                 ),
                                 Card(
+                                  color: Colors.white70,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15.0),
                                   ),
@@ -484,6 +488,7 @@ class _HomePageState extends State<HomePage> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(100.0),
+                                        side: BorderSide(width: 0.5),
                                       ),
                                       onPressed: () {},
                                       child: Wrap(
