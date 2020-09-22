@@ -77,11 +77,6 @@ class _ProfilePageState extends State<ProfilePage> {
             return Scaffold(
                 backgroundColor: DarwinRed,
                 body: Stack(children: [
-                  WaveWidget(
-                    size: size,
-                    yOffset: size.height / 1.25,
-                    color: const Color(0xfff2f2f2),
-                  ),
                   Column(
                     children: <Widget>[
                       Container(
@@ -125,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               children: <Widget>[
                                 Container(
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: Colors.white70,
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                     child: ListTile(
@@ -208,9 +203,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                           spacer.right.xxs,
                                     )),
                                 Container(
-                                    margin: spacer.top.sm,
+                                    margin: spacer.top.xxs,
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: Colors.white70,
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                     child: ListTile(
@@ -278,7 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Container(
                                     margin: spacer.top.xxs,
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: Colors.white70,
                                         borderRadius:
                                             BorderRadius.circular(15)),
                                     child: ListTile(

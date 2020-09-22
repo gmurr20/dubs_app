@@ -100,11 +100,6 @@ class _ChatPageState extends State<ChatPage> {
       backgroundColor: DarwinRed,
       resizeToAvoidBottomInset: true,
       body: Stack(children: [
-        WaveWidget(
-          size: size,
-          yOffset: size.height / 4,
-          color: const Color(0xfff2f2f2),
-        ),
         SlidingUpPanel(
           // header: buildCloseButton(context),
           controller: _pc,
@@ -214,7 +209,7 @@ class _ChatPageState extends State<ChatPage> {
                     placeholder: 'Search',
                     onSubmitted: _search,
                     autocorrect: true,
-                    autofocus: true,
+                    autofocus: false,
                     showCursor: true,
                     enableSuggestions: true,
                     padding: spacer.all.xxs,
@@ -233,53 +228,56 @@ class _ChatPageState extends State<ChatPage> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return Card(
+                          color: Colors.white,
                           child: ListTile(
-                        title: Container(
-                          width: 200,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                margin: EdgeInsets.only(right: 10),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle, color: DarwinRed),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    chats[index].iconInitials,
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                            title: Container(
+                              width: 200,
+                              child: Row(
                                 children: [
-                                  Text(
-                                    chats[index].chatName,
-                                    style: TextStyle(fontSize: 20),
-                                  ),
                                   Container(
-                                    margin: EdgeInsets.only(top: 5),
+                                    width: 50,
+                                    height: 50,
+                                    margin: EdgeInsets.only(right: 10),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: DarwinRed),
                                     child: Align(
-                                      alignment: Alignment.bottomRight,
+                                      alignment: Alignment.center,
                                       child: Text(
-                                        chats[index].lastMessage,
-                                        style: TextStyle(fontSize: 15),
+                                        chats[index].iconInitials,
+                                        style: TextStyle(color: Colors.white),
                                       ),
                                     ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        chats[index].chatName,
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(top: 5),
+                                        child: Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            chats[index].lastMessage,
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   )
                                 ],
-                              )
-                            ],
-                          ),
-                        ),
-                        trailing: Text(chats[index].lastMessageTimestamp),
-                        contentPadding: spacer.top.xxs +
-                            spacer.bottom.xxs +
-                            spacer.left.xs +
-                            spacer.right.xxs,
-                      ));
+                              ),
+                            ),
+                            trailing: Text(chats[index].lastMessageTimestamp),
+                            contentPadding: spacer.top.xxs +
+                                spacer.bottom.xxs +
+                                spacer.left.xs +
+                                spacer.right.xxs,
+                          ));
                     },
                   ),
                 ),
